@@ -1,30 +1,133 @@
 ---
-title: "GitHub Pages"
-author: "Vítor Saldanha"
+title: "Tutorial Completo de Metanálise com 'metafor'"
+author: "Seu Nome"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: united
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+# Configuração global dos chunks:
+# echo = TRUE: mostra o código
+# message = FALSE: oculta mensagens de carregamento de pacotes
+# warning = FALSE: oculta avisos
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-## R Markdown
+# Introdução
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Este documento R Markdown é um tutorial completo do fluxo de trabalho para uma metanálise, utilizando o pacote `metafor`. Cada etapa é apresentada em um bloco de código executável (`chunk`), mostrando tanto o código-fonte quanto seus resultados, tornando-o ideal para aprendizado e prática.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# ETAPA 1: Preparação do Ambiente e Criação dos Dados
 
-```{r cars}
-summary(cars)
+Primeiro, carregamos os pacotes necessários. Se você ainda não os instalou, rode `install.packages("metafor")` e `install.packages("tidyverse")` no seu Console do R.
+
+```{r carregar-pacotes}
+library(metafor)
+library(tidyverse)
 ```
 
-## Including Plots
+Em vez de carregar um arquivo externo, vamos criar um data frame de exemplo (`dat1`) para este tutorial. Ele simula os dados extraídos de 12 estudos que avaliaram um tratamento para redução de um score de ansiedade.
 
-You can also embed plots, for example:
+```{r criar-dados}
+dat1 <- data.frame(
+  # Identificação do estudo
+  study_id = c("Silva et al., 2020", "Chen et al., 2021", "Patel et al., 2019", 
+               "Jones et al., 2022", "Kim et al., 2020", "Garcia et al., 2023",
+               "Smith et al., 2018", "Li et al., 2022", "Müller et al., 2021",
+               "Chou et al., 2023", "Davis et al., 2019", "Abe et al., 2024"),
+  # Dados do grupo de Tratamento
+  mean_treat = c(15.2, 18.5, 12.1, 14.8, 19.0, 13.5, 16.1, 17.2, 11.8, 15.5, 12.9, 17.8),
+  sd_treat = c(4.1, 5.2, 3.8, 4.5, 5.5, 3.9, 4.8, 4.9, 3.5, 4.2, 3.7, 5.0),
+  n_treat = c(50, 65, 45, 70, 60, 80, 55, 75, 40, 68, 48, 72),
+  # Dados do grupo Controle
+  mean_control = c(18.9, 21.0, 15.5, 19.2, 22.5, 17.8, 20.3, 20.9, 16.1, 19.8, 16.5, 22.1),
+  sd_control = c(4.5, 5.8, 4.0, 4.9, 6.0, 4.2, 5.1, 5.3, 3.9, 4.8, 4.1, 5.4),
+  n_control = c(52, 68, 48, 72, 62, 85, 58, 78, 42, 70, 50, 75),
+  # Variáveis moderadoras
+  age_group = factor(c("Adultos", "Idosos", "Adultos", "Jovens", "Idosos", "Adultos",
+                       "Adultos", "Jovens", "Adultos", "Idosos", "Jovens", "Idosos")),
+  publication_year = c(2020, 2021, 2019, 2022, 2020, 2023, 2018, 2022, 2021, 2023, 2019, 2024)
+)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+# Vamos visualizar as primeiras linhas do nosso dataset para confirmar
+head(dat1)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# ETAPA 2: Cálculo dos Tamanhos de Efeito (Effect Sizes)
+
+Com os dados criados, usamos `escalc()` para calcular o tamanho do efeito (`yi`) e sua variância (`vi`). Neste exemplo, usaremos a Diferença de Médias Padronizada (SMD), que por padrão é o **g de Hedges**.
+
+```{r calcular-tamanho-efeito}
+dat1 <- escalc(measure = "SMD", 
+               m1i = mean_treat, sd1i = sd_treat, n1i = n_treat,
+               m2i = mean_control, sd2i = sd_control, n2i = n_control,
+               data = dat1)
+
+# Visualizar o dataset novamente, agora com as colunas yi e vi
+head(dat1)
+```
+
+# ETAPA 3: Execução do Modelo Principal de Metanálise
+
+Agora, combinamos os tamanhos de efeito em um modelo de efeitos aleatórios com `rma()`.
+
+```{r rodar-metanalise}
+overall_result <- rma(yi, vi, data = dat1)
+
+# Exibimos o resumo do modelo, mostrando o efeito geral combinado,
+# o intervalo de confiança e as estatísticas de heterogeneidade.
+print(overall_result)
+```
+
+# ETAPA 4: Visualização e Diagnóstico
+
+## Forest Plot
+
+O *Forest Plot* é a principal forma de visualização em metanálises.
+
+```{r criar-forest-plot}
+forest(overall_result, slab = dat1$study_id, header = TRUE)
+```
+
+## Diagnóstico de Influência
+
+Verificamos se algum estudo está influenciando desproporcionalmente o resultado. O R marca com um asterisco (`*`) os estudos que merecem atenção.
+
+```{r rodar-diagnostico}
+influence(overall_result)
+```
+
+# ETAPA 5: Análise de Moderadores
+
+Investigamos a heterogeneidade encontrada usando as variáveis moderadoras que criamos.
+
+## A. Moderador Categórico
+
+Testamos se a **faixa etária** (`age_group`) explica a variação nos resultados.
+
+Primeiro, o teste geral (Q-entre-grupos):
+
+```{r mod-categorico-q}
+mod_categorico_Q <- rma(yi, vi, mods = ~ factor(age_group), data = dat1)
+print(mod_categorico_Q)
+```
+
+Em seguida, o modelo sem o intercepto (`- 1`) para ver o efeito médio de cada grupo.
+
+```{r mod-categorico-grupos}
+mod_categorico_grupos <- rma(yi, vi, mods = ~ factor(age_group) - 1, data = dat1)
+print(mod_categorico_grupos)
+```
+
+## B. Moderador Contínuo (Metarregressão)
+
+Testamos se o **ano de publicação** (`publication_year`) tem uma relação linear com o tamanho do efeito.
+
+```{r mod-continuo}
+mod_continuo <- rma(yi, vi, mods = ~ publication_year, data = dat1)
+print(mod_continuo)
+```
