@@ -116,7 +116,7 @@ mod_categorico_Q <- rma(yi, vi, mods = ~ factor(age_group), data = dat1)
 print(mod_categorico_Q)
 ```
 
-Em seguida, o modelo sem o intercepto (`- 1`) para ver o efeito médio de cada grupo.
+Em seguida, o modelo sem o intercepto (`- 1`) para ver o efeito médio de cada grupo. Teste!!!
 
 ```{r mod-categorico-grupos}
 mod_categorico_grupos <- rma(yi, vi, mods = ~ factor(age_group) - 1, data = dat1)
