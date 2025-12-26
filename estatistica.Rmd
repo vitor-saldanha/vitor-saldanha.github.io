@@ -1,0 +1,9 @@
+---
+title: "Tutoriais de Estatística"
+---
+
+Aqui ficarão seus scripts e aulas sobre estatística geral.
+
+## Conteúdo
+* [Aula 1: Regressão Linear](link-para-aula)
+* [Aula 2: Teste T](link-para-aula)

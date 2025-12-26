@@ -1,0 +1,17 @@
+name: "site-vitor"
+output_dir: "."
+navbar:
+  title: "Vitor Saldanha"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Tutoriais de Estatística"
+      href: estatistica.html
+    - text: "Tutoriais de Metanálise"
+      href: metanalise.html
+    - icon: fa-github
+      href: https://github.com/vitor-saldanha
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
