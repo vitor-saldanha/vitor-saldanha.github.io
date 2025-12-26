@@ -1,17 +1,15 @@
-name: "site-vitor"
+name: "vitor-saldanha"
+title: "Vitor Saldanha"
+description: "Estudante de Medicina e Pesquisador"
 output_dir: "."
 navbar:
-  title: "Vitor Saldanha"
-  left:
+  right:
     - text: "Home"
       href: index.html
-    - text: "Tutoriais de Estatística"
+    - text: "Estatística"
       href: estatistica.html
-    - text: "Tutoriais de Metanálise"
+    - text: "Metanálise"
       href: metanalise.html
-    - icon: fa-github
+    - icon: fa fab fa-github
       href: https://github.com/vitor-saldanha
-output:
-  html_document:
-    theme: flatly
-    highlight: textmate
+output: distill::distill_article
