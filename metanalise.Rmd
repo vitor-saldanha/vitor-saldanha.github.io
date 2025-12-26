@@ -1,5 +1,6 @@
 ---
 title: "Tutoriais de Metanálise"
+output: distill::distill_article
 ---
 
 Aqui ficarão seus projetos específicos de metanálise.

@@ -1,5 +1,7 @@
 ---
-title: "Tutoriais de Estatística"
+title: "Untitled"
+date: "`r Sys.Date()`"
+output: distill::distill_article
 ---
 
 Aqui ficarão seus scripts e aulas sobre estatística geral.
