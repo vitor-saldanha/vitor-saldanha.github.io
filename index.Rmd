@@ -1,5 +1,6 @@
 ---
 title: "Bem-vindo"
+output: distill::distill_article
 ---
 
 Olá! Eu sou o Vitor Saldanha.
