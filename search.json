@@ -1,0 +1,27 @@
+{
+  "articles": [
+    {
+      "path": "estatistica.html",
+      "title": "Untitled",
+      "author": [],
+      "date": "`r Sys.Date()`",
+      "contents": "\r\nAqui ficarão seus scripts e aulas sobre estatística geral.\r\nConteúdo\r\nAula 1: Regressão Linear\r\nAula 2: Teste T\r\n\r\n\r\n\r\n",
+      "last_modified": "2025-12-26T16:21:00-03:00"
+    },
+    {
+      "path": "index.html",
+      "title": "Vitor Saldanha",
+      "author": [],
+      "contents": "\r\n\r\n\r\nVitor Saldanha\r\n\r\n\r\nOlá! Sou estudante de medicina com interesse em pesquisa, estatística e neurologia.\r\n\r\n\r\n<a href=\"estatistica.html\" style=\"display: inline-block; background-color: #F47C7C; color: white; padding: 10px 20px; margin: 5px; border-radius: 5px; text-decoration: none; font-weight: bold;\">Tutoriais de Estatística<\/a>\r\n<a href=\"metanalise.html\" style=\"display: inline-block; background-color: #F47C7C; color: white; padding: 10px 20px; margin: 5px; border-radius: 5px; text-decoration: none; font-weight: bold;\">Tutoriais de Metanálise<\/a>\r\n\r\n\r\nname: “site-vitor”\r\noutput_dir: “.”\r\nnavbar:\r\ntitle: “Vitor Saldanha”\r\nleft:\r\n- text: “Home”\r\nhref: index.html\r\n- text: “Estatística”\r\nhref: estatistica.html\r\n- text: “Metanálise”\r\nhref: metanalise.html\r\n- icon: fa fab fa-github\r\nhref: https://github.com/vitor-saldanha\r\noutput:\r\nhtml_document:\r\ntheme: journal\r\ncss: styles.css\r\n/* styles.css */\r\n.navbar-default {\r\nbackground-color: #F47C7C !important;\r\nborder-color: #F47C7C !important;\r\n}\r\n.navbar-default .navbar-nav > li > a {\r\ncolor: white !important;\r\n}\r\n\r\n\r\n\r\n",
+      "last_modified": "2025-12-26T16:32:58-03:00"
+    },
+    {
+      "path": "metanalise.html",
+      "title": "Tutoriais de Metanálise",
+      "author": [],
+      "contents": "\r\nAqui ficarão seus projetos específicos de metanálise.\r\nProjetos Recentes\r\n\r\n\r\n# Seus códigos de metanálise virão aqui\r\n\r\n\r\n\r\n\r\n\r\n",
+      "last_modified": "2025-12-26T16:21:02-03:00"
+    }
+  ],
+  "collections": []
+}

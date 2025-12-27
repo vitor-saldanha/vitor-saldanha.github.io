@@ -3,6 +3,7 @@ title: "Vitor Saldanha"
 description: "Estudante de Medicina e Pesquisador"
 output_dir: "."
 navbar:
+  search: false       # ISSO REMOVE A BARRA DE BUSCA
   right:
     - text: "Home"
       href: index.html
@@ -10,6 +11,8 @@ navbar:
       href: estatistica.html
     - text: "Metanálise"
       href: metanalise.html
-    - icon: fa fab fa-github
+    - icon: fab fa-github
       href: https://github.com/vitor-saldanha
-output: distill::distill_article
+output:
+  distill::distill_article:
+    css: styles.css   # ISSO LIGA O ARQUIVO DE ESTILOS

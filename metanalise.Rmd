@@ -3,6 +3,16 @@ title: "Tutoriais de Metanálise"
 site: distill::distill_website
 ---
 
+<style>
+d-title {
+  display: none !important;
+}
+
+body {
+  padding-top: 50px; /* Espaço para a barra de navegação não cobrir o texto */
+}
+</style>
+
 Aqui ficarão seus projetos específicos de metanálise.
 
 ## Projetos Recentes

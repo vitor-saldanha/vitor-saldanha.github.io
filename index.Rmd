@@ -1,15 +1,35 @@
 ---
-title: "Bem-vindo"
+title: "Home"
 site: distill::distill_website
 ---
+<style>
+d-title {
+  display: none !important;
+}
+</style>
 
-Olá! Eu sou o Vitor Saldanha.
+<div class="home-container">
+<img src="minha-foto.jpeg" class="profile-pic" alt="Foto de Vitor">
 
-Sou pesquisador focado em... (sua breve descrição aqui).
+<h1 style="color: #333; margin-bottom: 10px;">Vitor Saldanha</h1>
 
-### O que você encontra aqui?
+<p style="font-size: 1.1em; color: #666; max-width: 600px; margin: 0 auto 10px auto; line-height: 1.5;">
+  Olá! 👋 Sou estudante de medicina com interesse em pesquisa, estatística e metanálise. <br>
+  Aqui compartilho meu aprendizado e projetos. 
+</p>
 
-Neste site, eu organizo meus materiais de estudo e projetos em duas áreas principais:
+<hr class="separator">
 
-1.  **[Tutoriais de Estatística](estatistica.html)**: Guias sobre R e métodos estatísticos.
-2.  **[Tutoriais de Metanálise](metanalise.html)**: Projetos práticos e códigos de metanálise.
+<div>
+<a href="estatistica.html" class="btn-personalizado">Tutoriais de Estatística </a>
+<a href="metanalise.html" class="btn-personalizado">Tutoriais de Metanálise</a>
+</div>
+
+<div>
+<a href="mailto:vitor.saldanha11@gmail.com" class="btn-email">
+  <i class="fas fa-envelope"></i> Enviar Email
+</a>
+</div>
+
+</div>
+

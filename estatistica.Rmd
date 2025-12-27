@@ -4,8 +4,38 @@ date: "`r Sys.Date()`"
 site: distill::distill_website
 ---
 
-Aqui ficarão seus scripts e aulas sobre estatística geral.
+<style>
+d-title {
+  display: none !important;
+}
+
+body {
+  padding-top: 50px; /* Espaço para a barra de navegação não cobrir o texto */
+}
+</style>
 
 ## Conteúdo
-* [Aula 1: Regressão Linear](link-para-aula)
-* [Aula 2: Teste T](link-para-aula)
+
+<div class="tutorial-grid">
+
+<a href="aula1-regressao.html" class="meu-cartao">
+<div class="cartao-topo">
+<i class="fas fa-chart-line cartao-icone"></i>
+</div>
+<div class="cartao-corpo">
+<span class="cartao-titulo">Aula 1</span>
+<span class="cartao-desc">Regressão Linear Simples e Múltipla</span>
+</div>
+</a>
+
+<a href="aula2-testet.html" class="meu-cartao">
+<div class="cartao-topo">
+<i class="fas fa-calculator cartao-icone"></i>
+</div>
+<div class="cartao-corpo">
+<span class="cartao-titulo">Aula 2</span>
+<span class="cartao-desc">Teste T e Comparação de Médias</span>
+</div>
+</a>
+
+</div>
