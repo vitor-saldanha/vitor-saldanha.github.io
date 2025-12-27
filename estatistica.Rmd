@@ -16,26 +16,51 @@ body {
 
 ## Conteúdo
 
-<div class="tutorial-grid">
+<div class="tutorial-grid l-body-outset">
 
-<a href="aula1-regressao.html" class="meu-cartao">
-<div class="cartao-topo">
-<i class="fas fa-chart-line cartao-icone"></i>
-</div>
-<div class="cartao-corpo">
-<span class="cartao-titulo">Aula 1</span>
-<span class="cartao-desc">Regressão Linear Simples e Múltipla</span>
-</div>
-</a>
+<div class="card-blog">
+<img src="fotos/estatistica/regression.jpg" class="card-img-top" alt="Imagem Regressão">
 
-<a href="aula2-testet.html" class="meu-cartao">
-<div class="cartao-topo">
-<i class="fas fa-calculator cartao-icone"></i>
-</div>
-<div class="cartao-corpo">
-<span class="cartao-titulo">Aula 2</span>
-<span class="cartao-desc">Teste T e Comparação de Médias</span>
-</div>
+<div class="card-body">
+<span class="card-tag">
+<i class="fas fa-fire"></i> Básico
+</span>
+<h5 class="card-title">Regressão Linear Simples e Múltipla</h5>
+
+<a href="construcao.html" class="card-btn">
+Acessar Aula <i class="fas fa-arrow-right"></i>
 </a>
+</div>
+</div>
+
+<div class="card-blog">
+<img src="fotos/estatistica/t-test.jpg" class="card-img-top" alt="Imagem Teste T">
+
+<div class="card-body">
+<span class="card-tag">
+<i class="fas fa-chart-bar"></i> Intermediário
+</span>
+<h5 class="card-title">Teste T e Comparação de Médias</h5>
+
+<a href="construcao.html" class="card-btn">
+Acessar Aula <i class="fas fa-arrow-right"></i>
+</a>
+</div>
+</div>
+
+<div class="card-blog">
+<img src="fotos/estatistica/categorical.jpg" class="card-img-top" alt="Imagem Qui-Quadrado">
+
+<div class="card-body">
+<span class="card-tag">
+<i class="fas fa-table"></i> Categórica
+</span>
+<h5 class="card-title">Teste Qui-Quadrado e Exato de Fisher</h5>
+
+<a href="construcao.html" class="card-btn">
+Acessar Aula <i class="fas fa-arrow-right"></i>
+</a>
+</div>
+</div>
 
 </div>
