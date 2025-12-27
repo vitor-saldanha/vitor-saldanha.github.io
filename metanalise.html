@@ -1849,6 +1849,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <script src="site_libs/distill-2.2.21/template.v2.js"></script>
   <!--radix_placeholder_site_in_header-->
   <style type="text/css">
+  /* =========================================
+     FONTE: INTER (Visual Moderno/Tech)
+     ========================================= */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+  html, body, h1, h2, h3, h4, h5, h6, 
+  p, a, li, span, div, button, input, textarea,
+  .distill-site-header, .d-title, .d-article, .distill-site-footer {
+    font-family: 'Inter', sans-serif !important;
+  }
 
   /*  Barra de navegação */
   .distill-site-header {
@@ -2117,6 +2127,84 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   a.card-blog, a.card-btn {
     border-bottom: none !important;
     background-image: none !important;
+  }
+
+
+  /* =========================================
+     BOTÕES DA HOME (Estilo ZacharyCrespin)
+     ========================================= */
+
+  .btn-novo {
+    cursor: pointer;
+    font-weight: 700;
+    font-family: Helvetica, sans-serif;
+    transition: all .2s;
+    padding: 12px 25px;       /* Um pouco mais de espaço interno */
+    border-radius: 100px;
+    background: #6c9c58;      /* SEU VERDE */
+    border: 1px solid transparent;
+    
+    /* Comportamento de Link/Botão */
+    display: inline-flex;     /* Garante que ícone e texto fiquem na linha */
+    align-items: center;
+    justify-content: center;
+    
+    font-size: 16px;
+    color: white !important;  /* Texto branco */
+    text-decoration: none !important; /* Remove sublinhado */
+    margin: 10px;             /* Espaço entre os botões */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  /* Efeito Hover (Mouse em cima) */
+  .btn-novo:hover {
+    background: #5a8249;      /* Verde um pouquinho mais escuro */
+    color: white !important;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px); /* Sobe um pouquinho */
+  }
+
+  /* Efeito Active (Ao clicar) */
+  .btn-novo:active {
+    transform: scale(0.95);
+  }
+
+  /* Configuração do Ícone SVG */
+  .btn-novo > svg {
+    width: 34px;
+    margin-left: 10px;
+    transition: transform .3s ease-in-out;
+  }
+
+  /* A animação da seta indo para o lado */
+  .btn-novo:hover svg {
+    transform: translateX(5px);
+  }
+
+  .btn-email {
+    background-color: transparent;
+    color: #6c9c58 !important;
+    border: 2px solid #6c9c58;
+    
+    /* AQUI QUE AUMENTA O TAMANHO: */
+    padding: 15px 40px;      /* Mais espaço interno (Altura x Largura) */
+    font-size: 1.2rem;       /* Letra maior */
+    min-width: 280px;        /* Garante uma largura mínima imponente */
+    
+    margin-top: 15px;
+    border-radius: 50px;     /* Mais arredondado */
+    text-decoration: none !important;
+    font-weight: 800;        /* Negrito mais forte */
+    display: inline-block;
+    transition: 0.3s;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .btn-email:hover {
+    background-color: #6c9c58;
+    color: white !important;
+    transform: scale(1.05);  /* Cresce um pouquinho ao passar o mouse */
   }
   </style>
   <!--/radix_placeholder_site_in_header-->
