@@ -3,7 +3,7 @@ title: "Em Construção"
 output: distill::distill_article
 ---
 
-<style>
+```{css, echo=FALSE}
 /* Estilo exclusivo desta página */
 d-title {
   display: none !important;
@@ -32,7 +32,7 @@ body {
 /* Estilo do Ícone Fofinho */
 .construction-icon {
   font-size: 80px;
-  color: #6c9c58; /* Mudei para o VERDE do seu tema */
+  color: #005f73; /* Mudei para o VERDE do seu tema */
   margin-bottom: 25px;
   animation: bounce 2s infinite; /* Animação de pulinho */
 }
@@ -53,20 +53,20 @@ body {
 }
 
 .btn-voltar {
-  background-color: #6c9c58;
+  background-color: #005f73;
   color: white !important;
   padding: 12px 35px;
   border-radius: 30px;
   text-decoration: none !important;
   font-weight: bold;
-  border: 1px solid #6c9c58;
+  border: 1px solid #005f73;
   transition: 0.3s;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .btn-voltar:hover {
   background-color: white;
-  color: #6c9c58 !important;
+  color: #005f73 !important;
   transform: translateY(-2px);
 }
 
@@ -76,7 +76,7 @@ body {
   40% {transform: translateY(-15px);}
   60% {transform: translateY(-7px);}
 }
-</style>
+```
 
 <div class="construction-container">
   

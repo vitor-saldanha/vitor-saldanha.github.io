@@ -32,6 +32,8 @@ h1 > span, h2 > span, h3 > span {
 .distill-site-header {
   background-color: #005f73; /* Seu verde */
   font-size: 18px;
+  position: fixed !important;
+  z-index: 1000000 !important;
 }
 
 /* Foto redonda */
@@ -96,7 +98,7 @@ h1 > span, h2 > span, h3 > span {
 }
 
 .btn-email:hover {
-  background-color: #005f73;
+  background-color: #003f4c;
   color: white !important;
 }
 
@@ -288,7 +290,7 @@ d-article a.meu-cartao:hover {
 }
 
 .card-btn:hover {
-  background-color: #5a8249; /* Verde um pouco mais escuro */
+  background-color: #004655; /* Verde um pouco mais escuro */
 }
 
 /* Regra de segurança para links do Distill */
@@ -326,7 +328,7 @@ a.card-blog, a.card-btn {
 
 /* Efeito Hover (Mouse em cima) */
 .btn-novo:hover {
-  background: #5a8249;      /* Verde um pouquinho mais escuro */
+  background: #003f4c;      /* Verde um pouquinho mais escuro */
   color: white !important;
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
   transform: translateY(-2px); /* Sobe um pouquinho */

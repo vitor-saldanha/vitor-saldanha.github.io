@@ -20,8 +20,9 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -32,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -1837,7 +1838,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -1882,6 +1883,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   .distill-site-header {
     background-color: #005f73; /* Seu verde */
     font-size: 18px;
+    position: fixed !important;
+    z-index: 1000000 !important;
   }
 
   /* Foto redonda */
@@ -1946,7 +1949,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   }
 
   .btn-email:hover {
-    background-color: #005f73;
+    background-color: #003f4c;
     color: white !important;
   }
 
@@ -2138,7 +2141,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   }
 
   .card-btn:hover {
-    background-color: #5a8249; /* Verde um pouco mais escuro */
+    background-color: #004655; /* Verde um pouco mais escuro */
   }
 
   /* Regra de segurança para links do Distill */
@@ -2176,7 +2179,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   /* Efeito Hover (Mouse em cima) */
   .btn-novo:hover {
-    background: #5a8249;      /* Verde um pouquinho mais escuro */
+    background: #003f4c;      /* Verde um pouquinho mais escuro */
     color: white !important;
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     transform: translateY(-2px); /* Sobe um pouquinho */
@@ -2441,7 +2444,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <div class="nav-right">
 <a href="index.html">Home</a>
 <a href="estatistica.html">Estatística</a>
-<a href="metanalise.html">Metanálise</a>
+<a href="construcao.html">Metanálise</a>
 <a href="construcao.html">Blog</a>
 <a href="https://github.com/vitor-saldanha">
 <i class="fab fa-github" aria-hidden="true"></i>

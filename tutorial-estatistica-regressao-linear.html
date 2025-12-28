@@ -20,8 +20,9 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -32,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -110,7 +111,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","output"]}},"value":[{"type":"character","attributes":{},"value":["Regressão Linear"]},{"type":"character","attributes":{},"value":["Uma introdução prática aos modelos lineares no R.\n"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc"]}},"value":[{"type":"logical","attributes":{},"value":[true]}]}]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","output"]}},"value":[{"type":"character","attributes":{},"value":["Regressão Linear"]},{"type":"character","attributes":{},"value":["Uma introdução prática aos modelos lineares no R.\n"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float","css","self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[6]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["toc-styles.css"]},{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -1840,7 +1841,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -1883,8 +1884,10 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   /*  Barra de navegação */
   .distill-site-header {
-    background-color: #588157; /* Seu verde */
+    background-color: #005f73; /* Seu verde */
     font-size: 18px;
+    position: fixed !important;
+    z-index: 1000000 !important;
   }
 
   /* Foto redonda */
@@ -1893,7 +1896,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     width: 180px;
     height: 180px;
     object-fit: cover;
-    border: 4px solid #588157; /* Borda verde */
+    border: 4px solid #005f73; /* Borda verde */
     margin-bottom: 20px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
@@ -1916,7 +1919,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   /* 6. Botões */
   .btn-personalizado {
-    background-color: #588157; /* Verde */
+    background-color: #005f73; /* Verde */
     color: white !important;
     padding: 12px 30px;
     margin: 10px;
@@ -1925,20 +1928,20 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     font-weight: bold;
     display: inline-block;
     transition: 0.3s;
-    border: 1px solid #588157;
+    border: 1px solid #005f73;
   }
 
   .btn-personalizado:hover {
     background-color: white;
-    color: #588157 !important;
+    color: #005f73 !important;
     cursor: pointer;
   }
 
   /* 7. Botão de Email */
   .btn-email {
     background-color: transparent;
-    color: #588157 !important;
-    border: 2px solid #588157;
+    color: #005f73 !important;
+    border: 2px solid #005f73;
     padding: 10px 25px;
     margin-top: 15px;
     border-radius: 30px;
@@ -1949,7 +1952,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   }
 
   .btn-email:hover {
-    background-color: #588157;
+    background-color: #003f4c;
     color: white !important;
   }
 
@@ -2004,7 +2007,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   /* --- TOPO DO CARTÃO (Verde) --- */
   .cartao-topo {
-    background-color: #588157;
+    background-color: #005f73;
     height: 80px;
     display: flex;
     align-items: center;
@@ -2041,7 +2044,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   .meu-cartao:hover {
     transform: translateY(-5px) scale(1.02);
     box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-    border-color: #588157;
+    border-color: #005f73;
     border-bottom: none !important; /* Garante que a linha não apareça nem no mouse over */
   }
 
@@ -2112,7 +2115,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   /* A Etiqueta (Trending/Categoria) */
   .card-tag {
     background-color: #f0fdf4; /* Fundo verde bem clarinho */
-    color: #588157;            /* Seu verde */
+    color: #005f73;            /* Seu verde */
     border: 1px solid #bbf7d0;
     border-radius: 4px;
     padding: 2px 10px;
@@ -2127,7 +2130,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   /* O Botão (Read More) */
   .card-btn {
-    background-color: #588157;
+    background-color: #005f73;
     color: white !important;
     padding: 10px 20px;
     border-radius: 8px;
@@ -2141,7 +2144,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   }
 
   .card-btn:hover {
-    background-color: #5a8249; /* Verde um pouco mais escuro */
+    background-color: #004655; /* Verde um pouco mais escuro */
   }
 
   /* Regra de segurança para links do Distill */
@@ -2162,7 +2165,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     transition: all .2s;
     padding: 12px 25px;       /* Um pouco mais de espaço interno */
     border-radius: 100px;
-    background: #588157;      /* SEU VERDE */
+    background: #005f73;      /* SEU VERDE */
     border: 1px solid transparent;
     
     /* Comportamento de Link/Botão */
@@ -2179,7 +2182,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   /* Efeito Hover (Mouse em cima) */
   .btn-novo:hover {
-    background: #5a8249;      /* Verde um pouquinho mais escuro */
+    background: #003f4c;      /* Verde um pouquinho mais escuro */
     color: white !important;
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     transform: translateY(-2px); /* Sobe um pouquinho */
@@ -2204,8 +2207,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   .btn-email {
     background-color: transparent;
-    color: #588157 !important;
-    border: 2px solid #588157;
+    color: #005f73 !important;
+    border: 2px solid #005f73;
     
     /* AQUI QUE AUMENTA O TAMANHO: */
     padding: 15px 40px;      /* Mais espaço interno (Altura x Largura) */
@@ -2223,7 +2226,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   }
 
   .btn-email:hover {
-    background-color: #588157;
+    background-color: #005f73;
     color: white !important;
     transform: scale(1.05);  /* Cresce um pouquinho ao passar o mouse */
   }
@@ -2234,7 +2237,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   .author-footer {
     background-color: #f8f9fa;
-    border-left: 4px solid #588157;
+    border-left: 4px solid #005f73;
     
     /* MUDANÇA AQUI: */
     /* Topo: 25px | Direita: 25px | Baixo: 10px | Esquerda: 25px */
@@ -2278,7 +2281,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   /* Título "Contents" */
   .d-contents nav h3 {
-    color: #588157 !important; /* Verde do tema */
+    color: #005f73 !important; /* Verde do tema */
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 1.5px;
@@ -2298,8 +2301,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   /* Efeito ao passar o mouse (Hover) */
   .d-contents nav a:hover {
-    color: #588157 !important;   /* Texto fica verde */
-    border-left: 3px solid #588157; /* A linha fica verde e grossa */
+    color: #005f73 !important;   /* Texto fica verde */
+    border-left: 3px solid #005f73; /* A linha fica verde e grossa */
     background: linear-gradient(to right, #f4fcf4, transparent); /* Fundo degradê suave */
     padding-left: 20px;          /* O texto "anda" um pouco para a direita */
   }
@@ -2355,7 +2358,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 4px;
-    background: #588157;
+    background: #005f73;
     opacity: 0.5;
     transition: 0.3s;
   }
@@ -2370,7 +2373,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   .rec-icon {
     font-size: 1.5rem;
-    color: #588157;
+    color: #005f73;
     margin-bottom: 10px;
   }
 
@@ -2398,7 +2401,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     align-items: center;
     gap: 8px;
     background-color: #f4fcf4; /* Fundo verde bem clarinho */
-    color: #588157 !important;
+    color: #005f73 !important;
     border: 1px solid #bbf7d0;
     padding: 12px 30px;
     border-radius: 50px;       /* Formato de pílula */
@@ -2408,7 +2411,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   }
 
   .rec-btn-back:hover {
-    background-color: #588157;
+    background-color: #005f73;
     color: white !important;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(108, 156, 88, 0.2);
@@ -2422,7 +2425,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <!--/radix_placeholder_site_in_header-->
 
-  <link rel="stylesheet" href="styles.css" type="text/css"/>
+  <link rel="stylesheet" href="toc-styles.css" type="text/css"/>
 
 </head>
 
@@ -2444,7 +2447,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <div class="nav-right">
 <a href="index.html">Home</a>
 <a href="estatistica.html">Estatística</a>
-<a href="metanalise.html">Metanálise</a>
+<a href="construcao.html">Metanálise</a>
 <a href="construcao.html">Blog</a>
 <a href="https://github.com/vitor-saldanha">
 <i class="fab fa-github" aria-hidden="true"></i>
@@ -2478,112 +2481,197 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <style type="text/css">
-/* --- CUSTOMIZAÇÃO AVANÇADA DE LAYOUT DISTILL --- */
+.d-title{
+  display: none;
+}
+/* ==========================================================================
+1. ESTILIZAÇÃO DO HERO BANNER (FULL WIDTH BREAKOUT)
+========================================================================== */
 
-/* 1. CONFIGURAÇÃO DO BANNER (HERO IMAGE) */
-d-title {
-  /* Layout e Posicionamento */
-  width: 100vw;                 /* Ocupa 100% da largura da janela */
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;           /* Técnica para centralizar elemento full-width */
-  margin-right: -50vw;
-  margin-top: 0;
-  margin-bottom: 3rem;
+.hero-container-full {
+/* Técnica de "Breakout" para escapar do grid do Distill */
+width: 100vw; 
+position: relative;
+left: 50%;
+right: 50%;
+margin-left: -50vw;
+margin-right: -50vw;
 
-  /* Estilo do Fundo */
-  /* NOTA: Substitua a URL pela imagem do seu projeto se desejar */
-  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-                    url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80)');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+/* Reset de margens para evitar espaços brancos indesejados */
+margin-top: -2rem; /* Ajuste fino dependendo do padding do navbar */
+margin-bottom: 3rem;
 
-  /* Espaçamento */
-  padding-top: 6rem;
-  padding-bottom: 6rem;
-
-  /* Tipografia */
-  text-align: center;
-  color: white;
-  
-  clip-path: inset(0 0 1px 0);
-
+/* Garantir que não cause rolagem horizontal indesejada */
+box-sizing: border-box;
+overflow: hidden;
+z-index: 5;
 }
 
-/* Título */
-d-title h1 {
-  color: #ffffff !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 3.5rem;
-  font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  margin-bottom: 1rem;
+.hero-banner {
+/* Dimensões */
+height: 50vh; /* Ocupa 50% da altura da viewport */
+min-height: 400px; /* Altura mínima garantida */
+width: 100%;
+
+/* Imagem de Fundo - Substitua pela URL da sua imagem */
+background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1953&q=80');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+
+/* Flexbox para centralização total do conteúdo */
+display: flex;
+justify-content: center;
+align-items: center;
+
+/* Contexto de empilhamento */
+position: relative;
+z-index: 1;
 }
 
-/* Descrição */
-d-title p {
-  color: #f0f0f0 !important;
-  font-size: 1.4rem;
-  font-weight: 300;
-  max-width: 800px;
-  margin: 0 auto;
+/* Camada de Escurecimento (Overlay) */
+.hero-overlay {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+z-index: 2;
+
+/* Manter centralização para os filhos */
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
 }
 
-/* Metadados (Autores/Data) */
-d-byline {
-  border-top: none !important;
-  margin-top: 2rem;
+/* Conteúdo Textual */
+.hero-content {
+z-index: 3;
+text-align: center;
+max-width: 800px;
+padding: 0 20px;
+color: #ffffff;
 }
 
-d-byline .byline {
-  color: rgba(255, 255, 255, 0.8) !important;
+/* Título Principal */
+.hero-title {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+font-size: 3.5rem;
+font-weight: 800;
+margin-bottom: 0.5rem;
+text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+line-height: 1.2;
+color: white!important; /* Importante para sobrescrever cores do tema Distill */
 }
 
-d-byline a {
-  color: #fff !important;
-  text-decoration: underline;
+/* Subtítulo */
+.hero-subtitle {
+font-size: 1.25rem;
+font-weight: 300;
+margin-bottom: 2rem;
+color: rgba(255, 255, 255, 0.9);
+line-height: 1.5;
 }
 
-/* 2. CONFIGURAÇÃO DO MENU LATERAL (TOC) */
-@media (min-width: 1000px) {
-  /* Aplica apenas em telas largas onde o TOC lateral existe */
-  
-  .d-contents nav {
-    /* Comportamento Sticky */
-    position: -webkit-sticky;
-    position: sticky;
-    top: 100px; /* Ajuste para não colidir com a Navbar */
-    
-    /* Alinhamento Vertical */
-    align-self: start;
-    margin-top: 0 !important;
+/* Botões */
+.hero-btn {
+display: inline-block;
+padding: 12px 28px;
+margin: 5px;
+border-radius: 50px;
+text-decoration: none;
+font-weight: 600;
+transition: all 0.3s ease;
+text-transform: uppercase;
+font-size: 0.9rem;
+letter-spacing: 0.5px;
+}
 
-    /* Scroll interno se necessário */
-    max-height: 80vh;
-    overflow-y: auto;
-  }
+.hero-btn.primary {
+background-color: #4CAF50; /* Cor verde estilo RStudio/Distill */
+color: white;
+border: 2px solid #4CAF50;
+}
 
-  /* Ajuste do container pai */
-  .d-contents {
-    grid-row: span 10; /* Permite que o container acompanhe o texto longo */
-    padding-top: 0 !important;
-  }
+.hero-btn.primary:hover {
+background-color: #45a049;
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
 
-  /* Estilo dos links do TOC */
-  .d-contents nav a {
-    color: #666;
-    border-left: 2px solid #ddd;
-    padding-left: 10px;
-  }
+.hero-btn.github {
+background-color: transparent;
+color: white;
+border: 2px solid white;
+}
 
-  .d-contents nav a:hover {
-    color: #2c3e50;
-    border-left: 3px solid #2c3e50;
-  }
+.hero-btn.github:hover {
+background-color: white;
+color: #333;
+}
+
+/* ==========================================================================
+2. CORREÇÃO E ALINHAMENTO DO TABLE OF CONTENTS (TOC)
+========================================================================== */
+
+
+
+/* ==========================================================================
+3. RESPONSIVIDADE (MOBILE)
+========================================================================== */
+
+/* Em telas menores que 1000px (ponto de quebra comum do Distill),
+o layout muda drasticamente. O TOC flutuante deve ser desativado. */
+
+@media screen and (max-width: 1000px) {
+
+/* Ajuste do Banner para Mobile */
+.hero-banner {
+height: 60vh; /* Mais alto em mobile para caber o texto verticalmente */
+}
+
+.hero-title {
+font-size: 2.2rem; /* Título menor */
+}
+
+/* Reposicionar o TOC para o fluxo normal do documento */
+.d-contents > nav.toc, 
+#TOC {
+position: relative!important;
+top: 0!important;
+width: 100%;
+margin-bottom: 40px;
+border-left: none;
+border-top: 1px solid #e0e0e0;
+padding-top: 20px;
+}
 }
 </style>
+</div>
+<div class="hero-container-full">
+<div class="hero-banner">
+<div class="hero-overlay">
+<div class="hero-content">
+<h1 class="hero-title">
+Regressão Linear
+</h1>
+<p class="hero-subtitle">
+Uma introdução prática aos modelos lineares no R
+</p>
+<div class="hero-actions">
+<p><a href="#introducao" class="hero-btn primary">Começar Leitura</a>
+<a href="https://github.com/seu-usuario/seu-repo" class="hero-btn github">
+<i class="fab fa-github"></i> Ver no GitHub
+</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="toc-spacer">
+
 </div>
 <h2 id="r-markdown">R Markdown</h2>
 <p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
@@ -2603,7 +2691,7 @@ d-byline a {
 <h2 id="including-plots">Including Plots</h2>
 <p>You can also embed plots, for example:</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="tutorial-estatistica-regressao-linear_files/figure-html5/pressure-1.png" width="624" /></p>
+<p><img src="tutorial-estatistica-regressao-linear_files/figure-html5/pressure-1.png" alt="" width="624" /></p>
 </div>
 <p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
 <div class="rec-section">
