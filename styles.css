@@ -30,7 +30,7 @@ h1 > span, h2 > span, h3 > span {
 
 /*  Barra de navegação */
 .distill-site-header {
-  background-color: #6c9c58; /* Seu verde */
+  background-color: #005f73; /* Seu verde */
   font-size: 18px;
 }
 
@@ -40,7 +40,7 @@ h1 > span, h2 > span, h3 > span {
   width: 180px;
   height: 180px;
   object-fit: cover;
-  border: 4px solid #6c9c58; /* Borda verde */
+  border: 4px solid #005f73; /* Borda verde */
   margin-bottom: 20px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
@@ -63,7 +63,7 @@ h1 > span, h2 > span, h3 > span {
 
 /* 6. Botões */
 .btn-personalizado {
-  background-color: #6c9c58; /* Verde */
+  background-color: #005f73; /* Verde */
   color: white !important;
   padding: 12px 30px;
   margin: 10px;
@@ -72,20 +72,20 @@ h1 > span, h2 > span, h3 > span {
   font-weight: bold;
   display: inline-block;
   transition: 0.3s;
-  border: 1px solid #6c9c58;
+  border: 1px solid #005f73;
 }
 
 .btn-personalizado:hover {
   background-color: white;
-  color: #6c9c58 !important;
+  color: #005f73 !important;
   cursor: pointer;
 }
 
 /* 7. Botão de Email */
 .btn-email {
   background-color: transparent;
-  color: #6c9c58 !important;
-  border: 2px solid #6c9c58;
+  color: #005f73 !important;
+  border: 2px solid #005f73;
   padding: 10px 25px;
   margin-top: 15px;
   border-radius: 30px;
@@ -96,7 +96,7 @@ h1 > span, h2 > span, h3 > span {
 }
 
 .btn-email:hover {
-  background-color: #6c9c58;
+  background-color: #005f73;
   color: white !important;
 }
 
@@ -151,7 +151,7 @@ d-article a.meu-cartao:hover {
 
 /* --- TOPO DO CARTÃO (Verde) --- */
 .cartao-topo {
-  background-color: #6c9c58;
+  background-color: #005f73;
   height: 80px;
   display: flex;
   align-items: center;
@@ -188,7 +188,7 @@ d-article a.meu-cartao:hover {
 .meu-cartao:hover {
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-  border-color: #6c9c58;
+  border-color: #005f73;
   border-bottom: none !important; /* Garante que a linha não apareça nem no mouse over */
 }
 
@@ -259,7 +259,7 @@ d-article a.meu-cartao:hover {
 /* A Etiqueta (Trending/Categoria) */
 .card-tag {
   background-color: #f0fdf4; /* Fundo verde bem clarinho */
-  color: #6c9c58;            /* Seu verde */
+  color: #005f73;            /* Seu verde */
   border: 1px solid #bbf7d0;
   border-radius: 4px;
   padding: 2px 10px;
@@ -274,7 +274,7 @@ d-article a.meu-cartao:hover {
 
 /* O Botão (Read More) */
 .card-btn {
-  background-color: #6c9c58;
+  background-color: #005f73;
   color: white !important;
   padding: 10px 20px;
   border-radius: 8px;
@@ -309,7 +309,7 @@ a.card-blog, a.card-btn {
   transition: all .2s;
   padding: 12px 25px;       /* Um pouco mais de espaço interno */
   border-radius: 100px;
-  background: #6c9c58;      /* SEU VERDE */
+  background: #005f73;      /* SEU VERDE */
   border: 1px solid transparent;
   
   /* Comportamento de Link/Botão */
@@ -351,8 +351,8 @@ a.card-blog, a.card-btn {
 
 .btn-email {
   background-color: transparent;
-  color: #6c9c58 !important;
-  border: 2px solid #6c9c58;
+  color: #005f73 !important;
+  border: 2px solid #005f73;
   
   /* AQUI QUE AUMENTA O TAMANHO: */
   padding: 15px 40px;      /* Mais espaço interno (Altura x Largura) */
@@ -370,7 +370,7 @@ a.card-blog, a.card-btn {
 }
 
 .btn-email:hover {
-  background-color: #6c9c58;
+  background-color: #005f73;
   color: white !important;
   transform: scale(1.05);  /* Cresce um pouquinho ao passar o mouse */
 }
@@ -381,7 +381,7 @@ a.card-blog, a.card-btn {
 
 .author-footer {
   background-color: #f8f9fa;
-  border-left: 4px solid #6c9c58;
+  border-left: 4px solid #005f73;
   
   /* MUDANÇA AQUI: */
   /* Topo: 25px | Direita: 25px | Baixo: 10px | Esquerda: 25px */
@@ -425,7 +425,7 @@ a.card-blog, a.card-btn {
 
 /* Título "Contents" */
 .d-contents nav h3 {
-  color: #6c9c58 !important; /* Verde do tema */
+  color: #005f73 !important; /* Verde do tema */
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 1.5px;
@@ -445,8 +445,8 @@ a.card-blog, a.card-btn {
 
 /* Efeito ao passar o mouse (Hover) */
 .d-contents nav a:hover {
-  color: #6c9c58 !important;   /* Texto fica verde */
-  border-left: 3px solid #6c9c58; /* A linha fica verde e grossa */
+  color: #005f73 !important;   /* Texto fica verde */
+  border-left: 3px solid #005f73; /* A linha fica verde e grossa */
   background: linear-gradient(to right, #f4fcf4, transparent); /* Fundo degradê suave */
   padding-left: 20px;          /* O texto "anda" um pouco para a direita */
 }
@@ -502,7 +502,7 @@ a.card-blog, a.card-btn {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 4px;
-  background: #6c9c58;
+  background: #005f73;
   opacity: 0.5;
   transition: 0.3s;
 }
@@ -517,7 +517,7 @@ a.card-blog, a.card-btn {
 
 .rec-icon {
   font-size: 1.5rem;
-  color: #6c9c58;
+  color: #005f73;
   margin-bottom: 10px;
 }
 
@@ -545,7 +545,7 @@ a.card-blog, a.card-btn {
   align-items: center;
   gap: 8px;
   background-color: #f4fcf4; /* Fundo verde bem clarinho */
-  color: #6c9c58 !important;
+  color: #005f73 !important;
   border: 1px solid #bbf7d0;
   padding: 12px 30px;
   border-radius: 50px;       /* Formato de pílula */
@@ -555,7 +555,7 @@ a.card-blog, a.card-btn {
 }
 
 .rec-btn-back:hover {
-  background-color: #6c9c58;
+  background-color: #005f73;
   color: white !important;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(108, 156, 88, 0.2);
