@@ -11,6 +11,8 @@ navbar:
       href: estatistica.html
     - text: "Metanálise"
       href: metanalise.html
+    - text: "Blog"
+      href: construcao.html
     - icon: fab fa-github
       href: https://github.com/vitor-saldanha
 output:

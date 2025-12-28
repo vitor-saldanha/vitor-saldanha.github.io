@@ -9,6 +9,25 @@ p, a, li, span, div, button, input, textarea,
   font-family: 'Roboto', sans-serif !important;
 }
 
+/* =========================================
+   REMOVE O ÍCONE DE ÂNCORA NOS TÍTULOS
+   ========================================= */
+.anchor-section {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Garante que não fique espaço vazio no lugar dele */
+h1, h2, h3, h4, h5, h6 {
+  pointer-events: none; /* Remove a interação de clique extra no título se houver */
+}
+
+/* Reabilita o clique no texto do título (caso queira selecionar o texto) */
+h1 > span, h2 > span, h3 > span {
+  pointer-events: auto;
+}
+
 /*  Barra de navegação */
 .distill-site-header {
   background-color: #6c9c58; /* Seu verde */
@@ -354,4 +373,196 @@ a.card-blog, a.card-btn {
   background-color: #6c9c58;
   color: white !important;
   transform: scale(1.05);  /* Cresce um pouquinho ao passar o mouse */
+}
+
+/* =========================================
+   CARTÃO DE AUTOR E DATA (RODAPÉ)
+   ========================================= */
+
+.author-footer {
+  background-color: #f8f9fa;
+  border-left: 4px solid #6c9c58;
+  
+  /* MUDANÇA AQUI: */
+  /* Topo: 25px | Direita: 25px | Baixo: 10px | Esquerda: 25px */
+  padding: 25px 25px 10px 25px; 
+  
+  border-radius: 0 12px 12px 0;
+  margin-top: 60px;
+  font-family: 'Inter', Helvetica, sans-serif;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.author-name {
+  font-weight: 800;
+  color: #333;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.author-bio {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.post-meta-date {
+  font-size: 0.85rem;
+  color: #999;
+  border-top: 1px solid #e9ecef; /* Linha fina separando a data */
+  padding-top: 10px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =========================================
+   1. ESTILO DO MENU LATERAL (TOC)
+   ========================================= */
+
+/* Título "Contents" */
+.d-contents nav h3 {
+  color: #6c9c58 !important; /* Verde do tema */
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+/* Os Links do Menu */
+.d-contents nav a {
+  color: #888 !important;     /* Cinza suave */
+  border-left: 2px solid #eee; /* Linha cinza clara à esquerda */
+  padding: 5px 0 5px 15px;     /* Espaçamento */
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+/* Efeito ao passar o mouse (Hover) */
+.d-contents nav a:hover {
+  color: #6c9c58 !important;   /* Texto fica verde */
+  border-left: 3px solid #6c9c58; /* A linha fica verde e grossa */
+  background: linear-gradient(to right, #f4fcf4, transparent); /* Fundo degradê suave */
+  padding-left: 20px;          /* O texto "anda" um pouco para a direita */
+}
+
+/* =========================================
+   2. SEÇÃO DE RECOMENDAÇÕES (FINAL DA PÁGINA)
+   ========================================= */
+
+.rec-section {
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px dashed #ddd;
+}
+
+.rec-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* GRID APENAS PARA OS 3 CARDS */
+.rec-grid {
+  display: grid;
+  /* Cria colunas automáticas, mas tenta manter 3 se houver espaço */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+  gap: 20px;
+  margin-bottom: 40px; /* Espaço entre os cards e o botão de voltar */
+  justify-content: center;
+}
+
+/* O CARD (Estilo "Adesivo") */
+.rec-card {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border: 1px solid #f0f0f0;
+  border-radius: 16px;
+  padding: 20px;
+  text-decoration: none !important;
+  transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  position: relative;
+  overflow: hidden;
+  height: 100%; /* Garante que todos tenham a mesma altura */
+}
+
+.rec-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: #6c9c58;
+  opacity: 0.5;
+  transition: 0.3s;
+}
+
+.rec-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(108, 156, 88, 0.15);
+  border-color: #bbf7d0;
+}
+
+.rec-card:hover::before { opacity: 1; }
+
+.rec-icon {
+  font-size: 1.5rem;
+  color: #6c9c58;
+  margin-bottom: 10px;
+}
+
+.rec-text {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #444;
+  line-height: 1.3;
+}
+
+.rec-sub {
+  font-size: 0.8rem;
+  color: #999;
+  margin-top: 5px;
+}
+
+/* --- ÁREA DO BOTÃO VOLTAR (Separada do Grid) --- */
+.rec-footer {
+  text-align: center; /* Isso garante que o botão fique no meio */
+  margin-top: 20px;
+}
+
+.rec-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f4fcf4; /* Fundo verde bem clarinho */
+  color: #6c9c58 !important;
+  border: 1px solid #bbf7d0;
+  padding: 12px 30px;
+  border-radius: 50px;       /* Formato de pílula */
+  text-decoration: none !important;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.rec-btn-back:hover {
+  background-color: #6c9c58;
+  color: white !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(108, 156, 88, 0.2);
+}
+
+/* Garante que o SPAN se comporte como bloco de texto */
+.rec-text, .rec-sub {
+  display: block; 
+  width: 100%;
 }

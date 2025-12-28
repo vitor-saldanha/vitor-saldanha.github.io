@@ -27,7 +27,7 @@ body {
 </span>
 <h5 class="card-title">Regressão Linear Simples e Múltipla</h5>
 
-<a href="construcao.html" class="card-btn">
+<a href="tutorial-estatistica-regressao-linear.html" class="card-btn">
 Acessar Aula <i class="fas fa-arrow-right"></i>
 </a>
 </div>
