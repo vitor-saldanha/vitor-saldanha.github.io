@@ -41,7 +41,7 @@ confirmButtonColor: '#6c9c58'
 
 
 <div class="home-container">
-<img src="fotos/index/minha-foto.jpeg" class="profile-pic" alt="Foto de Vitor">
+<img src="fotos/index/minha-foto.jpg" class="profile-pic" alt="Foto de Vitor">
 
 <h1 style="color: #333; margin-bottom: 10px;">Vitor Saldanha</h1>
 
