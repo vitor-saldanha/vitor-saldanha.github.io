@@ -1,8 +1,9 @@
 name: "vitor-saldanha"
-title: "Vitor Saldanha"
 description: "Estudante de Medicina e Pesquisador"
+favicon: "my-favicon.png"
 output_dir: "."
 navbar:
+  title: "Vitor Saldanha"
   search: false
   right:
     - text: "Home"

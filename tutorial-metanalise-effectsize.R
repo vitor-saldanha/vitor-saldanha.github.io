@@ -1,20 +1,20 @@
 ---
-title: "Regressão Linear"
+  title: "Regressão Linear"
 pagetitle: "Regressão Linear"
 description: |
   Uma introdução prática aos modelos lineares no R.
 output:
   distill::distill_article:
-    toc: true
-    toc_depth: 6
-    toc_float: true
-    css: toc-styles.css
-    self_contained: false
+  toc: true
+toc_depth: 6
+toc_float: true
+css: toc-styles.css
+self_contained: false
 ---
-
+  
 ```{css, echo=FALSE}
 .d-title{
-  display: none;
+display: none;
 }
 /* ==========================================================================
 1. ESTILIZAÇÃO DO HERO BANNER (FULL WIDTH BREAKOUT)
@@ -197,78 +197,4 @@ Uma introdução prática aos modelos lineares no R
 </div>
 </div>
 <div class="toc-spacer"></div>
-
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-<div class="rec-section">
-
-<div class="rec-title">
-<i class="fas fa-heart" style="color: #ff8fa3;"></i> 
-Gostou? Veja também:
-</div>
-
-<div class="rec-grid">
-<a href="tutorial-testet.html" class="rec-card">
-<i class="fas fa-chart-bar rec-icon"></i>
-<span class="rec-text">Teste T de Student</span>
-<span class="rec-sub">Comparação de médias</span>
-</a>
-
-<a href="tutorial-quiquadrado.html" class="rec-card">
-<i class="fas fa-table rec-icon"></i>
-<span class="rec-text">Qui-Quadrado</span>
-<span class="rec-sub">Dados categóricos</span>
-</a>
-
-<a href="metanalise.html" class="rec-card">
-<i class="fas fa-layer-group rec-icon"></i>
-<span class="rec-text">Metanálise</span>
-<span class="rec-sub">Introdução</span>
-</a>
-</div>
-
-<div class="rec-footer">
-<a href="estatistica.html" class="rec-btn-back">
-<i class="fas fa-arrow-left"></i> Voltar aos Tutoriais
-</a>
-</div>
-
-</div>
-
-<div class="author-footer">
-
-<span class="author-name">Escrito por Vítor Saldanha</span>
-
-<div class="author-bio">
-Estudante de medicina com foco em pesquisa acadêmica, estatística e medicina baseada em evidências.
-</div>
-
-<div class="post-meta-date">
-<i class="far fa-calendar-alt"></i> 
-Atualizado em: 28 de Dezembro de 2025
-</div>
-
-</div>
+  

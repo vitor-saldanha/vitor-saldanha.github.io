@@ -20,8 +20,9 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -32,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -50,68 +51,67 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  { color: #00769e; background-color: #f1f3f5; }
+  {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span { color: #00769e; } /* Normal */
-code span.al { color: #ad0000; } /* Alert */
-code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #657422; } /* Attribute */
-code span.bn { color: #ad0000; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #00769e; } /* ControlFlow */
-code span.ch { color: #20794d; } /* Char */
-code span.cn { color: #8f5902; } /* Constant */
-code span.co { color: #5e5e5e; } /* Comment */
-code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
-code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
-code span.dt { color: #ad0000; } /* DataType */
-code span.dv { color: #ad0000; } /* DecVal */
-code span.er { color: #ad0000; } /* Error */
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
-code span.fl { color: #ad0000; } /* Float */
-code span.fu { color: #4758ab; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #00769e; } /* Keyword */
-code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #00769e; } /* Other */
-code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #5e5e5e; } /* SpecialChar */
-code span.ss { color: #20794d; } /* SpecialString */
-code span.st { color: #20794d; } /* String */
-code span.va { color: #111111; } /* Variable */
-code span.vs { color: #20794d; } /* VerbatimString */
-code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
   <!--radix_placeholder_meta_tags-->
-  <title>Vitor Saldanha: Regressão Linear</title>
+  <title>Vitor Saldanha: Tutorial em Construção</title>
 
-  <meta property="description" itemprop="description" content="Uma introdução prática aos modelos lineares no R."/>
+  <meta property="description" itemprop="description" content="Tutorial em Construção em R."/>
 
   <link rel="icon" type="image/png" href="my-favicon.png"/>
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Vitor Saldanha: Regressão Linear"/>
+  <meta property="og:title" content="Vitor Saldanha: Tutorial em Construção"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="Uma introdução prática aos modelos lineares no R."/>
+  <meta property="og:description" content="Tutorial em Construção em R."/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Vitor Saldanha"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Vitor Saldanha: Regressão Linear"/>
-  <meta property="twitter:description" content="Uma introdução prática aos modelos lineares no R."/>
+  <meta property="twitter:title" content="Vitor Saldanha: Tutorial em Construção"/>
+  <meta property="twitter:description" content="Tutorial em Construção em R."/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","pagetitle","description","output"]}},"value":[{"type":"character","attributes":{},"value":["Regressão Linear"]},{"type":"character","attributes":{},"value":["Regressão Linear"]},{"type":"character","attributes":{},"value":["Uma introdução prática aos modelos lineares no R.\n"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float","css","self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[6]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["toc-styles.css"]},{"type":"logical","attributes":{},"value":[false]}]}]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","output"]}},"value":[{"type":"character","attributes":{},"value":["Tutorial em Construção"]},{"type":"character","attributes":{},"value":["Tutorial em Construção em R.\n"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["highlight","highlight_downlit"]}},"value":[{"type":"character","attributes":{},"value":["pygments"]},{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2425,7 +2425,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <!--/radix_placeholder_site_in_header-->
 
-  <link rel="stylesheet" href="toc-styles.css" type="text/css"/>
+  <link rel="stylesheet" href="styles.css" type="text/css"/>
 
 </head>
 
@@ -2434,7 +2434,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Regressão Linear","description":"Uma introdução prática aos modelos lineares no R.","authors":[]}
+{"title":"Tutorial em Construção","description":"Tutorial em Construção em R.","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2461,272 +2461,207 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Regressão Linear</h1>
+<h1>Tutorial em Construção</h1>
 
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Uma introdução prática aos modelos lineares no R.</p></p>
+<p><p>Tutorial em Construção em R.</p></p>
 </div>
 
 
 <div class="d-article">
-<div class="d-contents d-contents-float">
-<nav class="l-text toc figcaption" id="TOC">
-<h3>Contents</h3>
-<ul>
-<li><a href="#r-markdown" id="toc-r-markdown">R Markdown</a></li>
-<li><a href="#including-plots" id="toc-including-plots">Including Plots</a></li>
-</ul>
-</nav>
-</div>
 <div class="layout-chunk" data-layout="l-body">
 <style type="text/css">
-.d-title{
-  display: none;
-}
-/* ==========================================================================
-1. ESTILIZAÇÃO DO HERO BANNER (FULL WIDTH BREAKOUT)
-========================================================================== */
-
-.hero-container-full {
-/* Técnica de "Breakout" para escapar do grid do Distill */
-width: 100vw; 
-position: relative;
-left: 50%;
-right: 50%;
-margin-left: -50vw;
-margin-right: -50vw;
-
-/* Reset de margens para evitar espaços brancos indesejados */
-margin-top: -2rem; /* Ajuste fino dependendo do padding do navbar */
-margin-bottom: 3rem;
-
-/* Garantir que não cause rolagem horizontal indesejada */
-box-sizing: border-box;
-overflow: hidden;
-z-index: 5;
-}
-
-.hero-banner {
-/* Dimensões */
-height: 40vh; /* Ocupa 50% da altura da viewport */
-min-height: 300px; /* Altura mínima garantida */
-width: 100%;
-
-/* Imagem de Fundo - Substitua pela URL da sua imagem */
-background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1953&q=80');
-background-size: cover;
-background-position: center center;
-background-repeat: no-repeat;
-
-/* Flexbox para centralização total do conteúdo */
-display: flex;
-justify-content: center;
-align-items: center;
-
-/* Contexto de empilhamento */
-position: relative;
-z-index: 1;
-}
-
-/* Camada de Escurecimento (Overlay) */
-.hero-overlay {
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
-z-index: 2;
-
-/* Manter centralização para os filhos */
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-}
-
-/* Conteúdo Textual */
-.hero-content {
-z-index: 3;
-text-align: center;
-max-width: 800px;
-padding: 0 20px;
-color: #ffffff;
-}
-
-/* Título Principal */
-.hero-title {
-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-font-size: 3.5rem;
-font-weight: 800;
-margin-bottom: 0.5rem;
-text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-line-height: 1.2;
-color: white!important; /* Importante para sobrescrever cores do tema Distill */
-}
-
-/* Subtítulo */
-.hero-subtitle {
-font-size: 1.25rem;
-font-weight: 300;
-margin-bottom: 2rem;
-color: rgba(255, 255, 255, 0.9);
-line-height: 1.5;
-}
-
-/* Botões */
-.hero-btn {
-display: inline-block;
-padding: 12px 28px;
-margin: 5px;
-border-radius: 50px;
-text-decoration: none;
-font-weight: 600;
-transition: all 0.3s ease;
-text-transform: uppercase;
-font-size: 0.9rem;
-letter-spacing: 0.5px;
-}
-
-.hero-btn.primary {
-background-color: #4CAF50; /* Cor verde estilo RStudio/Distill */
-color: white;
-border: 2px solid #4CAF50;
-}
-
-.hero-btn.primary:hover {
-background-color: #45a049;
-transform: translateY(-2px);
-box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.hero-btn.github {
-background-color: transparent;
-color: white;
-border: 2px solid white;
-}
-
-.hero-btn.github:hover {
-background-color: white;
-color: #333;
-}
-
-/* ==========================================================================
-2. CORREÇÃO E ALINHAMENTO DO TABLE OF CONTENTS (TOC)
-========================================================================== */
-
-
-
-/* ==========================================================================
-3. RESPONSIVIDADE (MOBILE)
-========================================================================== */
-
-/* Em telas menores que 1000px (ponto de quebra comum do Distill),
-o layout muda drasticamente. O TOC flutuante deve ser desativado. */
-
-@media screen and (max-width: 1000px) {
-
-/* Ajuste do Banner para Mobile */
-.hero-banner {
-height: 60vh; /* Mais alto em mobile para caber o texto verticalmente */
-}
-
-.hero-title {
-font-size: 2.2rem; /* Título menor */
-}
-
-/* Reposicionar o TOC para o fluxo normal do documento */
-.d-contents > nav.toc, 
-#TOC {
-position: relative!important;
-top: 0!important;
-width: 100%;
-margin-bottom: 40px;
-border-left: none;
-border-top: 1px solid #e0e0e0;
-padding-top: 20px;
-}
-}
+h1, h2, h3, h4 {
+  border-bottom: 1px solid #dddddd; /* Cria a linha cinza fina embaixo */
+  padding-bottom: 12px;              /* Espaço entre o texto e a linha */
+  margin-bottom: 18px;              /* Espaço depois da linha para o próximo parágrafo */
+  margin-top: 28px;                 /* Espaço antes do título */
 </style>
 </div>
-<div class="hero-container-full">
-<div class="hero-banner">
-<div class="hero-overlay">
-<div class="hero-content">
-<h1 class="hero-title">
-Regressão Linear
-</h1>
-<p class="hero-subtitle">
-Uma introdução prática aos modelos lineares no R
-</p>
-</div>
-</div>
-</div>
-</div>
-<div class="toc-spacer">
-
-</div>
-<h2 id="r-markdown">R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+<h1 id="introdução">1. Introdução</h1>
+<h3 id="o-que-é-tamanho-de-efeito">1.1. O que é tamanho de efeito?</h3>
+<p>O tamanho de efeito é uma métrica utilizada para quantificar a relação entre duas entidades, capturando tanto a direção quanto a magnitude desse fenômeno. Diferente de um simples teste de hipótese (que diz se algo funcionou ou não), o tamanho de efeito nos diz o quanto funcionou. Essencialmente, é a moeda comum que permite comparar e combinar resultados de estudos diferentes em uma metanálise.</p>
+<ul>
+<li><strong>Média Amostral</strong>
+<ul>
+<li>Ex: “Qual é a altura média de crianças de 10 anos nesta população específica?”</li>
+</ul></li>
+<li><strong>Proporções</strong>
+<ul>
+<li>Ex: “Qual é a prevalência de burnout em profissionais de enfermagem que trabalham em UTI?”</li>
+</ul></li>
+<li><strong>Coeficiente de Correlação</strong> (ex: r de Pearson)
+<ul>
+<li>Ex: “Existe uma associação entre o nível de escolaridade dos pais e o sucesso acadêmico dos filhos?” → Ou seja, avaliar a relação de duas variáveis contínuas.</li>
+</ul></li>
+<li><strong>Diferença de Médias</strong> (ex: Cohen’s d, Hedges’ g)
+<ul>
+<li>Ex: “O novo medicamento causa uma redução maior na pressão arterial comparado ao grupo controle?” → Ou seja, comparar grupos (Intervenção vs. Controle) usando uma variável.</li>
+</ul></li>
+<li><strong>Razão de Chances ou Risco</strong> (Odds Ratio / Risk Ratio)
+<ul>
+<li>Ex: “Fumantes têm maior probabilidade de desenvolver câncer de pulmão do que não fumantes?” → Ou seja, avaliar desfechos binários (Sim/Não, Doente/Saudável, Vivo/Morto).</li>
+</ul></li>
+</ul>
+<h3 id="entendendo-amostragem">1.2. Entendendo Amostragem</h3>
+<h4 id="a-população-vs.-amostragem">a) População vs. Amostragem</h4>
+<p>Imagine que quiséssemos saber o nível médio exato de Hemoglobina Glicada (HbA1c) de todos os pacientes diabéticos do mundo sob tratamento com um novo fármaco.</p>
+<p>Se tivéssemos recursos infinitos, mediríamos a HbA1c de cada um desses milhões de pacientes. Ao final, teríamos uma distribuição com uma média exata (ex: 7,5%) e um desvio padrão exato. Na estatística, chamamos esses valores de Parâmetros Populacionais. Eles representam a verdade biológica absoluta sobre aquele tratamento.</p>
+<p>o mundo real, nunca temos tempo, dinheiro ou capacidade logística para medir a população inteira. É aqui que entra a ciência prática: nós fazemos uma <strong>Amostragem</strong>.</p>
+<p>Quando um pesquisador publica um Ensaio Clínico Randomizado (RCT) com 100 pacientes para testar esse fármaco, ele está pegando apenas uma pequena fatia da população global. Com base nos dados desses 100 pacientes, ele calcula uma média e um desvio padrão. Mas atenção: estes não são os Parâmetros Populacionais. Eles são apenas Estimativas.</p>
+<p><br></p>
+<blockquote>
+<p><strong>A Realidade Estatística</strong>: É extremamente improvável que a média de HbA1c encontrada nesse estudo seja exatamente igual à média real da população mundial (7,5%). Sempre haverá um erro aleatório.</p>
+</blockquote>
+<p><br></p>
+<h4 id="b-teorema-do-limite-central-e-se-repetíssemos-a-amostragem">b) Teorema do Limite Central: E se repetíssemos a amostragem?</h4>
+<p>O que aconteceria se, em vez de fazer apenas um estudo medindo a HbA1c de 100 pacientes, nós repetíssemos esse mesmo estudo 1.000 vezes? Teríamos 1.000 médias diferentes (7,2%, 7,1%, 7,5%, 7,3%…). Se colocarmos todas essas médias em um gráfico (histograma), observaremos um fenômeno fascinante:</p>
+<ol type="1">
+<li><p>A maioria das médias dos estudos vai se acumular em torno de um valor central.</p></li>
+<li><p>Algumas poucas médias (os estudos “azarados” ou extremos) ficarão mais afastadas.</p></li>
+</ol>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>cars</span><span class='op'>)</span></span></code></pre>
+<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/media_pop-1.png" width="624" /></p>
 </div>
-<pre><code>     speed           dist       
- Min.   : 4.0   Min.   :  2.00  
- 1st Qu.:12.0   1st Qu.: 26.00  
- Median :15.0   Median : 36.00  
- Mean   :15.4   Mean   : 42.98  
- 3rd Qu.:19.0   3rd Qu.: 56.00  
- Max.   :25.0   Max.   :120.00  </code></pre>
-</div>
-<h2 id="including-plots">Including Plots</h2>
-<p>You can also embed plots, for example:</p>
+<p>Essa coleção de médias de vários estudos hipotéticos cria o que chamamos de Distribuição Amostral. Aqui entra uma das regras mais importantes da estatística para a metanálise. Você pode se perguntar: “E se os dados originais dos pacientes não forem normais?” (Ex: tempo de internação hospitalar, que geralmente não segue uma curva normal).</p>
+<p>O <strong>Teorema do Limite Central</strong> afirma que, independentemente da distribuição dos dados originais (seja uniforme, exponencial, etc.), se pegarmos as médias dessas amostragens, a distribuição dessas médias será sempre Normal (uma curva de sino).</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="tutorial-estatistica-regressao-linear_files/figure-html5/pressure-1.png" width="624" /></p>
+<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/teorema-1.png" width="624" /></p>
 </div>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
-<div class="rec-section">
-<div class="rec-title">
-<p><i class="fas fa-heart" style="color: #ff8fa3;"></i>
-Gostou? Veja também:</p>
+<p><br></p>
+<blockquote>
+<p><strong>Por que isso importa na medicina?</strong> Não precisamos nos preocupar tanto se a variável biológica original (como carga viral ) tem uma distribuição estranha. Desde que tenhamos um número amostral suficiente (geralmente acima de 30), podemos assumir que as médias dos estudos que vamos combinar na metanálise se comportam como uma curva Normal.</p>
+</blockquote>
+<p><br></p>
+<h4 id="c-erro-padrão-quão-precisa-é-a-média-das-amostragens">c) Erro Padrão: Quão precisa é a média das amostragens?</h4>
+<p>Agora que sabemos que as médias de vários estudos formam uma curva, precisamos medir a “largura” dessa curva. É aqui que muita gente confunde Desvio Padrão com Erro Padrão. Vamos diferenciar:</p>
+<ul>
+<li><p><strong>Desvio Padrão (SD)</strong>: Mede o quanto UMA amostragem está espalhada. É a variação biológica entre paciente e paciente (ex: o quanto a glicemia varia entre os sujeitos do estudo).</p></li>
+<li><p><strong>Erro Padrão (SE)</strong>: Mede o quanto a média de várias amostragens está espalhada. Ele é, basicamente, o desvio padrão das médias de vários estudos.</p></li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/erro_pad-1.png" width="624" /></p>
 </div>
-<div class="rec-grid">
-<p><a href="tutorial-testet.html" class="rec-card">
-<i class="fas fa-chart-bar rec-icon"></i>
-<span class="rec-text">Teste T de Student</span>
-<span class="rec-sub">Comparação de médias</span>
-</a></p>
-<p><a href="tutorial-quiquadrado.html" class="rec-card">
-<i class="fas fa-table rec-icon"></i>
-<span class="rec-text">Qui-Quadrado</span>
-<span class="rec-sub">Dados categóricos</span>
-</a></p>
-<p><a href="metanalise.html" class="rec-card">
-<i class="fas fa-layer-group rec-icon"></i>
-<span class="rec-text">Metanálise</span>
-<span class="rec-sub">Introdução</span>
-</a></p>
+<p><strong>Conceito Chave</strong>: O Erro Padrão é uma medição do quão representativas são nossas amostragens em relação à população.</p>
+<ul>
+<li><p><strong>Alto Erro Padrão</strong>: As médias dos estudos variam muito entre si. O estudo é pouco preciso.</p></li>
+<li><p><strong>Baixo Erro Padrão</strong>: As médias variam pouco. O estudo é uma boa representação da população.</p></li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/se_tamanho_amostral-1.png" width="624" /></p>
 </div>
-<div class="rec-footer">
-<p><a href="estatistica.html" class="rec-btn-back">
-<i class="fas fa-arrow-left"></i> Voltar aos Tutoriais
-</a></p>
+<p><em>Nota: O Erro Padrão será sempre menor que o Desvio Padrão, pois as médias são naturalmente menos dispersas do que as observações individuais.</em></p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/se_largura-1.png" width="624" /></p>
 </div>
+<p><br></p>
+<h4 id="d-erro-padrão-e-se-eu-tiver-apenas-um-estudo">d) Erro Padrão: E se eu tiver apenas um estudo?</h4>
+<p>Você deve estar pensando: “Mas eu só tenho UM estudo em mãos, eu não repeti a amostragem 1.000 vezes. Como eu descubro o Erro Padrão?”</p>
+<p>A estatística nos dá um atalho. É possível estimar o erro padrão tendo apenas uma amostragem (o estudo que você está lendo). Existe uma “Fórmula Especial” para o Erro Padrão da Média:</p>
+<p><span class="math display">\[SE = \frac{s}{\sqrt{n}}\]</span></p>
+<p>Onde:</p>
+<ul>
+<li><p><span class="math inline">\(\sigma\)</span> = Desvio Padrão (do estudo).</p></li>
+<li><p><span class="math inline">\(n\)</span> = Tamanho da amostra (número de pacientes).</p></li>
+</ul>
+<blockquote>
+<p><strong>Interpretação para Metanálise</strong>: Olhe para a fórmula. O <span class="math inline">\(n\)</span> está no denominador. Isso prova matematicamente que quanto maior o número de pacientes (<span class="math inline">\(n\)</span>), menor será o erro padrão (<span class="math inline">\(SE\)</span>).Na metanálise, estudos com <span class="math inline">\(SE\)</span> menor (mais precisos) ganharão mais peso na decisão final.</p>
+</blockquote>
+<p><br></p>
+<h2 id="métricas-comuns">2. Métricas Comuns</h2>
+<h3 id="média-aritmétrica">2.1. Média Aritmétrica</h3>
+<p>A média aritmética é uma das medidas de tendência central possíveis de serem utilizadas em metanálises. Ela deve ser necessariamente utilizada quando todos os estudos utilizam a mesma métrica e não há um grupo controle. Por exemplo, para investigar a altura média de uma população.</p>
+<p>Ela é calculada da seguinte forma:</p>
+<p><span class="math display">\[ \bar{x} = \frac{\sum_{i=1}^{n} x_i}{n} \]</span></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Definir semente para reprodutibilidade</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Gerar uma amostra aleatória (n=50) com média 20 e desvio padrão 5</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sample <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">50</span>, <span class="at">mean =</span> <span class="dv">20</span>, <span class="at">sd =</span> <span class="dv">5</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular a média</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>media_calculada <span class="ot">&lt;-</span> <span class="fu">mean</span>(sample)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Média:&quot;</span>, media_calculada))</span></code></pre></div>
+<pre><code>[1] &quot;Média: 20.4075447226527&quot;</code></pre>
 </div>
-<div class="author-footer">
-<p><span class="author-name">Escrito por Vítor Saldanha</span></p>
-<div class="author-bio">
-<p>Estudante de medicina com foco em pesquisa acadêmica, estatística e medicina baseada em evidências.</p>
+<p><br></p>
+<p>Nós já falamos sobre como calcular o erro padrão da média. Mas aqui está relembrando para você!</p>
+<p><span class="math display">\[ SE_{\bar{x}} = \frac{s}{\sqrt{n}} \]</span></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular o Erro Padrão (SD dividido pela raiz quadrada de n)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>erro_padrao <span class="ot">&lt;-</span> <span class="fu">sd</span>(sample) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">50</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão:&quot;</span>, erro_padrao))</span></code></pre></div>
+<pre><code>[1] &quot;Erro Padrão: 0.579128416999499&quot;</code></pre>
 </div>
-<div class="post-meta-date">
-<p><i class="far fa-calendar-alt"></i>
-Atualizado em: 28 de Dezembro de 2025</p>
+<p>Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter três informações (colunas) de cada estudo incluído:</p>
+<ul>
+<li><span class="math inline">\(n\)</span>: O tamanho da amostra (número de observações).</li>
+<li><span class="math inline">\(mean\)</span>: A média relatada no estudo.</li>
+<li><span class="math inline">\(sd\)</span>: O desvio padrão da variável.</li>
+</ul>
+<h3 id="proporções">2.2. Proporções</h3>
+<p>A proporção é uma medida de tendência central que especifica quantas unidades de uma amostra pertencem a um subgrupo específico (ex: prevalência de uma doença). Novamente, trata-se de uma medida em que não há comparação de grupos. Ela varia entre 0 e 1 e é calculada dividindo o número de eventos (<span class="math inline">\(k\)</span>) pelo tamanho total da amostra (<span class="math inline">\(n\)</span>).</p>
+<p>A proporção é calculada como:</p>
+<p><span class="math display">\[ p = \frac{k}{n} \]</span></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Definir valores: k (eventos) e n (total)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo da Proporção Bruta </span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> k <span class="sc">/</span> n</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Proporção (p):&quot;</span>, p))</span></code></pre></div>
+<pre><code>[1] &quot;Proporção (p): 0.25&quot;</code></pre>
 </div>
+<p>O erro padrão da proporção é calculado como:</p>
+<span class="math display">\[ SE_p = \sqrt{\frac{p(1-p)}{n}} \]</span>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Erro Padrão da Proporção</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>se_p <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((p <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p)) <span class="sc">/</span> n)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão (Raw):&quot;</span>, se_p))</span></code></pre></div>
+<pre><code>[1] &quot;Erro Padrão (Raw): 0.0306186217847897&quot;</code></pre>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h4 id="a-o-problema-dos-extremos">a) O problema dos extremos</h4>
+<p>Como a proporção é limitada entre 0 e 1, surgem problemas quando o valor de <span class="math inline">\(p\)</span> é muito próximo de 0 ou de 1.</p>
+<ul>
+<li><strong>Erro Padrão Comprimido</strong>: O erro padrão é artificialmente reduzido, levando a uma superestimação da precisão.</li>
+<li><strong>Distribuição Assimétrica</strong>: A distribuição amostral deixa de ser normal (Sino) e torna-se enviesada (<em>skewed</em>) à esquerda ou direita, pois é impossível ter valores fora do intervalo 0-1.</li>
+</ul>
+<p><br></p>
+<div class="layout-chunk" data-layout="l-body">
+<pre><code>&lt;ScaleContinuousPosition&gt;
+ Range:  
+ Limits:    0 -- 0.06</code></pre>
+<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
+</div>
+<h4 id="b-a-solução">b) A solução 😁</h4>
+<p>Para corrigir isso em metanálises, utilizamos a transformação em log natural - chamada de <strong>logit</strong>. Ela remove a restrição de intervalo 0-1, garantindo que a distribuição amostral seja aproximadamente normal e os erros padrão não sejam enviesados.</p>
+<p>A transformação da proporção para logit da proporção:</p>
+<p><span class="math display">\[ p_{\text{logit}} = \log_e \left( \frac{p}{1-p} \right) \]</span></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># O logit transforma o intervalo 0-1 em -inf a +inf</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>p_logit <span class="ot">&lt;-</span> <span class="fu">log</span>(p <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> p))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Proporção Transformada (Logit):&quot;</span>, p_logit))</span></code></pre></div>
+<pre><code>[1] &quot;Proporção Transformada (Logit): -1.09861228866811&quot;</code></pre>
+</div>
+<p>O erro padrão do logit da proporção:</p>
+<p><span class="math display">\[ SE_{p_{\text{logit}}} = \sqrt{\frac{1}{np} + \frac{1}{n(1-p)}} \]</span></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>se_logit <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span> <span class="sc">/</span> (n <span class="sc">*</span> p)) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">/</span> (n <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p))))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão (Logit):&quot;</span>, se_logit))</span></code></pre></div>
+<pre><code>[1] &quot;Erro Padrão (Logit): 0.163299316185545&quot;</code></pre>
+</div>
+<p><br></p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
+</div>
+<p>Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter duas informações (colunas) de cada estudo incluído:</p>
+<ul>
+<li><span class="math inline">\(event\)</span>: O número de observações no subgrupo específico (<span class="math inline">\(k\)</span>).</li>
+<li><span class="math inline">\(n\)</span>: O tamanho total da amostra.</li>
+</ul>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
@@ -2734,6 +2669,15 @@ Atualizado em: 28 de Dezembro de 2025</p>
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->

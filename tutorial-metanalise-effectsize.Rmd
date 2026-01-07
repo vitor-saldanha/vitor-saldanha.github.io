@@ -10,11 +10,13 @@ output:
     toc_float: true
     css: toc-styles.css
     self_contained: false
+    highlight: pygments
+    highlight_downlit: false
 ---
-
+  
 ```{css, echo=FALSE}
 .d-title{
-  display: none;
+display: none;
 }
 /* ==========================================================================
 1. ESTILIZAÇÃO DO HERO BANNER (FULL WIDTH BREAKOUT)
@@ -198,77 +200,121 @@ Uma introdução prática aos modelos lineares no R
 </div>
 <div class="toc-spacer"></div>
 
+<!-- #######################################
+############## CONTEUDO ####################
+############################################  -->
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(patchwork)
+library(gridExtra)
 ```
 
-## R Markdown
+```{r proportion}
+k <- 25
+n <- 125
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+p <- k/n
+p
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+sqrt((p*(1-p))/n)
 
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
+```{r proportion_graph, code_folding = "Mostrar Código"}
+# Transformação em Ln
+# Função para calcular o Logit (Fórmula 3.7)
+calc_logit <- function(p) {
+  # Proteção para p=0 ou p=1 para evitar infinitos
+  if (any(p <= 0 | p >= 1)) warning("Valores de p devem estar entre 0 e 1 (exclusivo).")
+  return(log(p / (1 - p)))
+}
 
-You can also embed plots, for example:
+# Função para calcular o Erro Padrão do Logit (Fórmula 3.8)
+calc_se_logit <- function(p, n) {
+  term1 <- 1 / (n * p)
+  term2 <- 1 / (n * (1 - p))
+  return(sqrt(term1 + term2))
+}
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+# Função auxiliar: Erro Padrão da proporção original (sem log)
+# Fórmula clássica: sqrt(p(1-p)/n)
+calc_se_raw <- function(p, n) {
+  return(sqrt((p * (1 - p)) / n))
+  
+  
+}
+
+library(ggplot2)
+library(gridExtra) # Para organizar os gráficos lado a lado
+
+# --- PARTE A: Comparação dos valores do Erro Padrão ---
+
+n_exemplo <- 100
+p_seq <- seq(0.01, 0.99, length.out = 100) # Sequência de p de 1% a 99%
+
+df_erro <- data.frame(
+  p = p_seq,
+  se_raw = calc_se_raw(p_seq, n_exemplo),
+  se_logit = calc_se_logit(p_seq, n_exemplo)
+)
+
+# Gráfico 1: Erro Padrão da Proporção (Original)
+g1 <- ggplot(df_erro, aes(x=p, y=se_raw)) +
+  geom_line(color="blue", size=1.2) +
+  labs(title = "Erro Padrão da Proporção (Raw)",
+       subtitle = "O erro é menor nas pontas",
+       y = "SE (p)", x = "Proporção (p)") +
+  theme_minimal()
+
+# Gráfico 2: Erro Padrão do Logit (Transformado)
+g2 <- ggplot(df_erro, aes(x=p, y=se_logit)) +
+  geom_line(color="red", size=1.2) +
+  labs(title = "Erro Padrão do Logit",
+       subtitle = "O erro aumenta nas pontas (estica a escala)",
+       y = "SE (logit)", x = "Proporção (p)") +
+  theme_minimal()
+
+# --- PARTE B: Simulação para mostrar a NORMALIDADE ---
+# Vamos simular um caso onde p é baixo (assimétrico) para ver o efeito.
+
+set.seed(123)
+n_sim <- 50       # Tamanho da amostra em cada estudo
+replications <- 10000 # Quantidade de "estudos" simulados
+true_p <- 0.10    # Uma proporção verdadeira baixa (gera assimetria)
+
+# Gerar dados binomiais
+sim_counts <- rbinom(replications, n_sim, true_p)
+sim_p <- sim_counts / n_sim
+
+# Remover casos onde p=0 ou p=1 para o logit não dar erro
+valid_indices <- sim_p > 0 & sim_p < 1
+sim_p <- sim_p[valid_indices]
+
+# Calcular transformações
+df_sim <- data.frame(
+  raw_p = sim_p,
+  logit_p = calc_logit(sim_p)
+)
+
+# Gráfico 3: Histograma da Proporção Original
+g3 <- ggplot(df_sim, aes(x=raw_p)) +
+  geom_histogram(aes(y=..density..), bins=15, fill="blue", alpha=0.6) +
+  geom_density(color="darkblue", size=1) +
+  labs(title = "Distribuição de p (Original)",
+       subtitle = paste0("Assimétrica à direita (p real = ", true_p, ")"),
+       x = "Proporção") +
+  theme_minimal()
+
+# Gráfico 4: Histograma do Logit
+g4 <- ggplot(df_sim, aes(x=logit_p)) +
+  geom_histogram(aes(y=..density..), bins=30, fill="red", alpha=0.6) +
+  geom_density(color="darkred", size=1) +
+  labs(title = "Distribuição Logit (Transformada)",
+       subtitle = "Aproximação da Normal (Gaussiana)",
+       x = "Logit") +
+  theme_minimal()
+
+# Exibir os gráficos
+grid.arrange(g1, g2, g3, g4, ncol=2)
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-<div class="rec-section">
-
-<div class="rec-title">
-<i class="fas fa-heart" style="color: #ff8fa3;"></i> 
-Gostou? Veja também:
-</div>
-
-<div class="rec-grid">
-<a href="tutorial-testet.html" class="rec-card">
-<i class="fas fa-chart-bar rec-icon"></i>
-<span class="rec-text">Teste T de Student</span>
-<span class="rec-sub">Comparação de médias</span>
-</a>
-
-<a href="tutorial-quiquadrado.html" class="rec-card">
-<i class="fas fa-table rec-icon"></i>
-<span class="rec-text">Qui-Quadrado</span>
-<span class="rec-sub">Dados categóricos</span>
-</a>
-
-<a href="metanalise.html" class="rec-card">
-<i class="fas fa-layer-group rec-icon"></i>
-<span class="rec-text">Metanálise</span>
-<span class="rec-sub">Introdução</span>
-</a>
-</div>
-
-<div class="rec-footer">
-<a href="estatistica.html" class="rec-btn-back">
-<i class="fas fa-arrow-left"></i> Voltar aos Tutoriais
-</a>
-</div>
-
-</div>
-
-<div class="author-footer">
-
-<span class="author-name">Escrito por Vítor Saldanha</span>
-
-<div class="author-bio">
-Estudante de medicina com foco em pesquisa acadêmica, estatística e medicina baseada em evidências.
-</div>
-
-<div class="post-meta-date">
-<i class="far fa-calendar-alt"></i> 
-Atualizado em: 28 de Dezembro de 2025
-</div>
-
-</div>

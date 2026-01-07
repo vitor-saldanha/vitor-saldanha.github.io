@@ -1,0 +1,659 @@
+---
+title: "Tutorial em Construção"
+description: |
+  Tutorial em Construção em R.
+output:
+  distill::distill_article:
+    highlight: pygments
+    highlight_downlit: false
+---
+
+```{css, echo=FALSE}
+h1, h2, h3, h4 {
+  border-bottom: 1px solid #dddddd; /* Cria a linha cinza fina embaixo */
+  padding-bottom: 12px;              /* Espaço entre o texto e a linha */
+  margin-bottom: 18px;              /* Espaço depois da linha para o próximo parágrafo */
+  margin-top: 28px;                 /* Espaço antes do título */
+```
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(patchwork)
+library(gridExtra)
+library(cowplot)
+library(grid)
+```
+
+
+
+# 1. Introdução
+
+### 1.1. O que é tamanho de efeito?
+
+O tamanho de efeito é uma métrica utilizada para quantificar a relação entre duas entidades, capturando tanto a direção quanto a magnitude desse fenômeno. Diferente de um simples teste de hipótese (que diz se algo funcionou ou não), o tamanho de efeito nos diz o quanto funcionou. Essencialmente, é a moeda comum que permite comparar e combinar resultados de estudos diferentes em uma metanálise.
+
+- **Média Amostral**
+  - Ex: "Qual é a altura média de crianças de 10 anos nesta população específica?"
+  
+- **Proporções**
+  - Ex: "Qual é a prevalência de burnout em profissionais de enfermagem que trabalham em UTI?"
+
+- **Coeficiente de Correlação** (ex: r de Pearson)
+  - Ex: "Existe uma associação entre o nível de escolaridade dos pais e o sucesso acadêmico dos filhos?" → Ou seja, avaliar a relação de duas variáveis contínuas.
+
+- **Diferença de Médias** (ex: Cohen's d, Hedges' g)
+  - Ex: "O novo medicamento causa uma redução maior na pressão arterial comparado ao grupo controle?" → Ou seja, comparar grupos (Intervenção vs. Controle) usando uma variável.
+
+- **Razão de Chances ou Risco** (Odds Ratio / Risk Ratio)
+  - Ex: "Fumantes têm maior probabilidade de desenvolver câncer de pulmão do que não fumantes?" → Ou seja, avaliar desfechos binários (Sim/Não, Doente/Saudável, Vivo/Morto).
+
+
+### 1.2. Entendendo Amostragem
+
+#### a) População vs. Amostragem
+
+Imagine que quiséssemos saber o nível médio exato de Hemoglobina Glicada (HbA1c) de todos os pacientes diabéticos do mundo sob tratamento com um novo fármaco.
+
+Se tivéssemos recursos infinitos, mediríamos a HbA1c de cada um desses milhões de pacientes. Ao final, teríamos uma distribuição com uma média exata (ex: 7,5%) e um desvio padrão exato. Na estatística, chamamos esses valores de Parâmetros Populacionais. Eles representam a verdade biológica absoluta sobre aquele tratamento.
+
+o mundo real, nunca temos tempo, dinheiro ou capacidade logística para medir a população inteira. É aqui que entra a ciência prática: nós fazemos uma **Amostragem**.
+
+Quando um pesquisador publica um Ensaio Clínico Randomizado (RCT) com 100 pacientes para testar esse fármaco, ele está pegando apenas uma pequena fatia da população global. Com base nos dados desses 100 pacientes, ele calcula uma média e um desvio padrão. Mas atenção: estes não são os Parâmetros Populacionais. Eles são apenas Estimativas.
+
+<br>
+
+> **A Realidade Estatística**: É extremamente improvável que a média de HbA1c encontrada nesse estudo seja exatamente igual à média real da população mundial (7,5%). Sempre haverá um erro aleatório.
+
+<br>
+
+#### b) Teorema do Limite Central: E se repetíssemos a amostragem? 
+
+O que aconteceria se, em vez de fazer apenas um estudo medindo a HbA1c de 100 pacientes, nós repetíssemos esse mesmo estudo 1.000 vezes? Teríamos 1.000 médias diferentes (7,2%, 7,1%, 7,5%, 7,3%...). Se colocarmos todas essas médias em um gráfico (histograma), observaremos um fenômeno fascinante:
+
+1. A maioria das médias dos estudos vai se acumular em torno de um valor central.
+
+2. Algumas poucas médias (os estudos "azarados" ou extremos) ficarão mais afastadas.
+
+```{r media_pop, echo = F}
+set.seed(123)
+
+# --- 1. Definição do Cenário ---
+mu_real <- 7.0      
+sigma_real <- 1.0   
+n_estudos <- 10     
+n_pacientes <- 3    # N baixo para mostrar o caos
+
+# --- 2. Gerar Dados ---
+dados_amostras <- data.frame(
+  estudo_id = rep(1:n_estudos, each = n_pacientes),
+  hba1c = rnorm(n_estudos * n_pacientes, mean = mu_real, sd = sigma_real)
+)
+
+dados_resumo <- dados_amostras %>%
+  group_by(estudo_id) %>%
+  summarise(media_amostral = mean(hba1c))
+
+# --- 3. Gráfico Superior (População) ---
+x_range <- seq(mu_real - 4*sigma_real, mu_real + 4*sigma_real, length.out = 1000)
+dados_populacao <- data.frame(
+  x = x_range,
+  y = dnorm(x_range, mean = mu_real, sd = sigma_real)
+)
+limites_x <- c(4, 10) 
+
+plot_top <- ggplot(dados_populacao, aes(x = x, y = y)) +
+  geom_area(fill = "grey90", color = "black", size = 0.8) +
+  geom_vline(xintercept = mu_real, linetype = "dashed", size = 1, color = "#E74C3C") +
+  labs(title = "População (Parâmetro)", y = "", x = NULL) +
+  scale_x_continuous(limits = limites_x) +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 16))
+
+# --- 4. Gráfico Inferior (Amostras) ---
+plot_bottom <- ggplot() +
+  # A. Linha Vertical da Verdade
+  geom_vline(xintercept = mu_real, linetype = "dashed", size = 0.8, color = "#E74C3C", alpha = 0.5) +
+  
+  # B. Linhas de ERRO (Setas)
+  # Nota: Aqui usamos 'estudo_id' numérico direto no Y
+  geom_segment(data = dados_resumo, 
+               aes(x = media_amostral, xend = mu_real, 
+                   y = estudo_id, yend = estudo_id),
+               color = "red", linetype = "solid", size = 0.8, 
+               arrow = arrow(length = unit(0.2, "cm"))) +
+  
+  # C. Pontos Brutos (Pacientes)
+  geom_point(data = dados_amostras, 
+             aes(x = hba1c, y = estudo_id), 
+             color = "grey60", alpha = 0.8, size = 2) +
+  
+  # D. Média da Amostra (Losango Azul)
+  geom_point(data = dados_resumo, 
+             aes(x = media_amostral, y = estudo_id), 
+             shape = 18, size = 5, color = "blue") +
+  
+  # Estética
+  labs(x = "Nível de HbA1c", y = "Estudo Nº") +
+  
+  # AQUI ESTAVA O PROBLEMA: Agora definimos explicitamente como contínuo, 
+  # mas forçamos 'breaks' inteiros para parecerem linhas.
+  scale_x_continuous(limits = limites_x) +
+  scale_y_continuous(breaks = 1:n_estudos) + 
+  
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major.y = element_line(color = "grey95"),
+    panel.grid.minor = element_blank()
+  )
+
+# --- 5. Combinar ---
+final_plot <- plot_top / plot_bottom + plot_layout(heights = c(1, 4))
+
+print(final_plot)
+```
+
+Essa coleção de médias de vários estudos hipotéticos cria o que chamamos de Distribuição Amostral. Aqui entra uma das regras mais importantes da estatística para a metanálise. Você pode se perguntar: "E se os dados originais dos pacientes não forem normais?" (Ex: tempo de internação hospitalar, que geralmente não segue uma curva normal).
+
+O **Teorema do Limite Central** afirma que, independentemente da distribuição dos dados originais (seja uniforme, exponencial, etc.), se pegarmos as médias dessas amostragens, a distribuição dessas médias será sempre Normal (uma curva de sino).
+
+```{r teorema, echo = F}
+set.seed(42)
+
+# --- 1. CORES E ESTÉTICA ---
+cor_pop_fill   <- "#FAE5D3"  
+cor_pop_line   <- "#D35400"  
+cor_samp_fill  <- "#D1F2EB"  
+cor_samp_line  <- "#117864"  
+cor_seta       <- "#F1C40F"  
+cor_seta_baixo <- "#5DADE2"  
+
+# Tema base limpo
+theme_clean <- theme_classic() +
+  theme(
+    axis.line = element_line(color = "grey85"),
+    axis.ticks = element_line(color = "grey85"),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 12),
+    axis.title = element_text(size = 10),
+    plot.background = element_rect(fill = "white", color = NA),
+    plot.margin = margin(t = 10, r = 10, b = 10, l = 10) 
+  )
+
+# --- 2. DADOS ---
+populacao <- rexp(50000, rate = 0.8) 
+df_pop <- data.frame(x = populacao)
+
+# --- 3. GRÁFICO SUPERIOR ---
+plot_pop <- ggplot(df_pop, aes(x = x)) +
+  geom_histogram(bins = 40, fill = cor_pop_fill, color = cor_pop_line, size = 0.2) +
+  labs(title = "Population", y = "Frequency", x = "") +
+  scale_x_continuous(breaks = 0:8, limits = c(0, 8), expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  theme_clean
+
+# --- 4. FUNÇÃO PARA OS GRÁFICOS DE BAIXO ---
+criar_plot_amostra <- function(n, show_y_label = FALSE) {
+  medias <- replicate(2000, mean(sample(populacao, n)))
+  df_medias <- data.frame(m = medias)
+  
+  p <- ggplot(df_medias, aes(x = m)) +
+    geom_histogram(bins = 30, fill = cor_samp_fill, color = cor_samp_line, size = 0.2) +
+    # Mantendo X e Y com "chão" no zero
+    scale_x_continuous(limits = c(0, 4), breaks = c(0, 1, 2, 3, 4)) + 
+    scale_y_continuous(expand = c(0, 0)) +
+    theme_clean +
+    theme(
+      axis.text.x = element_text(size = 9, color = "grey30"), 
+      # AQUI ESTÁ A MUDANÇA: Garante que o texto do eixo Y sempre apareça
+      axis.text.y = element_text(size = 8, color = "grey40"), 
+      plot.margin = margin(t = 5, r = 8, b = 15, l = 5) # Ajuste leve na margem direita para os números não cortarem
+    )
+  
+  # Condicional apenas para o TÍTULO do eixo ("Frequency"), não para os números
+  if(show_y_label) {
+    p <- p + labs(y = "Frequency", x = "")
+  } else {
+    p <- p + labs(y = "", x = "") 
+  }
+  return(p)
+}
+
+# Gerar os gráficos (Todos agora terão números no eixo Y)
+p5   <- criar_plot_amostra(5, show_y_label = TRUE)  # Este tem o título "Frequency"
+p30  <- criar_plot_amostra(30, show_y_label = FALSE) # Este tem apenas números
+p100 <- criar_plot_amostra(100, show_y_label = FALSE) # Este tem apenas números
+
+# --- 5. MONTAGEM DO LAYOUT ---
+# Usamos align = "h" e axis = "tb" para garantir que os eixos fiquem alinhados 
+# mesmo com larguras de números diferentes (ex: 500 vs 1000)
+row_bottom <- plot_grid(
+  p5, p30, p100, 
+  nrow = 1, 
+  align = "h", axis = "tb",
+  labels = c("n=5", "n=30", "n=100"), 
+  label_size = 11, 
+  label_y = 0.02,   
+  label_x = 0.5,    
+  hjust = 0.5,
+  vjust = 0         
+)
+
+grid_plots <- plot_grid(
+  plot_pop, 
+  row_bottom, 
+  ncol = 1, 
+  rel_heights = c(1, 1.3), 
+  scale = 0.95             
+)
+
+# --- 6. SETAS E DETALHES FINAIS ---
+final_plot <- ggdraw(grid_plots) +
+  # Setas Superiores
+  draw_line(x = c(0.40, 0.20), y = c(0.53, 0.42), color = cor_seta, size = 1.2, arrow = arrow(length = unit(0.25, "cm"), type = "closed")) +
+  draw_line(x = c(0.5, 0.5), y = c(0.53, 0.42), color = cor_seta, size = 1.2, arrow = arrow(length = unit(0.25, "cm"), type = "closed")) +
+  draw_line(x = c(0.60, 0.80), y = c(0.53, 0.42), color = cor_seta, size = 1.2, arrow = arrow(length = unit(0.25, "cm"), type = "closed")) +
+  
+  # Seta Inferior
+  draw_line(x = c(0.05, 0.95), y = c(0.01, 0.01), color = cor_seta_baixo, size = 2, arrow = arrow(length = unit(0.4, "cm"), type = "closed"))
+
+print(final_plot)
+```
+
+<br>
+
+> **Por que isso importa na medicina?** Não precisamos nos preocupar tanto se a variável biológica original (como carga viral ) tem uma distribuição estranha. Desde que tenhamos um número amostral suficiente (geralmente acima de 30), podemos assumir que as médias dos estudos que vamos combinar na metanálise se comportam como uma curva Normal.
+
+<br>
+
+#### c) Erro Padrão: Quão precisa é a média das amostragens?
+
+Agora que sabemos que as médias de vários estudos formam uma curva, precisamos medir a "largura" dessa curva. É aqui que muita gente confunde Desvio Padrão com Erro Padrão. Vamos diferenciar:
+
+- **Desvio Padrão (SD)**: Mede o quanto UMA amostragem está espalhada. É a variação biológica entre paciente e paciente (ex: o quanto a glicemia varia entre os sujeitos do estudo).
+
+- **Erro Padrão (SE)**: Mede o quanto a média de várias amostragens está espalhada. Ele é, basicamente, o desvio padrão das médias de vários estudos.
+
+```{r erro_pad, echo=F}
+set.seed(42)
+
+# --- 1. Parâmetros do Diabetes (HbA1c) ---
+mu_hba1c <- 7.0      # Média Real
+sigma_hba1c <- 1.0   # Desvio Padrão Real
+n_amostra <- 30      # Tamanho de cada estudo
+
+# Cálculo do Erro Padrão Teórico (Para desenhar a linha exata)
+se_teorico <- sigma_hba1c / sqrt(n_amostra) # ~0.18
+
+# --- 2. Simulação ---
+# 5000 estudos simulados
+medias_simuladas <- replicate(5000, mean(rnorm(n_amostra, mean = mu_hba1c, sd = sigma_hba1c)))
+df_sim <- data.frame(m = medias_simuladas)
+
+# --- 3. Cálculos de Posição para o Gráfico ---
+# Descobrir a altura máxima da curva normal para posicionar a linha ACIMA dela
+altura_max <- dnorm(mu_hba1c, mean = mu_hba1c, sd = se_teorico)
+posicao_linha_y <- altura_max * 1.05  # 5% acima do pico
+posicao_texto_y <- altura_max * 1.12  # Um pouco acima da linha
+
+# --- 4. O Gráfico ---
+ggplot(df_sim, aes(x = m)) +
+  # A. Histograma (Dados Simulados)
+  geom_histogram(aes(y = ..density..), bins = 50, 
+                 fill = "#D1F2EB", color = "white", alpha = 0.8) +
+  
+  # B. Curva Normal Teórica (O "Sino")
+  stat_function(fun = dnorm, args = list(mean = mu_hba1c, sd = se_teorico),
+                color = "#117864", size = 1.2) +
+  
+  # C. Linha Central (Média) - Tracejada até o topo
+  geom_segment(aes(x = mu_hba1c, xend = mu_hba1c, y = 0, yend = posicao_linha_y), 
+               linetype = "dashed", color = "grey60", size = 0.8) +
+  
+  # D. A Linha Horizontal do Erro Padrão (Simétrica: Esquerda e Direita)
+  # Vai de (Média - SE) até (Média + SE)
+  geom_segment(aes(x = mu_hba1c - se_teorico, xend = mu_hba1c + se_teorico, 
+                   y = posicao_linha_y, yend = posicao_linha_y),
+               color = "#E74C3C", size = 1.2) +
+  
+  # E. Pontas da linha (para parecer uma régua de medida |---|)
+  geom_segment(aes(x = mu_hba1c - se_teorico, xend = mu_hba1c - se_teorico,
+                   y = posicao_linha_y - 0.05, yend = posicao_linha_y + 0.05),
+               color = "#E74C3C", size = 1.2) +
+  geom_segment(aes(x = mu_hba1c + se_teorico, xend = mu_hba1c + se_teorico,
+                   y = posicao_linha_y - 0.05, yend = posicao_linha_y + 0.05),
+               color = "#E74C3C", size = 1.2) +
+
+  # F. Rótulo
+  annotate("text", x = mu_hba1c, y = posicao_texto_y, 
+           label = "Erro Padrão (SE)", color = "#E74C3C", fontface = "bold", size = 5) +
+  
+  # Estética Limpa
+  labs(x = "Média de HbA1c (%)", y = "Densidade") +
+  scale_x_continuous(breaks = seq(6, 8, 0.2)) + # Escala focada nos valores de HbA1c
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) + # Mais espaço no topo para o texto
+  theme_classic(base_size = 14) +
+  theme(
+    axis.line.y = element_blank(), # Remove eixo Y para ficar mais limpo
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.y = element_blank()
+  )
+```
+
+**Conceito Chave**: O Erro Padrão é uma medição do quão representativas são nossas amostragens em relação à população.
+
+- **Alto Erro Padrão**: As médias dos estudos variam muito entre si. O estudo é pouco preciso.
+
+- **Baixo Erro Padrão**: As médias variam pouco. O estudo é uma boa representação da população.
+
+```{r se_tamanho_amostral, echo=F}
+# Simular o comportamento do Erro Padrão
+n_vals <- seq(5, 200, by = 5)
+sd_fixo <- 15 # Vamos supor um desvio padrão fixo de 15 unidades (ex: pressão arterial)
+
+df_erro <- data.frame(
+  n = n_vals,
+  se = sd_fixo / sqrt(n_vals) # A fórmula mágica
+)
+
+g3 <- ggplot(df_erro, aes(x = n, y = se)) +
+  # Linha da tendência
+  geom_line(color = "#E74C3C", size = 1.5) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 10)) +
+  # Pontos para marcar os steps
+  geom_point(size = 3, color = "#C0392B") +
+  # Área sombreada para dar ideia de redução da incerteza
+  geom_area(fill = "#E74C3C", alpha = 0.2) +
+  labs(
+    x = "Tamanho da Amostra (n)",
+    y = "Erro Padrão (SE)"
+  ) +
+  theme_classic(base_size = 14) +
+  scale_x_continuous(expand = c(0, 0), limits = c(5, NA), breaks = seq(0, 200, 50))
+
+print(g3)
+```
+
+*Nota: O Erro Padrão será sempre menor que o Desvio Padrão, pois as médias são naturalmente menos dispersas do que as observações individuais.*
+
+```{r se_largura, echo=F}
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+
+set.seed(123)
+
+# 1. Simular uma População "Real" (ex: 100.000 pacientes)
+# Usaremos uma distribuição Gamma para dar uma leve assimetria (comum em biologia)
+# Média aprox 7.0, mas com cauda longa
+populacao <- rgamma(100000, shape = 15, scale = 0.5) 
+media_real <- mean(populacao)
+sd_pop <- sd(populacao)
+
+# 2. Simular a "Amostragem Repetida" (O exercício mental da Metanálise)
+# Vamos pegar 1.000 amostras de 30 pacientes cada e tirar a média
+n_amostra <- 30
+n_simulacoes <- 1000
+
+medias_amostrais <- replicate(n_simulacoes, {
+  amostra <- sample(populacao, n_amostra)
+  mean(amostra)
+})
+
+# Preparar dados para plotar
+df_pop <- data.frame(valor = populacao, tipo = "População (Pacientes Individuais)")
+df_medias <- data.frame(valor = medias_amostrais, tipo = "Distribuição das Médias (Estudos)")
+
+# GRÁFICO 1: A Comparação
+g1 <- ggplot() +
+  # Curva da População (Fundo, cinza)
+  geom_density(data = df_pop, aes(x = valor, fill = "População"), 
+               alpha = 0.4, color = "grey40") +
+  # Curva das Médias (Frente, destaque)
+  geom_density(data = df_medias, aes(x = valor, fill = "Médias dos Estudos"), 
+               alpha = 0.7, color = "darkblue") +
+  # Linha da Média Real
+  geom_vline(xintercept = media_real, linetype = "dashed", size = 1) +
+  # Decoração
+  scale_fill_manual(values = c("População" = "#999999", "Médias dos Estudos" = "#2E86C1"), name = "") +
+  labs(
+    x = "Nível de HbA1c (%)",
+    y = "Densidade"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "bottom") +
+  annotate("text", x = 10, y = 0.2, label = "Desvio Padrão (SD)\né a largura desta curva", color = "grey30", hjust=0) +
+  annotate("text", x = 8.5, y = 1.5, label = "Erro Padrão (SE)\né a largura desta curva", color = "#2E86C1", hjust=0, fontface="bold")
+
+print(g1)
+```
+
+
+<br>
+
+#### d) Erro Padrão: E se eu tiver apenas um estudo?
+
+Você deve estar pensando: "Mas eu só tenho UM estudo em mãos, eu não repeti a amostragem 1.000 vezes. Como eu descubro o Erro Padrão?"
+
+A estatística nos dá um atalho. É possível estimar o erro padrão tendo apenas uma amostragem (o estudo que você está lendo). Existe uma "Fórmula Especial" para o Erro Padrão da Média:
+
+$$SE = \frac{s}{\sqrt{n}}$$
+
+Onde:
+
+- $\sigma$ = Desvio Padrão (do estudo).
+
+- $n$ = Tamanho da amostra (número de pacientes).
+
+> **Interpretação para Metanálise**: Olhe para a fórmula. O $n$ está no denominador. Isso prova matematicamente que quanto maior o número de pacientes ($n$), menor será o erro padrão ($SE$).Na metanálise, estudos com $SE$ menor (mais precisos) ganharão mais peso na decisão final.
+
+<br>
+
+
+## 2. Métricas Comuns
+
+### 2.1. Média Aritmétrica
+
+A média aritmética é uma das medidas de tendência central possíveis de serem utilizadas em metanálises. Ela deve ser necessariamente utilizada quando todos os estudos utilizam a mesma métrica e não há um grupo controle. Por exemplo, para investigar a altura média de uma população. 
+
+Ela é calculada da seguinte forma:
+
+$$ \bar{x} = \frac{\sum_{i=1}^{n} x_i}{n} $$
+
+```{r media}
+# Definir semente para reprodutibilidade
+set.seed(100)
+
+# Gerar uma amostra aleatória (n=50) com média 20 e desvio padrão 5
+sample <- rnorm(n = 50, mean = 20, sd = 5)
+
+# Calcular a média
+media_calculada <- mean(sample)
+print(paste("Média:", media_calculada))
+```
+
+<br>
+
+Nós já falamos sobre como calcular o erro padrão da média. Mas aqui está relembrando para você!
+
+$$ SE_{\bar{x}} = \frac{s}{\sqrt{n}} $$
+
+```{r se_media}
+# Calcular o Erro Padrão (SD dividido pela raiz quadrada de n)
+erro_padrao <- sd(sample) / sqrt(50)
+print(paste("Erro Padrão:", erro_padrao))
+```
+
+Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter três informações (colunas) de cada estudo incluído:
+
+- $n$: O tamanho da amostra (número de observações).
+- $mean$: A média relatada no estudo.
+- $sd$: O desvio padrão da variável.
+
+### 2.2. Proporções
+
+A proporção é uma medida de tendência central que especifica quantas unidades de uma amostra pertencem a um subgrupo específico (ex: prevalência de uma doença). Novamente, trata-se de uma medida em que não há comparação de grupos. Ela varia entre 0 e 1 e é calculada dividindo o número de eventos ($k$) pelo tamanho total da amostra ($n$).
+
+A proporção é calculada como:
+
+$$ p = \frac{k}{n} $$
+
+```{r prop}
+# Definir valores: k (eventos) e n (total)
+k <- 50
+n <- 200
+
+# Cálculo da Proporção Bruta 
+p <- k / n
+print(paste("Proporção (p):", p))
+
+```
+
+
+O erro padrão da proporção é calculado como: 
+
+$$ SE_p = \sqrt{\frac{p(1-p)}{n}} $$
+```{r prop_se}
+# Erro Padrão da Proporção
+se_p <- sqrt((p * (1 - p)) / n)
+print(paste("Erro Padrão (Raw):", se_p))
+```
+
+
+#### a) O problema dos extremos
+
+Como a proporção é limitada entre 0 e 1, surgem problemas quando o valor de $p$ é muito próximo de 0 ou de 1.
+
+- **Erro Padrão Comprimido**: O erro padrão é artificialmente reduzido, levando a uma superestimação da precisão.
+- **Distribuição Assimétrica**: A distribuição amostral deixa de ser normal (Sino) e torna-se enviesada (*skewed*) à esquerda ou direita, pois é impossível ter valores fora do intervalo 0-1.
+
+<br>
+
+```{r, echo=F, message=FALSE}
+# --- CONFIGURAÇÃO ESTÉTICA ---
+cor_raw   <- "#E67E22" # Laranja (Proporção Bruta)
+cor_logit <- "#2980B9" # Azul (Logit)
+theme_set(theme_minimal(base_size = 12))
+
+# ==============================================================================
+# PARTE 1: SIMULAÇÃO DA DISTRIBUIÇÃO (SKEWNESS / ASSIMETRIA)
+# ==============================================================================
+
+set.seed(42)
+n_sim <- 10000    # Número de estudos simulados
+n_sample <- 300   # Tamanho da amostra pequeno/médio
+p_real <- 0.95   # Proporção EXTREMA (perto de 1.0)
+
+# 1. Gerar os dados
+# rbinom gera o número de sucessos (k)
+sim_k <- rbinom(n_sim, size = n_sample, prob = p_real)
+sim_p <- sim_k / n_sample
+
+# 2. Filtrar 0 e 1 puros para o Logit não dar Infinito (limitação matemática)
+validos <- sim_p > 0 & sim_p < 1
+sim_p_clean <- sim_p[validos]
+
+# 3. Transformar para Logit
+sim_logit <- log(sim_p_clean / (1 - sim_p_clean))
+
+# DF para plotagem
+df_dist <- data.frame(
+  type = c(rep("Proporção Bruta (p)", length(sim_p_clean)), 
+           rep("Transformação Logit", length(sim_logit))),
+  value = c(sim_p_clean, sim_logit)
+)
+
+# --- Gráfico 1.A: A Assimetria (Skewed) ---
+p1a <- ggplot(data.frame(x = sim_p_clean), aes(x = x)) +
+  geom_histogram(aes(y = ..density..), bins = 100, fill = cor_raw, color = "white", alpha=0.8) +
+  geom_density(color = "#D35400", size = 1) +
+  geom_vline(xintercept = 1.0, linetype = "dashed", color = "black") +
+  scale_x_continuous(limits = c(0.5,1)) + 
+  labs(title = "1. Proporção Bruta (p)", 
+       subtitle = paste0("População p=", p_real, ". Note o 'paredão' no 1.0.\nA cauda se estica para a esquerda (Enviesada)."),
+       x = "Proporção Estimada", y = "Densidade")
+
+# --- Gráfico 1.B: A Normalização (Logit) ---
+p1b <- ggplot(data.frame(x = sim_logit), aes(x = x)) +
+  geom_histogram(aes(y = ..density..), bins = 20, fill = cor_logit, color = "white", alpha=0.8) +
+  geom_density(color = "#1F618D", size = 1) +
+  labs(title = "2. Após Transformação Logit", 
+       subtitle = "O espaço é 'esticado'.\nA distribuição recupera a forma de sino (Normal).",
+       x = "Logit Value", y = "Densidade")
+
+# ==============================================================================
+# PARTE 2: A COMPRESSÃO DO ERRO PADRÃO (PRECISÃO ARTIFICIAL)
+# ==============================================================================
+
+# Vamos criar uma sequência de p de 0.01 até 0.99
+seq_p <- seq(0.01, 0.99, length.out = 200)
+n_fixo <- 100
+
+# Fórmulas de Erro Padrão
+se_raw <- sqrt((seq_p * (1 - seq_p)) / n_fixo)
+se_logit <- sqrt(1/(n_fixo * seq_p) + 1/(n_fixo * (1 - seq_p)))
+
+df_se <- data.frame(
+  p = seq_p,
+  se_raw = se_raw,
+  se_logit = se_logit
+)
+
+# --- Gráfico 2.A: O Problema (Compressão) ---
+p2a <- ggplot(df_se, aes(x = p, y = se_raw)) +
+  geom_line(color = cor_raw, size = 1.5) +
+  geom_area(fill = cor_raw, alpha = 0.2) +
+  annotate("text", x = 0.5, y = 0.052, label = "Máximo Erro\n(p=0.5)", color = "grey30") +
+  annotate("text", x = 0.9, y = 0.02, label = "Erro 'Falso'\nBaixo", fontface="bold", color = "#D35400") +
+  labs(title = "3. Erro Padrão da Proporção (SE p)", 
+       subtitle = "O erro diminui nas pontas. Isso finge que temos\nmuita certeza só porque p é extremo.",
+       x = "Valor de p", y = "Tamanho do Erro (SE)") +
+  scale_y_continuous(limits = c(0, 0.06))
+  scale_x_continuous(limits = c(0, 0.06))
+
+# --- Gráfico 2.B: A Solução (Expansão) ---
+p2b <- ggplot(df_se, aes(x = p, y = se_logit)) +
+  geom_line(color = cor_logit, size = 1.5) +
+  geom_area(fill = cor_logit, alpha = 0.2) +
+  annotate("text", x = 0.9, y = 0.5, label = "Erro Real\nAlto", fontface="bold", color = "#1F618D") +
+  labs(title = "4. Erro Padrão do Logit (SE logit)", 
+       subtitle = "O erro explode nas pontas.\nReflete a real dificuldade de estimar extremos.",
+       x = "Valor de p", y = "Tamanho do Erro (SE)")
+
+p1a + p2a
+```
+
+
+#### b) A solução 😁
+
+Para corrigir isso em metanálises, utilizamos a transformação em log natural - chamada de **logit**. Ela remove a restrição de intervalo 0-1, garantindo que a distribuição amostral seja aproximadamente normal e os erros padrão não sejam enviesados.
+
+A transformação da proporção para logit da proporção:
+
+$$ p_{\text{logit}} = \log_e \left( \frac{p}{1-p} \right) $$
+
+
+```{r}
+# O logit transforma o intervalo 0-1 em -inf a +inf
+p_logit <- log(p / (1 - p))
+print(paste("Proporção Transformada (Logit):", p_logit))
+```
+
+O erro padrão do logit da proporção:
+
+$$ SE_{p_{\text{logit}}} = \sqrt{\frac{1}{np} + \frac{1}{n(1-p)}} $$
+
+```{r logit_prop}
+se_logit <- sqrt((1 / (n * p)) + (1 / (n * (1 - p))))
+print(paste("Erro Padrão (Logit):", se_logit))
+```
+
+<br>
+
+```{r, echo=F}
+p1b + p2b
+```
+
+Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter duas informações (colunas) de cada estudo incluído:
+
+- $event$: O número de observações no subgrupo específico ($k$).
+- $n$: O tamanho total da amostra.

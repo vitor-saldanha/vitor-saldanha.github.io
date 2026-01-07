@@ -21,14 +21,7 @@ z-index: 2;                 /* Optional */
 
 /* Hide the TOC when resized to mobile or tablet:  480px, 768px, 900px */
 @media screen and (max-width: 1000px) {
-#TOC {
-position: relative;
-left: 0;
-top: 0;
-max-width: none;
-max-height: none;
-overflow-y: auto;
-border: none;
-background: none; 
-}
+  #TOC {
+    display: none; /* <--- É SÓ ISSO QUE VOCÊ PRECISA */
+  }
 }
