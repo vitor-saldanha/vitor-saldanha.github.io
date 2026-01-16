@@ -1842,6 +1842,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
   <!--/radix_placeholder_distill-->
   <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+  <script src="site_libs/clipboard-2.0.6/clipboard.min.js"></script>
+  <link href="site_libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.css" rel="stylesheet" />
+  <script src="site_libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.js"></script>
+  <script>window.xaringanExtraClipboard(null, {"button":"Copiar","success":"Copiado!","error":"Pressione Ctrl+C para copiar"})</script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2472,6 +2476,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="d-article">
 <div class="layout-chunk" data-layout="l-body">
 <style type="text/css">
+/* Estilo para a caixa de código */
+d-article pre {
+background-color: #f6f8fa !important;  /* O !important força a mudança da cor */
+border: 1px solid #e1e4e8 !important;  /* Força a borda */
+border-radius: 6px;        /* Cantos arredondados */
+padding: 12px;             /* Espaço interno para o texto não colar na borda */
+box-shadow: none;          /* Remove sombras padrões se houver */
+}
+</style>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<style type="text/css">
 h1, h2, h3, h4 {
   border-bottom: 1px solid #dddddd; /* Cria a linha cinza fina embaixo */
   padding-bottom: 12px;              /* Espaço entre o texto e a linha */
@@ -2522,12 +2538,22 @@ h1, h2, h3, h4 {
 <li><p>Algumas poucas médias (os estudos “azarados” ou extremos) ficarão mais afastadas.</p></li>
 </ol>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/media_pop-1.png" width="624" /></p>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-3"></span>
+<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-3-1.png" alt="Aqui está representada uma distribuição verdadeira do nível de HbA1C em % de uma população. Foram feitos 10 estudos com 3 participantes que tentaram estimar a média da hemoglobina glicada da população. Perceba que esses estudos não conseguem estimar perfeitamente a média populacional. Existe uma diferença que é chamada de erro amostral." width="624" />
+<p class="caption">
+Figure 1: Aqui está representada uma distribuição verdadeira do nível de HbA1C em % de uma população. Foram feitos 10 estudos com 3 participantes que tentaram estimar a média da hemoglobina glicada da população. Perceba que esses estudos não conseguem estimar perfeitamente a média populacional. Existe uma diferença que é chamada de erro amostral.
+</p>
+</div>
 </div>
 <p>Essa coleção de médias de vários estudos hipotéticos cria o que chamamos de Distribuição Amostral. Aqui entra uma das regras mais importantes da estatística para a metanálise. Você pode se perguntar: “E se os dados originais dos pacientes não forem normais?” (Ex: tempo de internação hospitalar, que geralmente não segue uma curva normal).</p>
 <p>O <strong>Teorema do Limite Central</strong> afirma que, independentemente da distribuição dos dados originais (seja uniforme, exponencial, etc.), se pegarmos as médias dessas amostragens, a distribuição dessas médias será sempre Normal (uma curva de sino).</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/teorema-1.png" width="624" /></p>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-4"></span>
+<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-4-1.png" alt="Foram retiradas amostras pequenas (n = 5), médias (n = 30) e grandes (n = 100) de uma distribuição populacional exponencial e calculadas a média de cada amostra. Perceba que a distribuição amostral das médias (mesmo que a distribuição amostral original não seja normal) vai aproximando-se de uma distribuição normal. Perceba também que quanto maior a amostra menor o desvio padrão dessa distribuição amostral (vamos chamar depois isso de menor erro amostral :D)" width="624" />
+<p class="caption">
+Figure 2: Foram retiradas amostras pequenas (n = 5), médias (n = 30) e grandes (n = 100) de uma distribuição populacional exponencial e calculadas a média de cada amostra. Perceba que a distribuição amostral das médias (mesmo que a distribuição amostral original não seja normal) vai aproximando-se de uma distribuição normal. Perceba também que quanto maior a amostra menor o desvio padrão dessa distribuição amostral (vamos chamar depois isso de menor erro amostral :D)
+</p>
+</div>
 </div>
 <p><br></p>
 <blockquote>
@@ -2541,19 +2567,35 @@ h1, h2, h3, h4 {
 <li><p><strong>Erro Padrão (SE)</strong>: Mede o quanto a média de várias amostragens está espalhada. Ele é, basicamente, o desvio padrão das médias de vários estudos.</p></li>
 </ul>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/erro_pad-1.png" width="624" /></p>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-5"></span>
+<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-5-1.png" alt="Simulação feita com 5.000 estudos com tamanho amostral pequeno (n = 30) com média verdadeira de HbA1c de 7% e desvio padrão de 1%. Perceba que esses 5.000 estudos tem uma distribuição amostral de média seguindo uma distribuição normal. O desvio padrão dessa distribuição amostral chama-se erro padrçao." width="624" />
+<p class="caption">
+Figure 3: Simulação feita com 5.000 estudos com tamanho amostral pequeno (n = 30) com média verdadeira de HbA1c de 7% e desvio padrão de 1%. Perceba que esses 5.000 estudos tem uma distribuição amostral de média seguindo uma distribuição normal. O desvio padrão dessa distribuição amostral chama-se erro padrçao.
+</p>
 </div>
-<p><strong>Conceito Chave</strong>: O Erro Padrão é uma medição do quão representativas são nossas amostragens em relação à população.</p>
+</div>
+<p><br></p>
+<p><strong>Como interpretar?</strong>: O Erro Padrão é uma medição do quão representativas são nossas amostragens em relação à população.</p>
 <ul>
 <li><p><strong>Alto Erro Padrão</strong>: As médias dos estudos variam muito entre si. O estudo é pouco preciso.</p></li>
 <li><p><strong>Baixo Erro Padrão</strong>: As médias variam pouco. O estudo é uma boa representação da população.</p></li>
 </ul>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/se_tamanho_amostral-1.png" width="624" /></p>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-6"></span>
+<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-6-1.png" alt="Foi feita uma simulação com desvio padrão fixo de 15 e valores crescentes de tamanho amostral (5, 10, 15...). Perceba que o erro padrão decresce aproximadamente exponencialmente com o tamanho amostral. " width="624" />
+<p class="caption">
+Figure 4: Foi feita uma simulação com desvio padrão fixo de 15 e valores crescentes de tamanho amostral (5, 10, 15…). Perceba que o erro padrão decresce aproximadamente exponencialmente com o tamanho amostral.
+</p>
+</div>
 </div>
 <p><em>Nota: O Erro Padrão será sempre menor que o Desvio Padrão, pois as médias são naturalmente menos dispersas do que as observações individuais.</em></p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/se_largura-1.png" width="624" /></p>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7"></span>
+<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-7-1.png" alt="Em cinza temos a distribuição populacional do nível de HbA1c (%), perceba que ela é mais espalhada. Ao fazer estudos para retirar a média desse valor, temos uma quantidade menos espalhada de médias. O desvio padrão dessa distribuição amostral é chamado de erro padrão." width="624" />
+<p class="caption">
+Figure 5: Em cinza temos a distribuição populacional do nível de HbA1c (%), perceba que ela é mais espalhada. Ao fazer estudos para retirar a média desse valor, temos uma quantidade menos espalhada de médias. O desvio padrão dessa distribuição amostral é chamado de erro padrão.
+</p>
+</div>
 </div>
 <p><br></p>
 <h4 id="d-erro-padrão-e-se-eu-tiver-apenas-um-estudo">d) Erro Padrão: E se eu tiver apenas um estudo?</h4>
@@ -2595,6 +2637,7 @@ h1, h2, h3, h4 {
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão:&quot;</span>, erro_padrao))</span></code></pre></div>
 <pre><code>[1] &quot;Erro Padrão: 0.579128416999499&quot;</code></pre>
 </div>
+<p><br></p>
 <p>Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter três informações (colunas) de cada estudo incluído:</p>
 <ul>
 <li><span class="math inline">\(n\)</span>: O tamanho da amostra (número de observações).</li>
@@ -2602,6 +2645,7 @@ h1, h2, h3, h4 {
 <li><span class="math inline">\(sd\)</span>: O desvio padrão da variável.</li>
 </ul>
 <h3 id="proporções">2.2. Proporções</h3>
+<h4 id="a-o-que-é">a) O que é?</h4>
 <p>A proporção é uma medida de tendência central que especifica quantas unidades de uma amostra pertencem a um subgrupo específico (ex: prevalência de uma doença). Novamente, trata-se de uma medida em que não há comparação de grupos. Ela varia entre 0 e 1 e é calculada dividindo o número de eventos (<span class="math inline">\(k\)</span>) pelo tamanho total da amostra (<span class="math inline">\(n\)</span>).</p>
 <p>A proporção é calculada como:</p>
 <p><span class="math display">\[ p = \frac{k}{n} \]</span></p>
@@ -2615,6 +2659,7 @@ h1, h2, h3, h4 {
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Proporção (p):&quot;</span>, p))</span></code></pre></div>
 <pre><code>[1] &quot;Proporção (p): 0.25&quot;</code></pre>
 </div>
+<p><br></p>
 <p>O erro padrão da proporção é calculado como:</p>
 <span class="math display">\[ SE_p = \sqrt{\frac{p(1-p)}{n}} \]</span>
 <div class="layout-chunk" data-layout="l-body">
@@ -2623,7 +2668,7 @@ h1, h2, h3, h4 {
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão (Raw):&quot;</span>, se_p))</span></code></pre></div>
 <pre><code>[1] &quot;Erro Padrão (Raw): 0.0306186217847897&quot;</code></pre>
 </div>
-<h4 id="a-o-problema-dos-extremos">a) O problema dos extremos</h4>
+<h4 id="b-o-problema-dos-extremos">b) O problema dos extremos</h4>
 <p>Como a proporção é limitada entre 0 e 1, surgem problemas quando o valor de <span class="math inline">\(p\)</span> é muito próximo de 0 ou de 1.</p>
 <ul>
 <li><strong>Erro Padrão Comprimido</strong>: O erro padrão é artificialmente reduzido, levando a uma superestimação da precisão.</li>
@@ -2631,37 +2676,133 @@ h1, h2, h3, h4 {
 </ul>
 <p><br></p>
 <div class="layout-chunk" data-layout="l-body">
-<pre><code>&lt;ScaleContinuousPosition&gt;
- Range:  
- Limits:    0 -- 0.06</code></pre>
-<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-8"></span>
+<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-8-1.png" alt="A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95). Isso faz com que a distribuição de proporção bruta seja espremida e assimétrica para a direita. B. O erro padrão associado a essa distribuição é máximo  no centro e menor nas pontas, o que não é intuitivo pois nas pontas temos menor certeza." width="960" />
+<p class="caption">
+Figure 6: A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95). Isso faz com que a distribuição de proporção bruta seja espremida e assimétrica para a direita. B. O erro padrão associado a essa distribuição é máximo no centro e menor nas pontas, o que não é intuitivo pois nas pontas temos menor certeza.
+</p>
 </div>
-<h4 id="b-a-solução">b) A solução 😁</h4>
+</div>
+<h4 id="c-a-solução">c) A solução 😁</h4>
 <p>Para corrigir isso em metanálises, utilizamos a transformação em log natural - chamada de <strong>logit</strong>. Ela remove a restrição de intervalo 0-1, garantindo que a distribuição amostral seja aproximadamente normal e os erros padrão não sejam enviesados.</p>
 <p>A transformação da proporção para logit da proporção:</p>
 <p><span class="math display">\[ p_{\text{logit}} = \log_e \left( \frac{p}{1-p} \right) \]</span></p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># O logit transforma o intervalo 0-1 em -inf a +inf</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>p_logit <span class="ot">&lt;-</span> <span class="fu">log</span>(p <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> p))</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Proporção Transformada (Logit):&quot;</span>, p_logit))</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># O logit transforma o intervalo 0-1 em -inf a +inf</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>p_logit <span class="ot">&lt;-</span> <span class="fu">log</span>(p <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> p))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Proporção Transformada (Logit):&quot;</span>, p_logit))</span></code></pre></div>
 <pre><code>[1] &quot;Proporção Transformada (Logit): -1.09861228866811&quot;</code></pre>
 </div>
+<p><br></p>
 <p>O erro padrão do logit da proporção:</p>
 <p><span class="math display">\[ SE_{p_{\text{logit}}} = \sqrt{\frac{1}{np} + \frac{1}{n(1-p)}} \]</span></p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>se_logit <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span> <span class="sc">/</span> (n <span class="sc">*</span> p)) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">/</span> (n <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p))))</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão (Logit):&quot;</span>, se_logit))</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>se_logit <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span> <span class="sc">/</span> (n <span class="sc">*</span> p)) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">/</span> (n <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p))))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão (Logit):&quot;</span>, se_logit))</span></code></pre></div>
 <pre><code>[1] &quot;Erro Padrão (Logit): 0.163299316185545&quot;</code></pre>
 </div>
 <p><br></p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-10"></span>
+<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-10-1.png" alt="A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95) após a transformação logit. Isso faz com que a distribuição assuma um formato aproximadamente normal em que os limites transformam-se em menos e mais infinito. B. O erro padrão associado a essa distribuição é máximo nas pontas e menor no centro, o queé intuitivo pois no centro temos maior certeza." width="960" />
+<p class="caption">
+Figure 7: A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95) após a transformação logit. Isso faz com que a distribuição assuma um formato aproximadamente normal em que os limites transformam-se em menos e mais infinito. B. O erro padrão associado a essa distribuição é máximo nas pontas e menor no centro, o queé intuitivo pois no centro temos maior certeza.
+</p>
 </div>
+</div>
+<p><br></p>
 <p>Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter duas informações (colunas) de cada estudo incluído:</p>
 <ul>
 <li><span class="math inline">\(event\)</span>: O número de observações no subgrupo específico (<span class="math inline">\(k\)</span>).</li>
 <li><span class="math inline">\(n\)</span>: O tamanho total da amostra.</li>
 </ul>
+<h2 id="correlação">Correlação</h2>
+<h3 id="a-o-que-é-1">a) O que é?</h3>
+<p>A correlação é uma medida de tamanho de efeito que expressa a força da relação (“co-variação”) entre duas variáveis contínuas.Exemplo Prático: Imagine que queremos investigar a relação entre Idade (anos) e Pressão Arterial Sistólica (mmHg). Se a correlação for positiva e forte, significa que conforme a idade aumenta, a pressão também tende a subir.</p>
+<p>A forma mais comum é a Correlação de Pearson (<span class="math inline">\(r\)</span>). Uma de suas maiores vantagens é que ela padroniza os dados. Isso significa que não importa a unidade de medida usada no estudo original.Estudo Exemplo, o estudo A mediu altura em centímetros. Estudo B mediu altura em polegadas.Uma correlação de <span class="math inline">\(r=0.50\)</span> no Estudo A é matematicamente idêntica a <span class="math inline">\(r=0.50\)</span> no Estudo B, permitindo que comparemos os efeitos diretamente.</p>
+<p>A correlação de Pearson é calculada da seguinte forma:</p>
+<p><span class="math display">\[ r_{xy} = \frac{\sigma^2_{xy}}{\sigma_x \sigma_y} \]</span></p>
+<p><br></p>
+<p>E esse resultado pode ser obtido através da função <code>cor</code>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">15</span>, <span class="dv">20</span>, <span class="dv">25</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">16</span>, <span class="dv">18</span>, <span class="dv">21</span>, <span class="dv">35</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the correlation between x and y</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">cor</span>(x,y)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>r</span></code></pre></div>
+<pre><code>[1] 0.9481413</code></pre>
+</div>
+<p><br></p>
+<p>O erro padrão associado é calculado através da fórmula:</p>
+<p><span class="math display">\[ SE_{r_{xy}} = \frac{1 - r^2_{xy}}{\sqrt{n - 2}} \]</span></p>
+<h3 id="b-interpretando-magnitude">b) Interpretando magnitude</h3>
+<p>Cohen propôs regras de bolso para classificar a força dessa relação, mas lembre-se que o contexto clínico importa muito.</p>
+<ul>
+<li><p><strong><span class="math inline">\(r \approx 0.10\)</span></strong> (Efeito Pequeno): A relação existe, mas é sutil e influenciada por muitos outros fatores.</p></li>
+<li><p><strong><span class="math inline">\(r \approx 0.30\)</span></strong> (Efeito Moderado): A relação é visível a olho nu nos dados.</p></li>
+<li><p><strong><span class="math inline">\(r \approx 0.50\)</span></strong> (Efeito Grande): Uma variável prediz a outra fortemente.</p></li>
+</ul>
+<h3 id="c-o-problema-estatístico-e-a-solução-fishers-z">c) O Problema Estatístico e a Solução (Fisher’s z)</h3>
+<p>Assim como acontece com proporções, correlações são “presas” dentro de um intervalo (de -1 a +1).Se um estudo encontra uma correlação muito alta (ex: <span class="math inline">\(r = 0.95\)</span> entre dois testes diagnósticos), a distribuição amostral fica espremida no teto do 1.0, gerando erros padrões incorretos e enviesados.Para corrigir isso na metanálise, usamos a Transformação Fisher’s z. Ela “estica” o intervalo de -1 a 1 para infinito, tornando a distribuição Normal e permitindo cálculos precisos de erro padrão.</p>
+<p>Aqui está a transformação feita para moldar a distribuição amostral em formato de distribuição normal:</p>
+<p><span class="math display">\[ z = 0.5 \log_e \left( \frac{1 + r}{1 - r} \right) \]</span></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Fisher&#39;s z</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">log</span>((<span class="dv">1</span><span class="sc">+</span>r)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>r))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>z</span></code></pre></div>
+<pre><code>[1] 1.813054</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-13"></span>
+<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-13-1.png" alt="Por que não podemos usar correlações brutas na metanálise? Aqui fizemos a simulação de 5.000 estudos pequenos (n=30) onde a correlação populacional é alta (0.85). Na distribuição amostral da correlação de Pearson vemos que ela fica assimétrica, espremida à direita. Quando fazemos a transformação de Fischer a distribuição torna-se aproximadamente normal e simétrica, com intervalos indo de menos a mais infinito." width="960" />
+<p class="caption">
+Figure 8: Por que não podemos usar correlações brutas na metanálise? Aqui fizemos a simulação de 5.000 estudos pequenos (n=30) onde a correlação populacional é alta (0.85). Na distribuição amostral da correlação de Pearson vemos que ela fica assimétrica, espremida à direita. Quando fazemos a transformação de Fischer a distribuição torna-se aproximadamente normal e simétrica, com intervalos indo de menos a mais infinito.
+</p>
+</div>
+</div>
+<p>Sabendo o tamanho amostral podemos calcular o erro padrão do Z de Fischer através dessa fórmula:</p>
+<p><span class="math display">\[ SE_z = \frac{1}{\sqrt{n - 3}} \]</span></p>
+<p><br></p>
+<p>Para o seu banco de dados de estudos você só precisa das colunas:</p>
+<ul>
+<li>cor (o valor de r de Pearson): A conversão em Z de Fischer será feita internamente.</li>
+<li>n (tamanho da amostra)</li>
+</ul>
+<h2 id="diferença-de-médias-brutas-não-padronizadas">Diferença de Médias Brutas (Não Padronizadas)</h2>
+<h3 id="o-que-é">O que é?</h3>
+<p>A Diferença de Médias (MD) bruta é a forma mais simples e intuitiva de medir um efeito. Ela é simplesmente a subtração da média do grupo intervenção pela média do grupo controle.</p>
+<span class="math display">\[ MD_{between} = \bar{x}_1 - \bar{x}_2 \]</span>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grupo 1 (Intervenção): Média 130 mmHg, SD 15</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Grupo 2 (Controle): Média 140 mmHg, SD 15</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>n1 <span class="ot">&lt;-</span> <span class="dv">20</span>; m1 <span class="ot">&lt;-</span> <span class="dv">130</span>; s1 <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>n2 <span class="ot">&lt;-</span> <span class="dv">20</span>; m2 <span class="ot">&lt;-</span> <span class="dv">140</span>; s2 <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>MD <span class="ot">&lt;-</span> m1 <span class="sc">-</span> m2</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Diferença Média (MD):&quot;</span>, MD, <span class="st">&quot;mmHg&quot;</span>))</span></code></pre></div>
+<pre><code>[1] &quot;Diferença Média (MD): -10 mmHg&quot;</code></pre>
+</div>
+<p>Quando usar? Só podemos usar a MD quando todos os estudos incluídos na metanálise mediram o desfecho exatamente na mesma escala/unidade. Exemplo Prático (Pressão Arterial): Imagine que você está estudando um novo anti-hipertensivo.</p>
+<ul>
+<li><p>Estudo A mediu a pressão arterial sistólica em mmHg.</p></li>
+<li><p>Estudo B mediu a pressão arterial sistólica em mmHg.</p></li>
+</ul>
+<p>Como ambos falam a “mesma língua” (mmHg), podemos calcular que o remédio baixou a pressão em média -10 mmHg. Isso é uma diferença de média bruta.</p>
+<h3 id="erro-padrão">Erro Padrão</h3>
+<p>Nós temos dois grupos com dois desvio padrões diferentes, então devemos calcular um desvio padrão agrupado (<span class="math inline">\(s_{pooled}\)</span>).</p>
+<p><span class="math display">\[ s_{pooled} = \sqrt{\frac{(n_1 - 1)s^2_1 + (n_2 - 1)s^2_2}{n_1 + n_2 - 2}} \]</span>
+Então, utilizamos esse desvio padrão agrupado para calcular o erro padrão.
+<span class="math display">\[ SE_{MD_{between}} = s_{pooled} \sqrt{\frac{1}{n_1} + \frac{1}{n_2}} \]</span></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>s_pooled <span class="ot">&lt;-</span> <span class="fu">sqrt</span>( (((n1<span class="dv">-1</span>)<span class="sc">*</span>s1<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> ((n2<span class="dv">-1</span>)<span class="sc">*</span>s2<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">/</span> (n1 <span class="sc">+</span> n2 <span class="sc">-</span> <span class="dv">2</span>) )</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular Erro Padrão (SE)</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>se_md <span class="ot">&lt;-</span> s_pooled <span class="sc">*</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">/</span>n1) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">/</span>n2))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão da MD:&quot;</span>, <span class="fu">round</span>(se_md, <span class="dv">3</span>)))</span></code></pre></div>
+<pre><code>[1] &quot;Erro Padrão da MD: 4.743&quot;</code></pre>
+</div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

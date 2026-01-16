@@ -8,6 +8,17 @@ output:
     highlight_downlit: false
 ---
 
+```{css, echo = F}
+/* Estilo para a caixa de código */
+d-article pre {
+background-color: #f6f8fa !important;  /* O !important força a mudança da cor */
+border: 1px solid #e1e4e8 !important;  /* Força a borda */
+border-radius: 6px;        /* Cantos arredondados */
+padding: 12px;             /* Espaço interno para o texto não colar na borda */
+box-shadow: none;          /* Remove sombras padrões se houver */
+}
+```
+
 ```{css, echo=FALSE}
 h1, h2, h3, h4 {
   border-bottom: 1px solid #dddddd; /* Cria a linha cinza fina embaixo */
@@ -22,6 +33,14 @@ library(patchwork)
 library(gridExtra)
 library(cowplot)
 library(grid)
+library(MASS)      # Para gerar dados correlacionados (mvrnorm)
+
+# Ativar o botão de copiar
+xaringanExtra::use_clipboard(
+  button_text = "Copiar",
+  success_text = "Copiado!",
+  error_text = "Pressione Ctrl+C para copiar"
+)
 ```
 
 
@@ -74,7 +93,7 @@ O que aconteceria se, em vez de fazer apenas um estudo medindo a HbA1c de 100 pa
 
 2. Algumas poucas médias (os estudos "azarados" ou extremos) ficarão mais afastadas.
 
-```{r media_pop, echo = F}
+```{r, echo = F, fig.cap="Aqui está representada uma distribuição verdadeira do nível de HbA1C em % de uma população. Foram feitos 10 estudos com 3 participantes que tentaram estimar a média da hemoglobina glicada da população. Perceba que esses estudos não conseguem estimar perfeitamente a média populacional. Existe uma diferença que é chamada de erro amostral."}
 set.seed(123)
 
 # --- 1. Definição do Cenário ---
@@ -156,7 +175,7 @@ Essa coleção de médias de vários estudos hipotéticos cria o que chamamos de
 
 O **Teorema do Limite Central** afirma que, independentemente da distribuição dos dados originais (seja uniforme, exponencial, etc.), se pegarmos as médias dessas amostragens, a distribuição dessas médias será sempre Normal (uma curva de sino).
 
-```{r teorema, echo = F}
+```{r, echo = F, fig.cap="Foram retiradas amostras pequenas (n = 5), médias (n = 30) e grandes (n = 100) de uma distribuição populacional exponencial e calculadas a média de cada amostra. Perceba que a distribuição amostral das médias (mesmo que a distribuição amostral original não seja normal) vai aproximando-se de uma distribuição normal. Perceba também que quanto maior a amostra menor o desvio padrão dessa distribuição amostral (vamos chamar depois isso de menor erro amostral :D)"}
 set.seed(42)
 
 # --- 1. CORES E ESTÉTICA ---
@@ -272,7 +291,7 @@ Agora que sabemos que as médias de vários estudos formam uma curva, precisamos
 
 - **Erro Padrão (SE)**: Mede o quanto a média de várias amostragens está espalhada. Ele é, basicamente, o desvio padrão das médias de vários estudos.
 
-```{r erro_pad, echo=F}
+```{r, echo=F, fig.cap="Simulação feita com 5.000 estudos com tamanho amostral pequeno (n = 30) com média verdadeira de HbA1c de 7% e desvio padrão de 1%. Perceba que esses 5.000 estudos tem uma distribuição amostral de média seguindo uma distribuição normal. O desvio padrão dessa distribuição amostral chama-se erro padrçao."}
 set.seed(42)
 
 # --- 1. Parâmetros do Diabetes (HbA1c) ---
@@ -339,13 +358,15 @@ ggplot(df_sim, aes(x = m)) +
   )
 ```
 
-**Conceito Chave**: O Erro Padrão é uma medição do quão representativas são nossas amostragens em relação à população.
+<br>
+
+**Como interpretar?**: O Erro Padrão é uma medição do quão representativas são nossas amostragens em relação à população.
 
 - **Alto Erro Padrão**: As médias dos estudos variam muito entre si. O estudo é pouco preciso.
 
 - **Baixo Erro Padrão**: As médias variam pouco. O estudo é uma boa representação da população.
 
-```{r se_tamanho_amostral, echo=F}
+```{r, echo=F, fig.cap="Foi feita uma simulação com desvio padrão fixo de 15 e valores crescentes de tamanho amostral (5, 10, 15...). Perceba que o erro padrão decresce aproximadamente exponencialmente com o tamanho amostral. "}
 # Simular o comportamento do Erro Padrão
 n_vals <- seq(5, 200, by = 5)
 sd_fixo <- 15 # Vamos supor um desvio padrão fixo de 15 unidades (ex: pressão arterial)
@@ -375,7 +396,7 @@ print(g3)
 
 *Nota: O Erro Padrão será sempre menor que o Desvio Padrão, pois as médias são naturalmente menos dispersas do que as observações individuais.*
 
-```{r se_largura, echo=F}
+```{r, echo=F, fig.cap="Em cinza temos a distribuição populacional do nível de HbA1c (%), perceba que ela é mais espalhada. Ao fazer estudos para retirar a média desse valor, temos uma quantidade menos espalhada de médias. O desvio padrão dessa distribuição amostral é chamado de erro padrão."}
 library(ggplot2)
 library(dplyr)
 library(patchwork)
@@ -422,7 +443,7 @@ g1 <- ggplot() +
   theme_minimal(base_size = 14) +
   theme(legend.position = "bottom") +
   annotate("text", x = 10, y = 0.2, label = "Desvio Padrão (SD)\né a largura desta curva", color = "grey30", hjust=0) +
-  annotate("text", x = 8.5, y = 1.5, label = "Erro Padrão (SE)\né a largura desta curva", color = "#2E86C1", hjust=0, fontface="bold")
+  annotate("text", x = 8.5, y = 1, label = "Erro Padrão (SE)\né a largura desta curva", color = "#2E86C1", hjust=0, fontface="bold")
 
 print(g1)
 ```
@@ -483,6 +504,8 @@ erro_padrao <- sd(sample) / sqrt(50)
 print(paste("Erro Padrão:", erro_padrao))
 ```
 
+<br>
+
 Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter três informações (colunas) de cada estudo incluído:
 
 - $n$: O tamanho da amostra (número de observações).
@@ -490,6 +513,8 @@ Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoria
 - $sd$: O desvio padrão da variável.
 
 ### 2.2. Proporções
+
+#### a) O que é?
 
 A proporção é uma medida de tendência central que especifica quantas unidades de uma amostra pertencem a um subgrupo específico (ex: prevalência de uma doença). Novamente, trata-se de uma medida em que não há comparação de grupos. Ela varia entre 0 e 1 e é calculada dividindo o número de eventos ($k$) pelo tamanho total da amostra ($n$).
 
@@ -508,6 +533,7 @@ print(paste("Proporção (p):", p))
 
 ```
 
+<br>
 
 O erro padrão da proporção é calculado como: 
 
@@ -519,7 +545,7 @@ print(paste("Erro Padrão (Raw):", se_p))
 ```
 
 
-#### a) O problema dos extremos
+#### b) O problema dos extremos
 
 Como a proporção é limitada entre 0 e 1, surgem problemas quando o valor de $p$ é muito próximo de 0 ou de 1.
 
@@ -528,7 +554,7 @@ Como a proporção é limitada entre 0 e 1, surgem problemas quando o valor de $
 
 <br>
 
-```{r, echo=F, message=FALSE}
+```{r, echo=F, message=FALSE, warning=F, fig.width=10, fig.cap="A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95). Isso faz com que a distribuição de proporção bruta seja espremida e assimétrica para a direita. B. O erro padrão associado a essa distribuição é máximo  no centro e menor nas pontas, o que não é intuitivo pois nas pontas temos menor certeza."}
 # --- CONFIGURAÇÃO ESTÉTICA ---
 cor_raw   <- "#E67E22" # Laranja (Proporção Bruta)
 cor_logit <- "#2980B9" # Azul (Logit)
@@ -568,16 +594,13 @@ p1a <- ggplot(data.frame(x = sim_p_clean), aes(x = x)) +
   geom_density(color = "#D35400", size = 1) +
   geom_vline(xintercept = 1.0, linetype = "dashed", color = "black") +
   scale_x_continuous(limits = c(0.5,1)) + 
-  labs(title = "1. Proporção Bruta (p)", 
-       subtitle = paste0("População p=", p_real, ". Note o 'paredão' no 1.0.\nA cauda se estica para a esquerda (Enviesada)."),
-       x = "Proporção Estimada", y = "Densidade")
+  labs(title = "A. Proporção Bruta (p)", x = "Proporção Estimada", y = "Densidade")
 
 # --- Gráfico 1.B: A Normalização (Logit) ---
 p1b <- ggplot(data.frame(x = sim_logit), aes(x = x)) +
   geom_histogram(aes(y = ..density..), bins = 20, fill = cor_logit, color = "white", alpha=0.8) +
   geom_density(color = "#1F618D", size = 1) +
-  labs(title = "2. Após Transformação Logit", 
-       subtitle = "O espaço é 'esticado'.\nA distribuição recupera a forma de sino (Normal).",
+  labs(title = "A. Após Transformação Logit", 
        x = "Logit Value", y = "Densidade")
 
 # ==============================================================================
@@ -602,28 +625,25 @@ df_se <- data.frame(
 p2a <- ggplot(df_se, aes(x = p, y = se_raw)) +
   geom_line(color = cor_raw, size = 1.5) +
   geom_area(fill = cor_raw, alpha = 0.2) +
-  annotate("text", x = 0.5, y = 0.052, label = "Máximo Erro\n(p=0.5)", color = "grey30") +
+  annotate("text", x = 0.5, y = 0.04, label = "Máximo Erro\n(p=0.5)", color = "grey30") +
   annotate("text", x = 0.9, y = 0.02, label = "Erro 'Falso'\nBaixo", fontface="bold", color = "#D35400") +
-  labs(title = "3. Erro Padrão da Proporção (SE p)", 
-       subtitle = "O erro diminui nas pontas. Isso finge que temos\nmuita certeza só porque p é extremo.",
+  labs(title = "B. Erro Padrão da Proporção (SE p)", 
        x = "Valor de p", y = "Tamanho do Erro (SE)") +
   scale_y_continuous(limits = c(0, 0.06))
-  scale_x_continuous(limits = c(0, 0.06))
 
 # --- Gráfico 2.B: A Solução (Expansão) ---
 p2b <- ggplot(df_se, aes(x = p, y = se_logit)) +
   geom_line(color = cor_logit, size = 1.5) +
   geom_area(fill = cor_logit, alpha = 0.2) +
   annotate("text", x = 0.9, y = 0.5, label = "Erro Real\nAlto", fontface="bold", color = "#1F618D") +
-  labs(title = "4. Erro Padrão do Logit (SE logit)", 
-       subtitle = "O erro explode nas pontas.\nReflete a real dificuldade de estimar extremos.",
+  labs(title = "B. Erro Padrão do Logit (SE logit)",
        x = "Valor de p", y = "Tamanho do Erro (SE)")
 
 p1a + p2a
 ```
 
 
-#### b) A solução 😁
+#### c) A solução 😁
 
 Para corrigir isso em metanálises, utilizamos a transformação em log natural - chamada de **logit**. Ela remove a restrição de intervalo 0-1, garantindo que a distribuição amostral seja aproximadamente normal e os erros padrão não sejam enviesados.
 
@@ -638,6 +658,8 @@ p_logit <- log(p / (1 - p))
 print(paste("Proporção Transformada (Logit):", p_logit))
 ```
 
+<br>
+
 O erro padrão do logit da proporção:
 
 $$ SE_{p_{\text{logit}}} = \sqrt{\frac{1}{np} + \frac{1}{n(1-p)}} $$
@@ -649,11 +671,333 @@ print(paste("Erro Padrão (Logit):", se_logit))
 
 <br>
 
-```{r, echo=F}
+```{r, echo=F, fig.width=10, fig.cap="A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95) após a transformação logit. Isso faz com que a distribuição assuma um formato aproximadamente normal em que os limites transformam-se em menos e mais infinito. B. O erro padrão associado a essa distribuição é máximo nas pontas e menor no centro, o queé intuitivo pois no centro temos maior certeza."}
 p1b + p2b
 ```
+
+<br>
 
 Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter duas informações (colunas) de cada estudo incluído:
 
 - $event$: O número de observações no subgrupo específico ($k$).
 - $n$: O tamanho total da amostra.
+
+## Correlação
+
+### a) O que é?
+
+A correlação é uma medida de tamanho de efeito que expressa a força da relação ("co-variação") entre duas variáveis contínuas.Exemplo Prático: Imagine que queremos investigar a relação entre Idade (anos) e Pressão Arterial Sistólica (mmHg). Se a correlação for positiva e forte, significa que conforme a idade aumenta, a pressão também tende a subir.
+
+A forma mais comum é a Correlação de Pearson ($r$). Uma de suas maiores vantagens é que ela padroniza os dados. Isso significa que não importa a unidade de medida usada no estudo original.Estudo Exemplo, o estudo A mediu altura em centímetros. Estudo B mediu altura em polegadas.Uma correlação de $r=0.50$ no Estudo A é matematicamente idêntica a $r=0.50$ no Estudo B, permitindo que comparemos os efeitos diretamente.
+
+A correlação de Pearson é calculada da seguinte forma:
+
+
+$$ r_{xy} = \frac{\sigma^2_{xy}}{\sigma_x \sigma_y} $$
+
+<br>
+
+E esse resultado pode ser obtido através da função `cor`: 
+
+```{r}
+x <- c(10, 12, 15, 20, 25)
+y <- c(6, 16, 18, 21, 35)
+
+# Calculate the correlation between x and y
+r <- cor(x,y)
+r
+```
+
+<br>
+
+O erro padrão associado é calculado através da fórmula:
+
+$$ SE_{r_{xy}} = \frac{1 - r^2_{xy}}{\sqrt{n - 2}} $$
+
+### b) Interpretando magnitude
+
+Cohen propôs regras de bolso para classificar a força dessa relação, mas lembre-se que o contexto clínico importa muito.
+
+- **$r \approx 0.10$** (Efeito Pequeno): A relação existe, mas é sutil e influenciada por muitos outros fatores.
+
+- **$r \approx 0.30$** (Efeito Moderado): A relação é visível a olho nu nos dados.
+
+- **$r \approx 0.50$** (Efeito Grande): Uma variável prediz a outra fortemente.
+
+### c) O Problema Estatístico e a Solução (Fisher's z)
+
+Assim como acontece com proporções, correlações são "presas" dentro de um intervalo (de -1 a +1).Se um estudo encontra uma correlação muito alta (ex: $r = 0.95$ entre dois testes diagnósticos), a distribuição amostral fica espremida no teto do 1.0, gerando erros padrões incorretos e enviesados.Para corrigir isso na metanálise, usamos a Transformação Fisher's z. Ela "estica" o intervalo de -1 a 1 para infinito, tornando a distribuição Normal e permitindo cálculos precisos de erro padrão.
+
+Aqui está a transformação feita para moldar a distribuição amostral em formato de distribuição normal:
+
+$$ z = 0.5 \log_e \left( \frac{1 + r}{1 - r} \right) $$
+
+```{r}
+# Calculate Fisher's z
+z <- 0.5*log((1+r)/(1-r))
+z
+```
+
+```{r, echo = F, fig.width=10, fig.cap="Por que não podemos usar correlações brutas na metanálise? Aqui fizemos a simulação de 5.000 estudos pequenos (n=30) onde a correlação populacional é alta (0.85). Na distribuição amostral da correlação de Pearson vemos que ela fica assimétrica, espremida à direita. Quando fazemos a transformação de Fischer a distribuição torna-se aproximadamente normal e simétrica, com intervalos indo de menos a mais infinito."}
+set.seed(42)
+
+# --- PARTE 1: Simulação dos Dados ---
+n_sim <- 5000     # Número de estudos simulados
+n_sample <- 30    # Tamanho pequeno de amostra
+true_rho <- 0.85  # Correlação verdadeira ALTA (Glicemia maq A vs maq B)
+
+# Função para simular UM estudo e calcular seu r
+get_simulated_r <- function() {
+  # Gera dados para 30 pacientes com correlação de 0.85
+  data <- mvrnorm(n = n_sample, mu = c(0,0), 
+                  Sigma = matrix(c(1, true_rho, true_rho, 1), 2))
+  cor(data[,1], data[,2]) # Calcula o r de Pearson
+}
+
+# Rodar a simulação 5000 vezes
+sim_r_values <- replicate(n_sim, get_simulated_r())
+
+# Aplicar a transformação de Fisher's z
+sim_z_values <- 0.5 * log((1 + sim_r_values) / (1 - sim_r_values))
+
+# Calcular o valor verdadeiro de z para referência
+true_z <- 0.5 * log((1 + true_rho) / (1 - true_rho))
+
+# Juntar em um data frame
+df_sim <- data.frame(r = sim_r_values, z = sim_z_values)
+
+
+# --- PARTE 2: Gráficos Didáticos ---
+
+# Estética
+cor_raw <- "#E67E22" # Laranja para bruto
+cor_trans <- "#2980B9" # Azul para transformado
+
+# GRÁFICO 1: O Problema (Correlação Bruta r)
+p1 <- ggplot(df_sim, aes(x = r)) +
+  # Histograma
+  geom_histogram(aes(y = ..density..), bins = 35, fill = cor_raw, color = "white", alpha = 0.7) +
+  # Linha de Densidade
+  geom_density(color = "#D35400", size = 1) +
+  # Linha da Verdade (0.85)
+  geom_vline(xintercept = true_rho, linetype = "dashed", color = "black", size = 1) +
+  # O "Muro" do 1.0
+  geom_vline(xintercept = 1.0, color = "#C0392B", size = 1.5) +
+  annotate("text", x = 0.98, y = 1, label = "Paredão (Max 1.0)", color = "#C0392B", angle = 90, hjust=0) +
+  
+  labs(x = "Correlação de Pearson (r)", y = "Densidade") +
+  theme_minimal() +
+  xlim(0.4, 1.05) # Focando na área de interesse
+
+# GRÁFICO 2: A Solução (Fisher's z)
+p2 <- ggplot(df_sim, aes(x = z)) +
+  # Histograma
+  geom_histogram(aes(y = ..density..), bins = 35, fill = cor_trans, color = "white", alpha = 0.7) +
+  # Linha de Densidade
+  geom_density(color = "#1F618D", size = 1) +
+  # Linha da Verdade Transformada
+  geom_vline(xintercept = true_z, linetype = "dashed", color = "black", size = 1) +
+  
+  labs(x = "Valor Transformado (z)", y = "Densidade") +
+  theme_minimal() +
+  xlim(0.4, 2.5) # Ajustando escala para visualizar o z
+
+# --- Combinar ---
+final_plot <- p1 + p2 +
+  plot_annotation(
+    theme = theme(plot.title = element_text(face = "bold", size = 16))
+  )
+
+print(final_plot)
+
+```
+
+Sabendo o tamanho amostral podemos calcular o erro padrão do Z de Fischer através dessa fórmula:
+
+$$ SE_z = \frac{1}{\sqrt{n - 3}} $$
+
+<br>
+
+Para o seu banco de dados de estudos você só precisa das colunas:
+
+- cor (o valor de r de Pearson): A conversão em Z de Fischer será feita internamente. 
+- n (tamanho da amostra)
+
+## Diferença de Médias Brutas (Não Padronizadas)
+
+### O que é?
+
+A Diferença de Médias (MD) bruta é a forma mais simples e intuitiva de medir um efeito. Ela é simplesmente a subtração da média do grupo intervenção pela média do grupo controle.
+
+$$ MD_{between} = \bar{x}_1 - \bar{x}_2 $$
+```{r}
+# Grupo 1 (Intervenção): Média 130 mmHg, SD 15
+# Grupo 2 (Controle): Média 140 mmHg, SD 15
+
+n1 <- 20; m1 <- 130; s1 <- 15
+n2 <- 20; m2 <- 140; s2 <- 15
+
+MD <- m1 - m2
+print(paste("Diferença Média (MD):", MD, "mmHg"))
+```
+
+Quando usar? Só podemos usar a MD quando todos os estudos incluídos na metanálise mediram o desfecho exatamente na mesma escala/unidade. Exemplo Prático (Pressão Arterial): Imagine que você está estudando um novo anti-hipertensivo.
+
+- Estudo A mediu a pressão arterial sistólica em mmHg.
+
+- Estudo B mediu a pressão arterial sistólica em mmHg.
+
+Como ambos falam a "mesma língua" (mmHg), podemos calcular que o remédio baixou a pressão em média -10 mmHg. Isso é uma diferença de média bruta. 
+
+
+### Erro Padrão
+
+#### a) Entendendo a Problemática
+
+Nós temos duas formas de calcular o erro padrão, a depender se considerarmos que as duas medidas pertencentes a uma mesma população ou duas populações diferentes. No primeiro caso, consideramos que o desvio padrão verdadeiro de cada grupo é igual entre si. Ou seja, está é um pressuposto estatístico de homocedasticidade. No segundo caso os desvio padrões não tem o mesmo valor, então estamos falando de heterocedasticidade. 
+
+Em cenários de desbalanceamento amostral ($n_1 \neq n_2$), a abordagem agrupada falha em capturar a verdadeira incerteza da estimativa. Isso gera um erro comum em metanálise, já que o estudo com menor número de pacientes geralmente possui a maior variância (grande variabilidade em amostra pequena). Isso faz com quê:
+
+- **O Erro Matemático:** O método agrupado (pooled) ignora a alta variância do grupo pequeno, "diluindo-a" com a variância menor do grupo grande.
+
+- **A Consequência:** O Erro Padrão calculado é artificialmente pequeno.
+
+- **Impacto na Meta-Análise:** O algoritmo de inverso da variância entende que este estudo é extremamente preciso (o que é falso) e atribui a ele um peso desproporcionalmente alto. Um estudo "ruidoso" e de baixa qualidade estatística passa a dominar a estimativa do efeito global.
+
+#### b) Assumindo o mesmo desvio padrão (homocedasticidade)
+
+Calcula-se o desvio padrão agrupado ($s_{pooled}$) através da fórmula
+
+$$ s_{pooled} = \sqrt{\frac{(n_1 - 1)s^2_1 + (n_2 - 1)s^2_2}{n_1 + n_2 - 2}} $$
+Então, utilizamos esse desvio padrão agrupado para calcular o erro padrão.
+$$ SE_{MD_{between}} = s_{pooled} \sqrt{\frac{1}{n_1} + \frac{1}{n_2}} $$
+
+```{r}
+s_pooled <- sqrt( (((n1-1)*s1^2) + ((n2-1)*s2^2)) / (n1 + n2 - 2) )
+
+se_md <- s_pooled * sqrt((1/n1) + (1/n2))
+print(paste("Erro Padrão (Agrupado):", round(se_md, 3)))
+```
+
+
+#### b) Assumindo desvios padrões diferentes (heterocedasticidade)
+
+$$ SE_{unpooled} = \sqrt{ \frac{s_1^2}{n_1} + \frac{s_2^2}{n_2} } $$
+```{r}
+se_unpooled <- sqrt( (s1^2 / n1) + (s2^2 / n2) )
+
+print(paste("Erro Padrão (Não Agrupado):", round(se_unpooled, 4)))
+```
+
+## Diferença de Médias Padronizadas
+
+### O que é?
+
+A diferença de médias padronizadas (SMD) expressa a diferença entre os grupos em unidades de desvios-padrão, e não na unidade original de medida. Quando usar? É essencial quando os estudos medem o mesmo desfecho (construto), mas usam escalas/instrumentos diferentes.
+
+Exemplo Prático (Depressão): Você quer ver se Terapia Cognitiva Comportamental reduz depressão.Estudo A usou a Escala de Beck (BDI) (vai de 0 a 63).Estudo B usou a Escala de Hamilton (HAM-D) (vai de 0 a 50).Não podemos unir estudos que utilizam Beck com os que utilizam Hamilton sem fazer nenhum tratamento.
+
+A solução é padronizar! Esse procedimento que falamos acima sobre calcular a diferença baseada em unidades de desvio padrão é, em outras palavras, calcular o Cohen's d. Por exemplo, se o resultado for $d = -0.5$, significa que o tratamento reduziu a depressão em "meio desvio padrão", independente da escala usada.
+
+- **Interpretação Visual** (Sobreposição) O Cohen's d nos diz o quanto as curvas dos dois grupos se separaram:
+
+$d = 0.2$ (Pequeno): Grande sobreposição entre os grupos (as curvas quase se tocam).
+
+$d = 0.5$ (Médio): Separação visível.
+
+$d = 0.8$ (Grande): Clara separação entre tratado e controle.
+
+```{r, echo = F, fig.width=10, fig.cap="Representação visual do d de Cohen. Perceba que quanto maior o seu valor, maior a separação entre os grupos. E, assim, consequemente, menor será a área de intersecção entre as curvas. Por isso, que ele representa uma forma de quantificar a diferença entre grupos."}
+
+cor_laranja <- "#E67E22"
+cor_roxo    <- "#2980B9"
+espessura_linha <- 2
+
+# Tema limpo para remover eixos e adicionar a borda preta
+theme_box <- theme_void() +
+  theme(
+    plot.margin = margin(10, 10, 10, 10),
+    panel.border = element_rect(color = "black", fill = NA, size = 1.5), # A caixa preta
+    plot.background = element_rect(fill = "white", color = NA) # Fundo branco limpo
+  )
+
+# --- 2. Função para Gerar Cada Gráfico ---
+plot_simple_cohen <- function(d) {
+  
+  # Sequência do eixo X suficiente para cobrir as duas curvas
+  x_range <- seq(-4, 4 + d, length.out = 1000)
+  
+  # Dados das duas curvas normais
+  df <- data.frame(
+    x = x_range,
+    y_controle = dnorm(x_range, mean = 0, sd = 1),
+    y_tratado  = dnorm(x_range, mean = d, sd = 1)
+  )
+  
+  # Criar o plot
+  p <- ggplot(df, aes(x = x)) +
+    # Linha Laranja (Controle, Média 0)
+    geom_line(aes(y = y_controle), color = cor_laranja, size = espessura_linha) +
+    # Linha Roxa (Tratado, Média d)
+    geom_line(aes(y = y_tratado), color = cor_roxo, size = espessura_linha) +
+    
+    # Rótulo no canto superior esquerdo
+    # Posicionamos fixo em x=-3 e y=0.35 para ficar no canto
+    annotate("text", x = -3.2, y = 0.35, label = paste0("d=", d), 
+             hjust = 0, size = 8, fontface = "plain") +
+    
+    # Aplicar o tema limpo com borda
+    theme_box +
+    # Fixar limites para garantir que o texto fique sempre no mesmo lugar relativo
+    coord_cartesian(xlim = c(-3.5, 3.5 + d), ylim = c(0, 0.42), expand = FALSE)
+
+  return(p)
+}
+
+# --- 3. Gerar os 4 Gráficos ---
+p1 <- plot_simple_cohen(0.5)
+p2 <- plot_simple_cohen(1)
+p3 <- plot_simple_cohen(2)
+p4 <- plot_simple_cohen(3)
+
+# --- 4. Combinar em Grid 2x2 ---
+# Usamos patchwork para juntar tudo
+final_plot <- (p1 + p2) / (p3 + p4)
+
+# Exibir
+print(final_plot)
+```
+
+
+### Erro Padrão
+
+#### a) Fórmula Mais Comum (Homocedasticidade)
+
+Essa fórmula para o cálculo do d de Cohen utiliza o desvio padrão agrupado. E, como falamos antes, ele assume que ambos os desvios padrões são iguais. Porém, essa fórmula acaba sendo mais utilizada.
+
+$$ d = \frac{\bar{x}_1 - \bar{x}_2}{s_{pooled}} $$
+
+```{r}
+# Instalar pacote se necessário: install.packages("esc")
+library(esc)
+
+effect_size <- esc_mean_sd(
+  grp1m = 15, grp1sd = 5, grp1n = 50,
+  grp2m = 20, grp2sd = 5, grp2n = 50
+)
+
+# O resultado mostra o 'es' (Effect Size) d de Cohen
+print(effect_size)
+```
+
+#### b) Fórmulas para Heterocedasticidade
+
+Existem duas formas de calcular o d de Cohen assumindo que os desvios não são os mesmos. Podemos fazer uma média entre os dois.
+
+$$ d = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{s_1^2 + s_2^2}{2}}} $$
+Uma forma mais comum e segura de fazer isso é utilizando uma métrica chamada Delta de Glass. Invés de dividir pela média de dois desvios padrões, dividimos apenas pelo desvio do grupo controle. 
+
+$$ \Delta_{\text{Glass}} = \frac{\bar{x}_1 - \bar{x}_2}{SD_{\text{controle}}} $$
+
+Embora seja comum assumir variâncias iguais (Homocedasticidade) e usar o desvio padrão agrupado (Pooled) para calcular o d de Cohen, isso pode ser um erro se o tratamento alterar a variabilidade dos dados.
+
