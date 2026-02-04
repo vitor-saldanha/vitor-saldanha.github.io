@@ -34,6 +34,7 @@ library(gridExtra)
 library(cowplot)
 library(grid)
 library(MASS)      # Para gerar dados correlacionados (mvrnorm)
+library(knitr)
 
 # Ativar o botão de copiar
 xaringanExtra::use_clipboard(
@@ -45,7 +46,7 @@ xaringanExtra::use_clipboard(
 
 
 
-# 1. Introdução
+## 1. Fundamentos
 
 ### 1.1. O que é tamanho de efeito?
 
@@ -470,9 +471,10 @@ Onde:
 <br>
 
 
-## 2. Métricas Comuns
 
-### 2.1. Média Aritmétrica
+## 2. Dados Contínuos (Variáveis Numéricas)
+
+### 2.1. Grupo Único: Média Aritmétrica Simples
 
 A média aritmética é uma das medidas de tendência central possíveis de serem utilizadas em metanálises. Ela deve ser necessariamente utilizada quando todos os estudos utilizam a mesma métrica e não há um grupo controle. Por exemplo, para investigar a altura média de uma população. 
 
@@ -512,7 +514,494 @@ Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoria
 - $mean$: A média relatada no estudo.
 - $sd$: O desvio padrão da variável.
 
-### 2.2. Proporções
+<br>
+<br>
+
+| Estudos     | n | mean       | sd |
+|----------|-------|--------------|--------------|
+| Lee (2014)      | 25    | 55    | 1.2 |
+| Silva (2016)     | 30    | 60 | 1.3 |
+| Ferreira (2020)    | 28    | 61 | 0.9 |
+
+<br>
+<br>
+
+### 2.2. Dois grupos com mesma escala: Diferença de Médias Brutas (Não Padronizadas)
+
+#### a) O que é?
+
+A Diferença de Médias (MD) bruta é a forma mais simples e intuitiva de medir um efeito. Ela é simplesmente a subtração da média do grupo intervenção pela média do grupo controle.
+
+$$ MD_{between} = \bar{x}_1 - \bar{x}_2 $$
+```{r}
+# Grupo 1 (Intervenção): Média 130 mmHg, SD 15
+# Grupo 2 (Controle): Média 140 mmHg, SD 15
+
+n1 <- 20; m1 <- 130; s1 <- 15
+n2 <- 20; m2 <- 140; s2 <- 15
+
+MD <- m1 - m2
+print(paste("Diferença Média (MD):", MD, "mmHg"))
+```
+
+**Quando usar?** Só podemos usar a MD quando todos os estudos incluídos na metanálise mediram o desfecho exatamente na mesma escala/unidade. Exemplo Prático (Pressão Arterial): Imagine que você está estudando um novo anti-hipertensivo.
+
+- Estudo A mediu a pressão arterial sistólica em mmHg.
+
+- Estudo B mediu a pressão arterial sistólica em mmHg.
+
+Como ambos falam a "mesma língua" (mmHg), podemos calcular que o remédio baixou a pressão em média -10 mmHg. Isso é uma diferença de média bruta. 
+
+
+#### b) Erro Padrão
+
+##### Entendendo a Problemática
+
+Nós temos duas formas de calcular o erro padrão, a depender se considerarmos que as duas medidas pertencentes a uma mesma população ou duas populações diferentes. No primeiro caso, consideramos que o desvio padrão verdadeiro de cada grupo é igual entre si. Ou seja, está é um pressuposto estatístico de homocedasticidade. No segundo caso os desvio padrões não tem o mesmo valor, então estamos falando de heterocedasticidade. 
+
+Em cenários de desbalanceamento amostral ($n_1 \neq n_2$), a abordagem agrupada falha em capturar a verdadeira incerteza da estimativa. Isso gera um erro comum em metanálise, já que o estudo com menor número de pacientes geralmente possui a maior variância (grande variabilidade em amostra pequena). Isso faz com quê:
+
+- **O Erro Matemático:** O método agrupado (pooled) ignora a alta variância do grupo pequeno, "diluindo-a" com a variância menor do grupo grande.
+
+- **A Consequência:** O Erro Padrão calculado é artificialmente pequeno.
+
+- **Impacto na Meta-Análise:** O algoritmo de inverso da variância entende que este estudo é extremamente preciso (o que é falso) e atribui a ele um peso desproporcionalmente alto. Um estudo "ruidoso" e de baixa qualidade estatística passa a dominar a estimativa do efeito global.
+
+##### Assumindo o mesmo desvio padrão (homocedasticidade)
+
+Calcula-se o desvio padrão agrupado ($s_{pooled}$) através da fórmula
+
+$$ s_{pooled} = \sqrt{\frac{(n_1 - 1)s^2_1 + (n_2 - 1)s^2_2}{n_1 + n_2 - 2}} $$
+<br>
+
+Então, utilizamos esse desvio padrão agrupado para calcular o erro padrão.
+$$ SE_{MD_{between}} = s_{pooled} \sqrt{\frac{1}{n_1} + \frac{1}{n_2}} $$
+
+```{r}
+s_pooled <- sqrt( (((n1-1)*s1^2) + ((n2-1)*s2^2)) / (n1 + n2 - 2) )
+
+se_md <- s_pooled * sqrt((1/n1) + (1/n2))
+print(paste("Erro Padrão (Agrupado):", round(se_md, 3)))
+```
+
+
+##### Assumindo desvios padrões diferentes (heterocedasticidade)
+
+$$ SE_{unpooled} = \sqrt{ \frac{s_1^2}{n_1} + \frac{s_2^2}{n_2} } $$
+```{r}
+se_unpooled <- sqrt( (s1^2 / n1) + (s2^2 / n2) )
+
+print(paste("Erro Padrão (Não Agrupado):", round(se_unpooled, 4)))
+```
+
+<br>
+
+Para conduzir uma metanálise de diferenças de médias brutas, seu banco de dados precisa obrigatoriamente conter seis informações (colunas) de cada estudo incluído:
+
+- $N_{tratamento}$: O tamanho da amostra do grupo tratamento.
+- $mean_{tratamento}$: A média do grupo tratamento.
+- $sd_{tratamento}$: O desvio padrão do grupo tratamento.
+- $N_{controle}$: O tamanho da amostra do grupo controle.
+- $mean_{controle}$: A média do grupo controle.
+- $sd_{controle}$: O desvio padrão do grupo controle.
+
+<br>
+
+| Estudos | n_tratamento | mean_tratamento | sd_tratamento | n_controle | mean_controle | sd_controle |
+|----------|-------|--------------|--------------|--------------| --------------|--------------|
+| Lee (2014)      | 25    | 55    | 1.2 | 25 | 50   | 1.5 |
+| Silva (2016)     | 30    | 60 | 1.3 | 25  | 48  | 1.4 |
+| Ferreira (2020)    | 28    | 61 | 0.9 | 25  | 40  | 1.2 |
+
+<br>
+<br>
+
+### 2.3. Dois grupos com escalas diferentes: Diferença de Médias Padronizadas
+
+#### a) O que é?
+
+A diferença de médias padronizadas (SMD) expressa a diferença entre os grupos em unidades de desvios-padrão, e não na unidade original de medida. Quando usar? É essencial quando os estudos medem o mesmo desfecho (construto), mas usam escalas/instrumentos diferentes.
+
+Exemplo Prático (Depressão): Você quer ver se Terapia Cognitiva Comportamental reduz depressão.Estudo A usou a Escala de Beck (BDI) (vai de 0 a 63).Estudo B usou a Escala de Hamilton (HAM-D) (vai de 0 a 50).Não podemos unir estudos que utilizam Beck com os que utilizam Hamilton sem fazer nenhum tratamento.
+
+A solução é padronizar! Esse procedimento que falamos acima sobre calcular a diferença baseada em unidades de desvio padrão é, em outras palavras, calcular o Cohen's d. Por exemplo, se o resultado for $d = -0.5$, significa que o tratamento reduziu a depressão em "meio desvio padrão", independente da escala usada.
+
+<br>
+
+**Interpretação Visual** (Sobreposição) O Cohen's d nos diz o quanto as curvas dos dois grupos se separaram:
+
+- $d = 0.2$ (Pequeno): Grande sobreposição entre os grupos (as curvas quase se tocam).
+
+- $d = 0.5$ (Médio): Separação visível.
+
+- $d = 0.8$ (Grande): Clara separação entre tratado e controle.
+
+```{r, echo = F, fig.width=10, fig.cap="Representação visual do d de Cohen. Perceba que quanto maior o seu valor, maior a separação entre os grupos. E, assim, consequemente, menor será a área de intersecção entre as curvas. Por isso, que ele representa uma forma de quantificar a diferença entre grupos."}
+
+cor_laranja <- "#E67E22"
+cor_roxo    <- "#2980B9"
+espessura_linha <- 2
+
+# Tema limpo para remover eixos e adicionar a borda preta
+theme_box <- theme_void() +
+  theme(
+    plot.margin = margin(10, 10, 10, 10),
+    panel.border = element_rect(color = "black", fill = NA, size = 1.5), # A caixa preta
+    plot.background = element_rect(fill = "white", color = NA) # Fundo branco limpo
+  )
+
+# --- 2. Função para Gerar Cada Gráfico ---
+plot_simple_cohen <- function(d) {
+  
+  # Sequência do eixo X suficiente para cobrir as duas curvas
+  x_range <- seq(-4, 4 + d, length.out = 1000)
+  
+  # Dados das duas curvas normais
+  df <- data.frame(
+    x = x_range,
+    y_controle = dnorm(x_range, mean = 0, sd = 1),
+    y_tratado  = dnorm(x_range, mean = d, sd = 1)
+  )
+  
+  # Criar o plot
+  p <- ggplot(df, aes(x = x)) +
+    # Linha Laranja (Controle, Média 0)
+    geom_line(aes(y = y_controle), color = cor_laranja, size = espessura_linha) +
+    # Linha Roxa (Tratado, Média d)
+    geom_line(aes(y = y_tratado), color = cor_roxo, size = espessura_linha) +
+    
+    # Rótulo no canto superior esquerdo
+    # Posicionamos fixo em x=-3 e y=0.35 para ficar no canto
+    annotate("text", x = -3.2, y = 0.35, label = paste0("d=", d), 
+             hjust = 0, size = 8, fontface = "plain") +
+    
+    # Aplicar o tema limpo com borda
+    theme_box +
+    # Fixar limites para garantir que o texto fique sempre no mesmo lugar relativo
+    coord_cartesian(xlim = c(-3.5, 3.5 + d), ylim = c(0, 0.42), expand = FALSE)
+
+  return(p)
+}
+
+# --- 3. Gerar os 4 Gráficos ---
+p1 <- plot_simple_cohen(0.5)
+p2 <- plot_simple_cohen(1)
+p3 <- plot_simple_cohen(2)
+p4 <- plot_simple_cohen(3)
+
+# --- 4. Combinar em Grid 2x2 ---
+# Usamos patchwork para juntar tudo
+final_plot <- (p1 + p2) / (p3 + p4)
+
+# Exibir
+print(final_plot)
+```
+
+
+#### b) Erro Padrão
+
+##### Fórmula Mais Comum (Homocedasticidade)
+
+Essa fórmula para o cálculo do d de Cohen utiliza o desvio padrão agrupado. E, como falamos antes, ele assume que ambos os desvios padrões são iguais. Porém, essa fórmula acaba sendo mais utilizada.
+
+$$ d = \frac{\bar{x}_1 - \bar{x}_2}{s_{pooled}} $$
+
+```{r}
+# Instalar pacote se necessário: install.packages("esc")
+library(esc)
+
+effect_size <- esc_mean_sd(
+  grp1m = 15, grp1sd = 5, grp1n = 50,
+  grp2m = 20, grp2sd = 5, grp2n = 50
+)
+
+# O resultado mostra o 'es' (Effect Size) d de Cohen
+print(effect_size)
+```
+
+##### Fórmulas para Heterocedasticidade
+
+Existem duas formas de calcular o d de Cohen assumindo que os desvios não são os mesmos. Podemos fazer uma média entre os dois.
+
+$$ d = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{s_1^2 + s_2^2}{2}}} $$
+Uma forma mais comum e segura de fazer isso é utilizando uma métrica chamada Delta de Glass. Invés de dividir pela média de dois desvios padrões, dividimos apenas pelo desvio do grupo controle. 
+
+$$ \Delta_{\text{Glass}} = \frac{\bar{x}_1 - \bar{x}_2}{SD_{\text{controle}}} $$
+
+Embora seja comum assumir variâncias iguais (Homocedasticidade) e usar o desvio padrão agrupado (Pooled) para calcular o d de Cohen, isso pode ser um erro se o tratamento alterar a variabilidade dos dados.
+
+#### c) Correção para Tamanho Amostral Pequeno
+
+Em estudos com amostras pequenas (especialmente quando o $n$ total $\le 20$), o cálculo padrão do SMD tende a superestimar o verdadeiro tamanho do efeito na população. Isso ocorre porque o desvio padrão da amostra, usado no denominador do Cohen’s $d$, tende a subestimar o desvio padrão real da população nesses casos.Como a metanálise frequentemente lida com estudos pequenos, usar o SMD bruto pode inflar artificialmente o resultado final da intervenção.
+
+Para corrigir esse viés, aplicamos um fator de correção ($J$) ao SMD bruto. O resultado é uma métrica ajustada chamada Hedges' $g$.
+
+$$g = \text{Cohen's } d \times J$$
+
+O fator de correção $J$ é sempre menor que 1, o que "puxa" o valor do efeito ligeiramente para baixo.
+
+- Quanto menor a amostra, maior é a correção (o $g$ fica perceptivelmente menor que o $d$). 
+
+- Quanto maior a amostra, o fator de correção se aproxima de 1 e a diferença entre $g$ e $d$ torna-se irrelevante.
+
+```{r, echo = F, fig.width=8, fig.height= 6,fig.cap="Convergência do g de Hedges para o d de Cohen a medida que o tamanho amostral aumenta. Ou seja, a diminuição do tamanho do efeito ocorre apenas em tamanhos amostrais pequenos."}
+# --- 1. Gerando os Dados ---
+# Definimos uma sequência de tamanhos de amostra
+sample_sizes <- seq(10, 200, by = 5)
+
+# Definimos o tamanho de efeito fixo (Cohen's d)
+cohen_d <- 0.5
+
+# Calculamos o Hedges' g correspondente para cada tamanho de amostra
+# Fórmula: g = d * (1 - 3/(4N - 9))
+g_values <- cohen_d * (1 - (3 / (4 * sample_sizes - 9)))
+
+# Criamos um data frame (o ggplot precisa disso)
+df_plot <- data.frame(
+  N = sample_sizes,
+  EffectSize = g_values
+)
+
+# --- 2. Criando o Gráfico com ggplot2 ---
+ggplot(df_plot, aes(x = N, y = EffectSize)) +
+  
+  # Adiciona a linha de referência do Cohen's d (Tracejada Vermelha)
+  geom_hline(aes(yintercept = cohen_d, color = "Cohen's d (SMD)"), 
+             linetype = "dashed", size = 1) +
+  
+  # Adiciona a linha da curva do Hedges' g (Sólida Azul)
+  geom_line(aes(color = "Hedges' g"), size = 1.2) +
+  
+  # --- Estilização e Cores ---
+  # Define as cores manualmente para criar a legenda automaticamente
+  scale_color_manual(name = "Métrica", 
+                     values = c("Hedges' g" = "#2E86C1",      # Azul profissional
+                                "Cohen's d (SMD)" = "#E74C3C")) + # Vermelho suave
+  
+  # --- Textos e Títulos ---
+  labs(
+    x = "Tamanho Total da Amostra (N)",
+    y = "Tamanho do Efeito Estimado"
+  ) +
+  
+  # --- Ajuste de Escala (Zoom) ---
+  # Focamos no intervalo relevante para ver a curva aproximando
+  coord_cartesian(ylim = c(0.48, 0.505)) +
+  
+  # --- Tema Visual ---
+  theme_minimal() + # Tema limpo
+  theme(
+    legend.position = "bottom", # Legenda na parte inferior
+    plot.title = element_text(face = "bold", size = 14),
+    axis.title = element_text(face = "bold")
+  )
+```
+
+
+A fórmula de aproximação mais comum para esse fator depende do tamanho total da amostra ($N$):
+
+$$J \approx 1 - \frac{3}{4N - 9}$$
+```{r}
+# --- 1. Suponha um estudo pequeno
+smd_bruto <- 0.5   # Cohen's d
+n_total   <- 10    # Amostra extremamente pequena (5 em cada grupo)
+
+# --- 2. Cálculo Manual do Hedges' g ---
+# Fator de correção J
+correction_factor <- 1 - (3 / (4 * n_total - 9))
+
+# Hedges' g
+hedges_g_manual <- smd_bruto * correction_factor
+
+cat(sprintf("SMD Bruto (Cohen's d): %.4f\n", smd_bruto))
+# O valor de g é menor, corrigindo a superestimação!!
+cat(sprintf("Hedges' g (N=%d):      %.4f\n", n_total, hedges_g_manual))
+
+# --- 3. Cálculo usando pacote 'esc' (Recomendado) ---
+library(esc)
+hedges_g(d = smd_bruto, totaln = n_total)
+```
+
+
+Um ponto de confusão comum na literatura científica é a nomenclatura. Muitos autores usam o termo "SMD" ou até mesmo "Cohen's $d$" de forma genérica, mesmo quando aplicaram a correção de Hedges. Ao extrair dados para sua metanálise, é crucial verificar na metodologia do artigo se o valor reportado foi corrigido para viés de pequena amostra.
+
+Para conduzir uma metanálise de diferenças de médias brutas, seu banco de dados precisa obrigatoriamente conter seis informações (colunas) de cada estudo incluído:
+
+- $N_{tratamento}$: O tamanho da amostra do grupo tratamento.
+- $mean_{tratamento}$: A média do grupo tratamento.
+- $sd_{tratamento}$: O desvio padrão do grupo tratamento.
+- $N_{controle}$: O tamanho da amostra do grupo controle.
+- $mean_{controle}$: A média do grupo controle.
+- $sd_{controle}$: O desvio padrão do grupo controle.
+
+<br>
+
+| Estudos | n_tratamento | mean_tratamento | sd_tratamento | n_controle | mean_controle | sd_controle |
+|----------|-------|--------------|--------------|--------------| --------------|--------------|
+| Lee (2014)      | 25    | 55    | 1.2 | 25 | 50   | 1.5 |
+| Silva (2016)     | 30    | 60 | 1.3 | 25  | 48  | 1.4 |
+| Ferreira (2020)    | 28    | 61 | 0.9 | 25  | 40  | 1.2 |
+
+<br>
+<br>
+
+
+### 2.4. Um grupo e duas métricas: Correlação
+
+#### a) O que é?
+
+A correlação é uma medida de tamanho de efeito que expressa a força da relação ("co-variação") entre duas variáveis contínuas.Exemplo Prático: Imagine que queremos investigar a relação entre Idade (anos) e Pressão Arterial Sistólica (mmHg). Se a correlação for positiva e forte, significa que conforme a idade aumenta, a pressão também tende a subir.
+
+A forma mais comum é a Correlação de Pearson ($r$). Uma de suas maiores vantagens é que ela padroniza os dados. Isso significa que não importa a unidade de medida usada no estudo original.Estudo Exemplo, o estudo A mediu altura em centímetros. Estudo B mediu altura em polegadas.Uma correlação de $r=0.50$ no Estudo A é matematicamente idêntica a $r=0.50$ no Estudo B, permitindo que comparemos os efeitos diretamente.
+
+A correlação de Pearson é calculada da seguinte forma:
+
+
+$$ r_{xy} = \frac{\sigma^2_{xy}}{\sigma_x \sigma_y} $$
+
+<br>
+
+E esse resultado pode ser obtido através da função `cor`: 
+
+```{r}
+x <- c(10, 12, 15, 20, 25)
+y <- c(6, 16, 18, 21, 35)
+
+# Calculate the correlation between x and y
+r <- cor(x,y)
+r
+```
+
+<br>
+
+O erro padrão associado é calculado através da fórmula:
+
+$$ SE_{r_{xy}} = \frac{1 - r^2_{xy}}{\sqrt{n - 2}} $$
+
+#### b) Interpretando magnitude
+
+Cohen propôs regras de bolso para classificar a força dessa relação, mas lembre-se que o contexto clínico importa muito.
+
+- **$r \approx 0.10$** (Efeito Pequeno): A relação existe, mas é sutil e influenciada por muitos outros fatores.
+
+- **$r \approx 0.30$** (Efeito Moderado): A relação é visível a olho nu nos dados.
+
+- **$r \approx 0.50$** (Efeito Grande): Uma variável prediz a outra fortemente.
+
+#### c) O Problema Estatístico e a Solução (Fisher's z)
+
+Assim como acontece com proporções, correlações são "presas" dentro de um intervalo (de -1 a +1).Se um estudo encontra uma correlação muito alta (ex: $r = 0.95$ entre dois testes diagnósticos), a distribuição amostral fica espremida no teto do 1.0, gerando erros padrões incorretos e enviesados.Para corrigir isso na metanálise, usamos a Transformação Fisher's z. Ela "estica" o intervalo de -1 a 1 para infinito, tornando a distribuição Normal e permitindo cálculos precisos de erro padrão.
+
+Aqui está a transformação feita para moldar a distribuição amostral em formato de distribuição normal:
+
+$$ z = 0.5 \log_e \left( \frac{1 + r}{1 - r} \right) $$
+
+```{r}
+# Calculate Fisher's z
+z <- 0.5*log((1+r)/(1-r))
+z
+```
+
+```{r, echo = F, fig.width=10, fig.cap="Por que não podemos usar correlações brutas na metanálise? Aqui fizemos a simulação de 5.000 estudos pequenos (n=30) onde a correlação populacional é alta (0.85). Na distribuição amostral da correlação de Pearson vemos que ela fica assimétrica, espremida à direita. Quando fazemos a transformação de Fischer a distribuição torna-se aproximadamente normal e simétrica, com intervalos indo de menos a mais infinito."}
+set.seed(42)
+
+# --- PARTE 1: Simulação dos Dados ---
+n_sim <- 5000     # Número de estudos simulados
+n_sample <- 30    # Tamanho pequeno de amostra
+true_rho <- 0.85  # Correlação verdadeira ALTA (Glicemia maq A vs maq B)
+
+# Função para simular UM estudo e calcular seu r
+get_simulated_r <- function() {
+  # Gera dados para 30 pacientes com correlação de 0.85
+  data <- mvrnorm(n = n_sample, mu = c(0,0), 
+                  Sigma = matrix(c(1, true_rho, true_rho, 1), 2))
+  cor(data[,1], data[,2]) # Calcula o r de Pearson
+}
+
+# Rodar a simulação 5000 vezes
+sim_r_values <- replicate(n_sim, get_simulated_r())
+
+# Aplicar a transformação de Fisher's z
+sim_z_values <- 0.5 * log((1 + sim_r_values) / (1 - sim_r_values))
+
+# Calcular o valor verdadeiro de z para referência
+true_z <- 0.5 * log((1 + true_rho) / (1 - true_rho))
+
+# Juntar em um data frame
+df_sim <- data.frame(r = sim_r_values, z = sim_z_values)
+
+
+# --- PARTE 2: Gráficos Didáticos ---
+
+# Estética
+cor_raw <- "#E67E22" # Laranja para bruto
+cor_trans <- "#2980B9" # Azul para transformado
+
+# GRÁFICO 1: O Problema (Correlação Bruta r)
+p1 <- ggplot(df_sim, aes(x = r)) +
+  # Histograma
+  geom_histogram(aes(y = ..density..), bins = 35, fill = cor_raw, color = "white", alpha = 0.7) +
+  # Linha de Densidade
+  geom_density(color = "#D35400", size = 1) +
+  # Linha da Verdade (0.85)
+  geom_vline(xintercept = true_rho, linetype = "dashed", color = "black", size = 1) +
+  # O "Muro" do 1.0
+  geom_vline(xintercept = 1.0, color = "#C0392B", size = 1.5) +
+  annotate("text", x = 0.98, y = 1, label = "Paredão (Max 1.0)", color = "#C0392B", angle = 90, hjust=0) +
+  
+  labs(x = "Correlação de Pearson (r)", y = "Densidade") +
+  theme_minimal() +
+  xlim(0.4, 1.05) # Focando na área de interesse
+
+# GRÁFICO 2: A Solução (Fisher's z)
+p2 <- ggplot(df_sim, aes(x = z)) +
+  # Histograma
+  geom_histogram(aes(y = ..density..), bins = 35, fill = cor_trans, color = "white", alpha = 0.7) +
+  # Linha de Densidade
+  geom_density(color = "#1F618D", size = 1) +
+  # Linha da Verdade Transformada
+  geom_vline(xintercept = true_z, linetype = "dashed", color = "black", size = 1) +
+  
+  labs(x = "Valor Transformado (z)", y = "Densidade") +
+  theme_minimal() +
+  xlim(0.4, 2.5) # Ajustando escala para visualizar o z
+
+# --- Combinar ---
+final_plot <- p1 + p2 +
+  plot_annotation(
+    theme = theme(plot.title = element_text(face = "bold", size = 16))
+  )
+
+print(final_plot)
+
+```
+
+Sabendo o tamanho amostral podemos calcular o erro padrão do Z de Fischer através dessa fórmula:
+
+$$ SE_z = \frac{1}{\sqrt{n - 3}} $$
+
+<br>
+
+Para conduzir uma metanálise de correlação, seu banco de dados precisa obrigatoriamente conter duas informações (colunas) de cada estudo incluído:
+
+- $N$: O tamanho da amostra do grupo.
+- $cor$: A correlação entre as medidas.
+
+<br>
+
+| Estudos | n | cor |
+|----------|-------|--------------
+| Lee (2014)      | 25    | 0.88    |
+| Silva (2016)     | 30    | 0.80 |
+| Ferreira (2020)    | 28    | 0.71 |
+
+<br>
+<br>
+
+
+## 3. Dados Binários (Sim/Não, Sucesso/Fracasso)
+
+### 3.1. Grupo Único: Proporções
 
 #### a) O que é?
 
@@ -682,322 +1171,297 @@ Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoria
 - $event$: O número de observações no subgrupo específico ($k$).
 - $n$: O tamanho total da amostra.
 
-## Correlação
+<br>
 
-### a) O que é?
+| Estudos | event | n | 
+|----------|-------|--------------|
+| Lee (2014)      | 25    | 55    | 
+| Silva (2016)     | 30    | 60 | 
+| Ferreira (2020)    | 28    | 61 |
 
-A correlação é uma medida de tamanho de efeito que expressa a força da relação ("co-variação") entre duas variáveis contínuas.Exemplo Prático: Imagine que queremos investigar a relação entre Idade (anos) e Pressão Arterial Sistólica (mmHg). Se a correlação for positiva e forte, significa que conforme a idade aumenta, a pressão também tende a subir.
+<br>
+<br>
 
-A forma mais comum é a Correlação de Pearson ($r$). Uma de suas maiores vantagens é que ela padroniza os dados. Isso significa que não importa a unidade de medida usada no estudo original.Estudo Exemplo, o estudo A mediu altura em centímetros. Estudo B mediu altura em polegadas.Uma correlação de $r=0.50$ no Estudo A é matematicamente idêntica a $r=0.50$ no Estudo B, permitindo que comparemos os efeitos diretamente.
+### 3.2. Razão de dois Grupos: Razão de Riscos (Risk Ratio)
 
-A correlação de Pearson é calculada da seguinte forma:
+#### a) O que é?
 
+A Razão de Risco (também conhecida como Risco Relativo ou Risk Ratio - RR) é uma medida de efeito intuitiva e amplamente utilizada em pesquisas médicas, especialmente em ensaios clínicos controlados com desfechos binários (ou dicotômicos), como "morte vs. sobrevida" ou "doença vs. sem doença".
 
-$$ r_{xy} = \frac{\sigma^2_{xy}}{\sigma_x \sigma_y} $$
+O RR compara a probabilidade de um evento ocorrer no grupo tratado versus no grupo controle. Os dados brutos são geralmente extraídos de uma tabela $2 \times 2$:
+
+|                  | Evento ($E$) | Não Evento ($\neg E$) | Total      |
+| :--------------- | :----------: | :-------------------: | :--------: |
+| **Tratamento** | $a$          | $b$                   | $n_{trat}$ |
+| **Controle** | $c$          | $d$                   | $n_{cont}$ |
+
+O risco em cada grupo é calculado dividindo o número de eventos pelo total de pacientes naquele grupo. Assim, a Razão de Risco é definida como:
+
+$$ RR = \frac{p_{trat}}{p_{cont}} = \frac{a / n_{trat}}{c / n_{cont}} $$
+
+- Se $RR = 1$: Não há diferença entre os grupos (hipótese nula).
+- Se $RR < 1$: O tratamento reduz o risco do evento (fator de proteção).
+- Se $RR > 1$: O tratamento aumenta o risco do evento (fator de risco).
+
+#### b) Novamente... O problema da assimetria 😁
+
+Embora o RR seja intuitivo para interpretação clínica, ele possui propriedades estatísticas que dificultam a metanálise direta. Efeitos de mesma magnitude não são equidistantes em torno do valor nulo (1).
+
+Um efeito benéfico que reduz o risco pela metade resulta em um RR de 0,5. O efeito oposto (dobrar o risco) resulta em um RR de 2,0 (e não 1,5).
+
+Isso significa que a distribuição das Razões de Risco não segue uma curva normal. Para corrigir isso e garantir a normalidade assintótica necessária para os cálculos de ponderação na metanálise, realizamos uma transformação logarítmica natural:
+
+$$ \text{Log}RR = \ln(RR) $$
+
+Nesta escala logarítmica, os valores são centralizados em 0 (nenhum efeito) e tornam-se simétricos (ex: $\ln(0,5) \approx -0,69$ e $\ln(2) \approx +0,69$).
+
+#### c) Erro Padrão
+
+$$ SE_{LogRR} = \sqrt{\frac{1}{a} - \frac{1}{n_{trat}} + \frac{1}{c} - \frac{1}{n_{cont}}} $$
+
+```{r}
+# --- 1. Dados do Estudo (Tabela 2x2) ---
+events_treat <- 46    # (a) Eventos no grupo tratamento
+n_treat      <- 248   # (n1) Total grupo tratamento
+events_ctrl  <- 77    # (c) Eventos no grupo controle
+n_ctrl       <- 251   # (n2) Total grupo controle
+
+# --- 2. Cálculo dos Riscos Individuais ---
+risk_treat <- events_treat / n_treat
+risk_ctrl  <- events_ctrl / n_ctrl
+
+# --- 3. Cálculo da Razão de Risco (RR) ---
+RR <- risk_treat / risk_ctrl
+
+# --- 4. Transformação Logarítmica (Para a Metanálise) ---
+log_RR <- log(RR)
+
+# --- 5. Cálculo do Erro Padrão (SE) na escala Log ---
+# Fórmula: SE = sqrt(1/a + 1/c - 1/n1 - 1/n2)
+se_log_rr <- sqrt((1/events_treat) + (1/events_ctrl) - (1/n_treat) - (1/n_ctrl))
+
+# --- Exibindo Resultados ---
+print(sprintf("Razão de Risco (RR): %.4f\n", RR))
+print(sprintf("Log Razão de Risco:  %.4f\n", log_RR))
+print(sprintf("Erro Padrão (Log):   %.4f\n", se_log_rr))
+```
 
 <br>
 
-E esse resultado pode ser obtido através da função `cor`: 
+Para conduzir uma metanálise de razão de riscos, seu banco de dados precisa obrigatoriamente conter quatro informações (colunas) de cada estudo incluído:
 
-```{r}
-x <- c(10, 12, 15, 20, 25)
-y <- c(6, 16, 18, 21, 35)
-
-# Calculate the correlation between x and y
-r <- cor(x,y)
-r
-```
+- $event_{tratamento}$: O número de eventos no grupo tratamento.
+- $n_{tratamento}$: O tamanho total do grupo tratamento.
+- $event_{controle}$: O número de eventos no grupo controle.
+- $n_{controle}$: O tamanho total do grupo controle.
 
 <br>
 
-O erro padrão associado é calculado através da fórmula:
-
-$$ SE_{r_{xy}} = \frac{1 - r^2_{xy}}{\sqrt{n - 2}} $$
-
-### b) Interpretando magnitude
-
-Cohen propôs regras de bolso para classificar a força dessa relação, mas lembre-se que o contexto clínico importa muito.
-
-- **$r \approx 0.10$** (Efeito Pequeno): A relação existe, mas é sutil e influenciada por muitos outros fatores.
-
-- **$r \approx 0.30$** (Efeito Moderado): A relação é visível a olho nu nos dados.
-
-- **$r \approx 0.50$** (Efeito Grande): Uma variável prediz a outra fortemente.
-
-### c) O Problema Estatístico e a Solução (Fisher's z)
-
-Assim como acontece com proporções, correlações são "presas" dentro de um intervalo (de -1 a +1).Se um estudo encontra uma correlação muito alta (ex: $r = 0.95$ entre dois testes diagnósticos), a distribuição amostral fica espremida no teto do 1.0, gerando erros padrões incorretos e enviesados.Para corrigir isso na metanálise, usamos a Transformação Fisher's z. Ela "estica" o intervalo de -1 a 1 para infinito, tornando a distribuição Normal e permitindo cálculos precisos de erro padrão.
-
-Aqui está a transformação feita para moldar a distribuição amostral em formato de distribuição normal:
-
-$$ z = 0.5 \log_e \left( \frac{1 + r}{1 - r} \right) $$
-
-```{r}
-# Calculate Fisher's z
-z <- 0.5*log((1+r)/(1-r))
-z
-```
-
-```{r, echo = F, fig.width=10, fig.cap="Por que não podemos usar correlações brutas na metanálise? Aqui fizemos a simulação de 5.000 estudos pequenos (n=30) onde a correlação populacional é alta (0.85). Na distribuição amostral da correlação de Pearson vemos que ela fica assimétrica, espremida à direita. Quando fazemos a transformação de Fischer a distribuição torna-se aproximadamente normal e simétrica, com intervalos indo de menos a mais infinito."}
-set.seed(42)
-
-# --- PARTE 1: Simulação dos Dados ---
-n_sim <- 5000     # Número de estudos simulados
-n_sample <- 30    # Tamanho pequeno de amostra
-true_rho <- 0.85  # Correlação verdadeira ALTA (Glicemia maq A vs maq B)
-
-# Função para simular UM estudo e calcular seu r
-get_simulated_r <- function() {
-  # Gera dados para 30 pacientes com correlação de 0.85
-  data <- mvrnorm(n = n_sample, mu = c(0,0), 
-                  Sigma = matrix(c(1, true_rho, true_rho, 1), 2))
-  cor(data[,1], data[,2]) # Calcula o r de Pearson
-}
-
-# Rodar a simulação 5000 vezes
-sim_r_values <- replicate(n_sim, get_simulated_r())
-
-# Aplicar a transformação de Fisher's z
-sim_z_values <- 0.5 * log((1 + sim_r_values) / (1 - sim_r_values))
-
-# Calcular o valor verdadeiro de z para referência
-true_z <- 0.5 * log((1 + true_rho) / (1 - true_rho))
-
-# Juntar em um data frame
-df_sim <- data.frame(r = sim_r_values, z = sim_z_values)
-
-
-# --- PARTE 2: Gráficos Didáticos ---
-
-# Estética
-cor_raw <- "#E67E22" # Laranja para bruto
-cor_trans <- "#2980B9" # Azul para transformado
-
-# GRÁFICO 1: O Problema (Correlação Bruta r)
-p1 <- ggplot(df_sim, aes(x = r)) +
-  # Histograma
-  geom_histogram(aes(y = ..density..), bins = 35, fill = cor_raw, color = "white", alpha = 0.7) +
-  # Linha de Densidade
-  geom_density(color = "#D35400", size = 1) +
-  # Linha da Verdade (0.85)
-  geom_vline(xintercept = true_rho, linetype = "dashed", color = "black", size = 1) +
-  # O "Muro" do 1.0
-  geom_vline(xintercept = 1.0, color = "#C0392B", size = 1.5) +
-  annotate("text", x = 0.98, y = 1, label = "Paredão (Max 1.0)", color = "#C0392B", angle = 90, hjust=0) +
-  
-  labs(x = "Correlação de Pearson (r)", y = "Densidade") +
-  theme_minimal() +
-  xlim(0.4, 1.05) # Focando na área de interesse
-
-# GRÁFICO 2: A Solução (Fisher's z)
-p2 <- ggplot(df_sim, aes(x = z)) +
-  # Histograma
-  geom_histogram(aes(y = ..density..), bins = 35, fill = cor_trans, color = "white", alpha = 0.7) +
-  # Linha de Densidade
-  geom_density(color = "#1F618D", size = 1) +
-  # Linha da Verdade Transformada
-  geom_vline(xintercept = true_z, linetype = "dashed", color = "black", size = 1) +
-  
-  labs(x = "Valor Transformado (z)", y = "Densidade") +
-  theme_minimal() +
-  xlim(0.4, 2.5) # Ajustando escala para visualizar o z
-
-# --- Combinar ---
-final_plot <- p1 + p2 +
-  plot_annotation(
-    theme = theme(plot.title = element_text(face = "bold", size = 16))
-  )
-
-print(final_plot)
-
-```
-
-Sabendo o tamanho amostral podemos calcular o erro padrão do Z de Fischer através dessa fórmula:
-
-$$ SE_z = \frac{1}{\sqrt{n - 3}} $$
+| Estudos | event_tratamento | n_tratamento | event_controle | n_controle |
+|----------|-------|--------------|-------|--------------|
+| Lee (2014)      | 25    | 55    | 20    | 55    | 
+| Silva (2016)     | 30    | 60 | 22    | 60    |
+| Ferreira (2020)    | 28    | 61 | 21    | 61    |
 
 <br>
+<br>
 
-Para o seu banco de dados de estudos você só precisa das colunas:
+### 3.3. Outra razão de dois grupos: Razão de Chances (Odds Ratio)
 
-- cor (o valor de r de Pearson): A conversão em Z de Fischer será feita internamente. 
-- n (tamanho da amostra)
+#### a) O que é chance?
 
-## Diferença de Médias Brutas (Não Padronizadas)
+Enquanto o Risk Ratio compara probabilidades (riscos), o Odds Ratio (OR), ou Razão de Chances, compara... chances (Odds). Embora pareçam sinônimos na linguagem coloquial, em estatística, "Risco" e "Chance" são matematicamente distintos.
 
-### O que é?
+A intuição por trás do Odd é a razão entre o sucesso e o fracasso (ou evento e não-evento).Imagine que estamos analisando um jogo ou um tratamento.🔵 = Vitória (Evento/Sucesso)🔴 = Derrota (Não-Evento/Falha)
 
-A Diferença de Médias (MD) bruta é a forma mais simples e intuitiva de medir um efeito. Ela é simplesmente a subtração da média do grupo intervenção pela média do grupo controle.
+- **Probabilidade (Risco)**: É o número de vitórias dividido pelo total de partidas.Vamos supor que tivemos 3 vitórias e 2 derrotas (🔵🔵🔵🔴🔴)
 
-$$ MD_{between} = \bar{x}_1 - \bar{x}_2 $$
-```{r}
-# Grupo 1 (Intervenção): Média 130 mmHg, SD 15
-# Grupo 2 (Controle): Média 140 mmHg, SD 15
+$$P(\text{Vencer}) = \frac{3 \text{ (azuis)}}{5 \text{ (total)}} = 0,6 \text{ ou } 60\%$$
 
-n1 <- 20; m1 <- 130; s1 <- 15
-n2 <- 20; m2 <- 140; s2 <- 15
+- **Chance (Odd)**: É o número de vitórias dividido pelo número de derrotas. O denominador não inclui o total, apenas o complemento.🔵🔵🔵 🆚 🔴🔴
 
-MD <- m1 - m2
-print(paste("Diferença Média (MD):", MD, "mmHg"))
-```
+$$\text{Odd} = \frac{3 \text{ (azuis)}}{2 \text{ (vermelhos)}} = 1,5$$
 
-Quando usar? Só podemos usar a MD quando todos os estudos incluídos na metanálise mediram o desfecho exatamente na mesma escala/unidade. Exemplo Prático (Pressão Arterial): Imagine que você está estudando um novo anti-hipertensivo.
+Dizemos que a chance é de "3 para 2" (3:2).
 
-- Estudo A mediu a pressão arterial sistólica em mmHg.
+Mais formalmente podemos pensar em Razão de Chances a partir da tabela $2 \times 2$:
 
-- Estudo B mediu a pressão arterial sistólica em mmHg.
+|                  | Evento ($E$) | Não Evento ($\neg E$) |
+| :--------------- | :----------: | :-------------------: | 
+| **Tratamento** | $a$          | $b$                   | 
+| **Controle** | $c$          | $d$                   | 
 
-Como ambos falam a "mesma língua" (mmHg), podemos calcular que o remédio baixou a pressão em média -10 mmHg. Isso é uma diferença de média bruta. 
+Analisando a tabela vemos que temos duas razões de chances. A do evento ocorrer no grupo tratado e de ocorrer no grupo controle:
 
+$$ \text{Odd}_{trat} = \frac{a}{b} \quad \text{e} \quad \text{Odd}_{cont} = \frac{c}{d} $$
 
-### Erro Padrão
+#### b) E novamente... A assimetria!
 
-#### a) Entendendo a Problemática
+Assim como no Risco Relativo, os Odds sofrem com problemas de assimetria.
 
-Nós temos duas formas de calcular o erro padrão, a depender se considerarmos que as duas medidas pertencentes a uma mesma população ou duas populações diferentes. No primeiro caso, consideramos que o desvio padrão verdadeiro de cada grupo é igual entre si. Ou seja, está é um pressuposto estatístico de homocedasticidade. No segundo caso os desvio padrões não tem o mesmo valor, então estamos falando de heterocedasticidade. 
+- Chance de 1 para 4 (🔵🔴🔴🔴🔴): $1/4 = 0,25$
 
-Em cenários de desbalanceamento amostral ($n_1 \neq n_2$), a abordagem agrupada falha em capturar a verdadeira incerteza da estimativa. Isso gera um erro comum em metanálise, já que o estudo com menor número de pacientes geralmente possui a maior variância (grande variabilidade em amostra pequena). Isso faz com quê:
+- Chance de 4 para 1 (🔵🔵🔵🔵🔴): $4/1 = 4,00$
 
-- **O Erro Matemático:** O método agrupado (pooled) ignora a alta variância do grupo pequeno, "diluindo-a" com a variância menor do grupo grande.
+Note que o inverso de 0,25 é 4. Em uma escala linear, 0,25 está muito perto de 1 (o valor nulo), enquanto 4 está muito longe. Para resolver isso e realizar a metanálise, usamos a transformação logarítmica. O logaritmo do Odd é chamado de Logit.
 
-- **A Consequência:** O Erro Padrão calculado é artificialmente pequeno.
+$$\text{Logit} = \ln(\text{Odd}) = \ln\left(\frac{p}{1-p}\right)$$
 
-- **Impacto na Meta-Análise:** O algoritmo de inverso da variância entende que este estudo é extremamente preciso (o que é falso) e atribui a ele um peso desproporcionalmente alto. Um estudo "ruidoso" e de baixa qualidade estatística passa a dominar a estimativa do efeito global.
+Ao aplicar o Log, tornamos a distribuição simétrica ao redor de zero: 
 
-#### b) Assumindo o mesmo desvio padrão (homocedasticidade)
+- $\ln(0,25) \approx -1,38$
 
-Calcula-se o desvio padrão agrupado ($s_{pooled}$) através da fórmula
+- $\ln(4,00) \approx +1,38$
 
-$$ s_{pooled} = \sqrt{\frac{(n_1 - 1)s^2_1 + (n_2 - 1)s^2_2}{n_1 + n_2 - 2}} $$
-Então, utilizamos esse desvio padrão agrupado para calcular o erro padrão.
-$$ SE_{MD_{between}} = s_{pooled} \sqrt{\frac{1}{n_1} + \frac{1}{n_2}} $$
+#### c) E se divirmos duas chances? Temos as razões de chances!
 
-```{r}
-s_pooled <- sqrt( (((n1-1)*s1^2) + ((n2-1)*s2^2)) / (n1 + n2 - 2) )
+O Odds Ratio (OR) é simplesmente a chance do evento no grupo tratado dividida pela chance do evento no grupo controle.
 
-se_md <- s_pooled * sqrt((1/n1) + (1/n2))
-print(paste("Erro Padrão (Agrupado):", round(se_md, 3)))
-```
+$$ OR = \frac{\text{Odd}_{trat}}{\text{Odd}_{cont}} = \frac{a/b}{c/d} = \frac{a \times d}{b \times c} $$
 
+- **Interpretação**: O OR indica a força de associação entre duas variáveis. Por exemplo, se um estudo sobre uma mutação genética e câncer resulta em um $OR = 6,88$, isso significa que a chance de alguém com a mutação ter câncer é 6,88 vezes maior do que alguém sem a mutação.
 
-#### b) Assumindo desvios padrões diferentes (heterocedasticidade)
+#### d) Erro Padrão
 
-$$ SE_{unpooled} = \sqrt{ \frac{s_1^2}{n_1} + \frac{s_2^2}{n_2} } $$
-```{r}
-se_unpooled <- sqrt( (s1^2 / n1) + (s2^2 / n2) )
+E também podemos calcular o erro padrão do odds ratio atravé da fórmula:
 
-print(paste("Erro Padrão (Não Agrupado):", round(se_unpooled, 4)))
-```
-
-## Diferença de Médias Padronizadas
-
-### O que é?
-
-A diferença de médias padronizadas (SMD) expressa a diferença entre os grupos em unidades de desvios-padrão, e não na unidade original de medida. Quando usar? É essencial quando os estudos medem o mesmo desfecho (construto), mas usam escalas/instrumentos diferentes.
-
-Exemplo Prático (Depressão): Você quer ver se Terapia Cognitiva Comportamental reduz depressão.Estudo A usou a Escala de Beck (BDI) (vai de 0 a 63).Estudo B usou a Escala de Hamilton (HAM-D) (vai de 0 a 50).Não podemos unir estudos que utilizam Beck com os que utilizam Hamilton sem fazer nenhum tratamento.
-
-A solução é padronizar! Esse procedimento que falamos acima sobre calcular a diferença baseada em unidades de desvio padrão é, em outras palavras, calcular o Cohen's d. Por exemplo, se o resultado for $d = -0.5$, significa que o tratamento reduziu a depressão em "meio desvio padrão", independente da escala usada.
-
-- **Interpretação Visual** (Sobreposição) O Cohen's d nos diz o quanto as curvas dos dois grupos se separaram:
-
-$d = 0.2$ (Pequeno): Grande sobreposição entre os grupos (as curvas quase se tocam).
-
-$d = 0.5$ (Médio): Separação visível.
-
-$d = 0.8$ (Grande): Clara separação entre tratado e controle.
-
-```{r, echo = F, fig.width=10, fig.cap="Representação visual do d de Cohen. Perceba que quanto maior o seu valor, maior a separação entre os grupos. E, assim, consequemente, menor será a área de intersecção entre as curvas. Por isso, que ele representa uma forma de quantificar a diferença entre grupos."}
-
-cor_laranja <- "#E67E22"
-cor_roxo    <- "#2980B9"
-espessura_linha <- 2
-
-# Tema limpo para remover eixos e adicionar a borda preta
-theme_box <- theme_void() +
-  theme(
-    plot.margin = margin(10, 10, 10, 10),
-    panel.border = element_rect(color = "black", fill = NA, size = 1.5), # A caixa preta
-    plot.background = element_rect(fill = "white", color = NA) # Fundo branco limpo
-  )
-
-# --- 2. Função para Gerar Cada Gráfico ---
-plot_simple_cohen <- function(d) {
-  
-  # Sequência do eixo X suficiente para cobrir as duas curvas
-  x_range <- seq(-4, 4 + d, length.out = 1000)
-  
-  # Dados das duas curvas normais
-  df <- data.frame(
-    x = x_range,
-    y_controle = dnorm(x_range, mean = 0, sd = 1),
-    y_tratado  = dnorm(x_range, mean = d, sd = 1)
-  )
-  
-  # Criar o plot
-  p <- ggplot(df, aes(x = x)) +
-    # Linha Laranja (Controle, Média 0)
-    geom_line(aes(y = y_controle), color = cor_laranja, size = espessura_linha) +
-    # Linha Roxa (Tratado, Média d)
-    geom_line(aes(y = y_tratado), color = cor_roxo, size = espessura_linha) +
-    
-    # Rótulo no canto superior esquerdo
-    # Posicionamos fixo em x=-3 e y=0.35 para ficar no canto
-    annotate("text", x = -3.2, y = 0.35, label = paste0("d=", d), 
-             hjust = 0, size = 8, fontface = "plain") +
-    
-    # Aplicar o tema limpo com borda
-    theme_box +
-    # Fixar limites para garantir que o texto fique sempre no mesmo lugar relativo
-    coord_cartesian(xlim = c(-3.5, 3.5 + d), ylim = c(0, 0.42), expand = FALSE)
-
-  return(p)
-}
-
-# --- 3. Gerar os 4 Gráficos ---
-p1 <- plot_simple_cohen(0.5)
-p2 <- plot_simple_cohen(1)
-p3 <- plot_simple_cohen(2)
-p4 <- plot_simple_cohen(3)
-
-# --- 4. Combinar em Grid 2x2 ---
-# Usamos patchwork para juntar tudo
-final_plot <- (p1 + p2) / (p3 + p4)
-
-# Exibir
-print(final_plot)
-```
-
-
-### Erro Padrão
-
-#### a) Fórmula Mais Comum (Homocedasticidade)
-
-Essa fórmula para o cálculo do d de Cohen utiliza o desvio padrão agrupado. E, como falamos antes, ele assume que ambos os desvios padrões são iguais. Porém, essa fórmula acaba sendo mais utilizada.
-
-$$ d = \frac{\bar{x}_1 - \bar{x}_2}{s_{pooled}} $$
+$$ SE_{\text{Log}OR} = \sqrt{\frac{1}{a} + \frac{1}{b} + \frac{1}{c} + \frac{1}{d}} $$
 
 ```{r}
-# Instalar pacote se necessário: install.packages("esc")
+# --- 1. Dados do Estudo (Tabela 2x2) ---
+# Exemplo: Gene Mutado vs Câncer
+events_treat <- 23    # (a) Com Mutação e Com Câncer
+no_events_treat <- 117 # (b) Com Mutação e SEM Câncer
+events_ctrl  <- 6     # (c) Sem Mutação e Com Câncer
+no_events_ctrl <- 210  # (d) Sem Mutação e SEM Câncer
+
+# --- 2. Cálculo dos Odds Individuais ---
+odd_treat <- events_treat / no_events_treat
+odd_ctrl  <- events_ctrl / no_events_ctrl
+
+# --- 3. Cálculo do Odds Ratio (OR) ---
+OR <- odd_treat / odd_ctrl
+
+# --- 4. Cálculo do Erro Padrão (Log Scale) ---
+log_OR <- log(OR)
+se_log_or <- sqrt((1/events_treat) + (1/no_events_treat) + 
+                  (1/events_ctrl) + (1/no_events_ctrl))
+
+
+
+# --- Exibindo Resultados ---
+cat(sprintf("Odd Tratamento: %.4f\n", odd_treat))
+cat(sprintf("Odd Controle:   %.4f\n", odd_ctrl))
+```
+
+Ou utilizando um pacote específico
+
+```{r}
 library(esc)
-
-effect_size <- esc_mean_sd(
-  grp1m = 15, grp1sd = 5, grp1n = 50,
-  grp2m = 20, grp2sd = 5, grp2n = 50
-)
-
-# O resultado mostra o 'es' (Effect Size) d de Cohen
-print(effect_size)
+esc_2x2(grp1yes = events_treat, grp1no = no_events_treat,
+        grp2yes = events_ctrl, grp2no = no_events_ctrl,
+        es.type = "or")
 ```
 
-#### b) Fórmulas para Heterocedasticidade
+#### e) Diferença de Odds Ratio para Risk Ratio
 
-Existem duas formas de calcular o d de Cohen assumindo que os desvios não são os mesmos. Podemos fazer uma média entre os dois.
+- **Risk Ratio (RR)**: É a razão entre duas probabilidades. É intuitivo. Se $RR = 0,5$, o risco caiu pela metade.
 
-$$ d = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{s_1^2 + s_2^2}{2}}} $$
-Uma forma mais comum e segura de fazer isso é utilizando uma métrica chamada Delta de Glass. Invés de dividir pela média de dois desvios padrões, dividimos apenas pelo desvio do grupo controle. 
+- **Odds Ratio (OR)**: É a razão entre duas chances. É menos intuitivo, mas matematicamente mais robusto (permite regressão logística, simetria logarítmica, etc).
 
-$$ \Delta_{\text{Glass}} = \frac{\bar{x}_1 - \bar{x}_2}{SD_{\text{controle}}} $$
+**Quando eles divergem?** Quando o evento é raro (ex: < 10%), o $OR \approx RR$. Porém, quando o evento é comum, o OR tende a exagerar o efeito percebido. Observe este exemplo prático de um estudo:
 
-Embora seja comum assumir variâncias iguais (Homocedasticidade) e usar o desvio padrão agrupado (Pooled) para calcular o d de Cohen, isso pode ser um erro se o tratamento alterar a variabilidade dos dados.
+- Tratados: 5 mortes em 100 pacientes.
 
+- Controle: 10 mortes em 100 pacientes.
+
+O Risco Relativo é 0,5 (redução de 50%).O Odds Ratio é 0,47.Note que, mesmo com números pequenos, eles já não são idênticos. Em eventos frequentes, essa distância aumenta drasticamente. Porém, fique tranquilo que existem fórmulas para converter OR em RR se necessário!
+
+<br>
+
+Para conduzir uma metanálise de razão de chances, seu banco de dados precisa obrigatoriamente conter quatro informações (colunas) de cada estudo incluído:
+
+- $event_{tratamento}$: O número de eventos no grupo tratamento.
+- $n_{tratamento}$: O tamanho total do grupo tratamento.
+- $event_{controle}$: O número de eventos no grupo controle.
+- $n_{controle}$: O tamanho total do grupo controle.
+
+<br>
+
+| Estudos | event_tratamento | n_tratamento | event_controle | n_controle |
+|----------|-------|--------------|-------|--------------|
+| Lee (2014)      | 25    | 55    | 20    | 55    | 
+| Silva (2016)     | 30    | 60 | 22    | 60    |
+| Ferreira (2020)    | 28    | 61 | 21    | 61    |
+
+<br>
+<br>
+
+### 3.4. Diferença Absoluta de Dois Grupos: Diferença de Riscos (Risk Difference)
+
+Além das razões (divisões), existe uma terceira medida fundamental: a Diferença de Risco (RD), também chamada de Redução **Absoluta** do Risco. Ao contrário do RR e OR que são medidas relativas, a RD é uma medida absoluta. 
+
+Ela é calculada simplesmente subtraindo o risco do grupo controle pelo risco do grupo intervenção.
+
+$$RD = Risk_{trat} - Risk_{cont}$$
+
+**Exemplo**:Imagine um estudo sobre apendicectomia incidental.
+
+- Risco de infecção sem cirurgia: $1,3\%$
+
+- Risco de infecção com cirurgia: $5,3\%$
+
+$$RD = 5,3\% - 1,3\% = +4,0\%$$
+
+Isso significa que a cirurgia adicionou um risco excedente de 4 pontos percentuais.
+
+- Se $RD = 0$: Não há efeito.
+
+- Se $RD < 0$: O tratamento reduziu o risco absoluto.
+
+- Se $RD > 0$: O tratamento aumentou o risco absoluto.
+
+```{r}
+# --- 1. Dados do Estudo (Exemplo Apendicectomia) ---
+# Grupo Tratado (Com cirurgia)
+events_treat <- 53
+n_treat      <- 1000
+non_events_treat <- n_treat - events_treat
+
+# Grupo Controle (Sem cirurgia)
+events_ctrl  <- 13
+n_ctrl       <- 1000
+non_events_ctrl <- n_ctrl - events_ctrl
+
+# --- 2. Cálculo dos Riscos ---
+risk_treat <- events_treat / n_treat
+risk_ctrl  <- events_ctrl / n_ctrl
+
+# --- 3. Cálculo da Diferença de Risco (RD) ---
+RD <- risk_treat - risk_ctrl
+
+
+cat(sprintf("Risco Tratamento: %.1f%%\n", risk_treat * 100))
+cat(sprintf("Risco Controle:   %.1f%%\n", risk_ctrl * 100))
+cat(sprintf("Diferença de Risco (RD): %.3f (ou %.1f p.p.)\n", RD, RD*100))
+```
+
+<br>
+
+Para conduzir uma metanálise de diferença de riscos, seu banco de dados precisa obrigatoriamente conter quatro informações (colunas) de cada estudo incluído:
+
+- $event_{tratamento}$: O número de eventos no grupo tratamento.
+- $n_{tratamento}$: O tamanho total do grupo tratamento.
+- $event_{controle}$: O número de eventos no grupo controle.
+- $n_{controle}$: O tamanho total do grupo controle.
+
+<br>
+
+| Estudos | event_tratamento | n_tratamento | event_controle | n_controle |
+|----------|-------|--------------|-------|--------------|
+| Lee (2014)      | 25    | 55    | 20    | 55    | 
+| Silva (2016)     | 30    | 60 | 22    | 60    |
+| Ferreira (2020)    | 28    | 61 | 21    | 61    |
+
+<br>
+<br>
