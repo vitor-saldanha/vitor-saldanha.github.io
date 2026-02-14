@@ -2625,8 +2625,8 @@ Figure 5: Em cinza temos a distribuição populacional do nível de HbA1c (%), p
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular a média</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>media_calculada <span class="ot">&lt;-</span> <span class="fu">mean</span>(sample)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Média:&quot;</span>, media_calculada))</span></code></pre></div>
-<pre><code>[1] &quot;Média: 20.4075447226527&quot;</code></pre>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>media_calculada</span></code></pre></div>
+<pre><code>[1] 20.40754</code></pre>
 </div>
 <p><br></p>
 <p>Nós já falamos sobre como calcular o erro padrão da média. Mas aqui está relembrando para você!</p>
@@ -2634,8 +2634,8 @@ Figure 5: Em cinza temos a distribuição populacional do nível de HbA1c (%), p
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular o Erro Padrão (SD dividido pela raiz quadrada de n)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>erro_padrao <span class="ot">&lt;-</span> <span class="fu">sd</span>(sample) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">50</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão:&quot;</span>, erro_padrao))</span></code></pre></div>
-<pre><code>[1] &quot;Erro Padrão: 0.579128416999499&quot;</code></pre>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>erro_padrao</span></code></pre></div>
+<pre><code>[1] 0.5791284</code></pre>
 </div>
 <p><br></p>
 <p>Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter três informações (colunas) de cada estudo incluído:</p>
@@ -2690,9 +2690,10 @@ Figure 5: Em cinza temos a distribuição populacional do nível de HbA1c (%), p
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>n2 <span class="ot">&lt;-</span> <span class="dv">20</span>; m2 <span class="ot">&lt;-</span> <span class="dv">140</span>; s2 <span class="ot">&lt;-</span> <span class="dv">15</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>MD <span class="ot">&lt;-</span> m1 <span class="sc">-</span> m2</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Diferença Média (MD):&quot;</span>, MD, <span class="st">&quot;mmHg&quot;</span>))</span></code></pre></div>
-<pre><code>[1] &quot;Diferença Média (MD): -10 mmHg&quot;</code></pre>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>MD</span></code></pre></div>
+<pre><code>[1] -10</code></pre>
 </div>
+<p><br></p>
 <p><strong>Quando usar?</strong> Só podemos usar a MD quando todos os estudos incluídos na metanálise mediram o desfecho exatamente na mesma escala/unidade. Exemplo Prático (Pressão Arterial): Imagine que você está estudando um novo anti-hipertensivo.</p>
 <ul>
 <li><p>Estudo A mediu a pressão arterial sistólica em mmHg.</p></li>
@@ -2700,7 +2701,7 @@ Figure 5: Em cinza temos a distribuição populacional do nível de HbA1c (%), p
 </ul>
 <p>Como ambos falam a “mesma língua” (mmHg), podemos calcular que o remédio baixou a pressão em média -10 mmHg. Isso é uma diferença de média bruta.</p>
 <h4 id="b-erro-padrão">b) Erro Padrão</h4>
-<h5 id="entendendo-a-problemática">Entendendo a Problemática</h5>
+<h5 id="entendendo-a-problemática">❓ Entendendo a Problemática</h5>
 <p>Nós temos duas formas de calcular o erro padrão, a depender se considerarmos que as duas medidas pertencentes a uma mesma população ou duas populações diferentes. No primeiro caso, consideramos que o desvio padrão verdadeiro de cada grupo é igual entre si. Ou seja, está é um pressuposto estatístico de homocedasticidade. No segundo caso os desvio padrões não tem o mesmo valor, então estamos falando de heterocedasticidade.</p>
 <p>Em cenários de desbalanceamento amostral (<span class="math inline">\(n_1 \neq n_2\)</span>), a abordagem agrupada falha em capturar a verdadeira incerteza da estimativa. Isso gera um erro comum em metanálise, já que o estudo com menor número de pacientes geralmente possui a maior variância (grande variabilidade em amostra pequena). Isso faz com quê:</p>
 <ul>
@@ -2708,7 +2709,7 @@ Figure 5: Em cinza temos a distribuição populacional do nível de HbA1c (%), p
 <li><p><strong>A Consequência:</strong> O Erro Padrão calculado é artificialmente pequeno.</p></li>
 <li><p><strong>Impacto na Meta-Análise:</strong> O algoritmo de inverso da variância entende que este estudo é extremamente preciso (o que é falso) e atribui a ele um peso desproporcionalmente alto. Um estudo “ruidoso” e de baixa qualidade estatística passa a dominar a estimativa do efeito global.</p></li>
 </ul>
-<h5 id="assumindo-o-mesmo-desvio-padrão-homocedasticidade">Assumindo o mesmo desvio padrão (homocedasticidade)</h5>
+<h5 id="assumindo-o-mesmo-desvio-padrão-homocedasticidade">⚖️ Assumindo o mesmo desvio padrão (homocedasticidade)</h5>
 <p>Calcula-se o desvio padrão agrupado (<span class="math inline">\(s_{pooled}\)</span>) através da fórmula</p>
 <p><span class="math display">\[ s_{pooled} = \sqrt{\frac{(n_1 - 1)s^2_1 + (n_2 - 1)s^2_2}{n_1 + n_2 - 2}} \]</span>
 <br></p>
@@ -2718,16 +2719,16 @@ Figure 5: Em cinza temos a distribuição populacional do nível de HbA1c (%), p
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>s_pooled <span class="ot">&lt;-</span> <span class="fu">sqrt</span>( (((n1<span class="dv">-1</span>)<span class="sc">*</span>s1<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> ((n2<span class="dv">-1</span>)<span class="sc">*</span>s2<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">/</span> (n1 <span class="sc">+</span> n2 <span class="sc">-</span> <span class="dv">2</span>) )</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>se_md <span class="ot">&lt;-</span> s_pooled <span class="sc">*</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">/</span>n1) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">/</span>n2))</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão (Agrupado):&quot;</span>, <span class="fu">round</span>(se_md, <span class="dv">3</span>)))</span></code></pre></div>
-<pre><code>[1] &quot;Erro Padrão (Agrupado): 4.743&quot;</code></pre>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>se_md</span></code></pre></div>
+<pre><code>[1] 4.743416</code></pre>
 </div>
-<h5 id="assumindo-desvios-padrões-diferentes-heterocedasticidade">Assumindo desvios padrões diferentes (heterocedasticidade)</h5>
+<h5 id="assumindo-desvios-padrões-diferentes-heterocedasticidade">≠ Assumindo desvios padrões diferentes (heterocedasticidade)</h5>
 <span class="math display">\[ SE_{unpooled} = \sqrt{ \frac{s_1^2}{n_1} + \frac{s_2^2}{n_2} } \]</span>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>se_unpooled <span class="ot">&lt;-</span> <span class="fu">sqrt</span>( (s1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> n1) <span class="sc">+</span> (s2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> n2) )</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão (Não Agrupado):&quot;</span>, <span class="fu">round</span>(se_unpooled, <span class="dv">4</span>)))</span></code></pre></div>
-<pre><code>[1] &quot;Erro Padrão (Não Agrupado): 4.7434&quot;</code></pre>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>se_unpooled</span></code></pre></div>
+<pre><code>[1] 4.743416</code></pre>
 </div>
 <p><br></p>
 <p>Para conduzir uma metanálise de diferenças de médias brutas, seu banco de dados precisa obrigatoriamente conter seis informações (colunas) de cada estudo incluído:</p>
@@ -2791,8 +2792,7 @@ Figure 5: Em cinza temos a distribuição populacional do nível de HbA1c (%), p
 </tr>
 </tbody>
 </table>
-<p><br>
-<br></p>
+<p><br></p>
 <h3 id="dois-grupos-com-escalas-diferentes-diferença-de-médias-padronizadas">2.3. Dois grupos com escalas diferentes: Diferença de Médias Padronizadas</h3>
 <h4 id="a-o-que-é-1">a) O que é?</h4>
 <p>A diferença de médias padronizadas (SMD) expressa a diferença entre os grupos em unidades de desvios-padrão, e não na unidade original de medida. Quando usar? É essencial quando os estudos medem o mesmo desfecho (construto), mas usam escalas/instrumentos diferentes.</p>
@@ -2814,32 +2814,10 @@ Figure 6: Representação visual do d de Cohen. Perceba que quanto maior o seu v
 </div>
 </div>
 <h4 id="b-erro-padrão-1">b) Erro Padrão</h4>
-<h5 id="fórmula-mais-comum-homocedasticidade">Fórmula Mais Comum (Homocedasticidade)</h5>
+<h5 id="fórmula-mais-comum-homocedasticidade">📌 Fórmula Mais Comum (Homocedasticidade)</h5>
 <p>Essa fórmula para o cálculo do d de Cohen utiliza o desvio padrão agrupado. E, como falamos antes, ele assume que ambos os desvios padrões são iguais. Porém, essa fórmula acaba sendo mais utilizada.</p>
 <p><span class="math display">\[ d = \frac{\bar{x}_1 - \bar{x}_2}{s_{pooled}} \]</span></p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Instalar pacote se necessário: install.packages(&quot;esc&quot;)</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(esc)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>effect_size <span class="ot">&lt;-</span> <span class="fu">esc_mean_sd</span>(</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">grp1m =</span> <span class="dv">15</span>, <span class="at">grp1sd =</span> <span class="dv">5</span>, <span class="at">grp1n =</span> <span class="dv">50</span>,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">grp2m =</span> <span class="dv">20</span>, <span class="at">grp2sd =</span> <span class="dv">5</span>, <span class="at">grp2n =</span> <span class="dv">50</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># O resultado mostra o &#39;es&#39; (Effect Size) d de Cohen</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(effect_size)</span></code></pre></div>
-<pre><code>
-Effect Size Calculation for Meta Analysis
-
-     Conversion: mean and sd to effect size d
-    Effect Size:  -1.0000
- Standard Error:   0.2121
-       Variance:   0.0450
-       Lower CI:  -1.4158
-       Upper CI:  -0.5842
-         Weight:  22.2222</code></pre>
-</div>
-<h5 id="fórmulas-para-heterocedasticidade">Fórmulas para Heterocedasticidade</h5>
+<h5 id="fórmulas-para-heterocedasticidade">👀 Fórmulas para Heterocedasticidade</h5>
 <p>Existem duas formas de calcular o d de Cohen assumindo que os desvios não são os mesmos. Podemos fazer uma média entre os dois.</p>
 <p><span class="math display">\[ d = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{s_1^2 + s_2^2}{2}}} \]</span>
 Uma forma mais comum e segura de fazer isso é utilizando uma métrica chamada Delta de Glass. Invés de dividir pela média de dois desvios padrões, dividimos apenas pelo desvio do grupo controle.</p>
@@ -2855,8 +2833,8 @@ Uma forma mais comum e segura de fazer isso é utilizando uma métrica chamada D
 <li><p>Quanto maior a amostra, o fator de correção se aproxima de 1 e a diferença entre <span class="math inline">\(g\)</span> e <span class="math inline">\(d\)</span> torna-se irrelevante.</p></li>
 </ul>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-13"></span>
-<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-13-1.png" alt="Convergência do g de Hedges para o d de Cohen a medida que o tamanho amostral aumenta. Ou seja, a diminuição do tamanho do efeito ocorre apenas em tamanhos amostrais pequenos." width="768" />
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-12"></span>
+<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-12-1.png" alt="Convergência do g de Hedges para o d de Cohen a medida que o tamanho amostral aumenta. Ou seja, a diminuição do tamanho do efeito ocorre apenas em tamanhos amostrais pequenos." width="768" />
 <p class="caption">
 Figure 7: Convergência do g de Hedges para o d de Cohen a medida que o tamanho amostral aumenta. Ou seja, a diminuição do tamanho do efeito ocorre apenas em tamanhos amostrais pequenos.
 </p>
@@ -2865,26 +2843,18 @@ Figure 7: Convergência do g de Hedges para o d de Cohen a medida que o tamanho 
 <p>A fórmula de aproximação mais comum para esse fator depende do tamanho total da amostra (<span class="math inline">\(N\)</span>):</p>
 <span class="math display">\[J \approx 1 - \frac{3}{4N - 9}\]</span>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. Suponha um estudo pequeno</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>smd_bruto <span class="ot">&lt;-</span> <span class="fl">0.5</span>   <span class="co"># Cohen&#39;s d</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>n_total   <span class="ot">&lt;-</span> <span class="dv">10</span>    <span class="co"># Amostra extremamente pequena (5 em cada grupo)</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2. Cálculo Manual do Hedges&#39; g ---</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Fator de correção J</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>correction_factor <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="dv">3</span> <span class="sc">/</span> (<span class="dv">4</span> <span class="sc">*</span> n_total <span class="sc">-</span> <span class="dv">9</span>))</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Hedges&#39; g</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>hedges_g_manual <span class="ot">&lt;-</span> smd_bruto <span class="sc">*</span> correction_factor</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;SMD Bruto (Cohen&#39;s d): %.4f</span><span class="sc">\n</span><span class="st">&quot;</span>, smd_bruto))</span></code></pre></div>
-<pre><code>SMD Bruto (Cohen&#39;s d): 0.5000</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># O valor de g é menor, corrigindo a superestimação!!</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Hedges&#39; g (N=%d):      %.4f</span><span class="sc">\n</span><span class="st">&quot;</span>, n_total, hedges_g_manual))</span></code></pre></div>
-<pre><code>Hedges&#39; g (N=10):      0.4516</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 3. Cálculo usando pacote &#39;esc&#39; (Recomendado) ---</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(esc)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hedges_g</span>(<span class="at">d =</span> smd_bruto, <span class="at">totaln =</span> n_total)</span></code></pre></div>
-<pre><code>[1] 0.4516129</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>smd_bruto <span class="ot">&lt;-</span> <span class="fl">0.5</span>   <span class="co"># Cohen&#39;s d</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>n_total   <span class="ot">&lt;-</span> <span class="dv">10</span>    <span class="co"># Amostra extremamente pequena (5 em cada grupo)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fator de correção J</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>correction_factor <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> (<span class="dv">3</span> <span class="sc">/</span> (<span class="dv">4</span> <span class="sc">*</span> n_total <span class="sc">-</span> <span class="dv">9</span>))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Hedges&#39; g</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>hedges_g_manual <span class="ot">&lt;-</span> smd_bruto <span class="sc">*</span> correction_factor</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">smd_bruto =</span> smd_bruto, <span class="at">hedges_g =</span> hedges_g_manual)</span></code></pre></div>
+<pre><code>smd_bruto  hedges_g 
+0.5000000 0.4516129 </code></pre>
 </div>
 <p>Um ponto de confusão comum na literatura científica é a nomenclatura. Muitos autores usam o termo “SMD” ou até mesmo “Cohen’s <span class="math inline">\(d\)</span>” de forma genérica, mesmo quando aplicaram a correção de Hedges. Ao extrair dados para sua metanálise, é crucial verificar na metodologia do artigo se o valor reportado foi corrigido para viés de pequena amostra.</p>
 <p>Para conduzir uma metanálise de diferenças de médias brutas, seu banco de dados precisa obrigatoriamente conter seis informações (colunas) de cada estudo incluído:</p>
@@ -2959,12 +2929,12 @@ Figure 7: Convergência do g de Hedges para o d de Cohen a medida que o tamanho 
 <p><br></p>
 <p>E esse resultado pode ser obtido através da função <code>cor</code>:</p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">15</span>, <span class="dv">20</span>, <span class="dv">25</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">16</span>, <span class="dv">18</span>, <span class="dv">21</span>, <span class="dv">35</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the correlation between x and y</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">cor</span>(x,y)</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>r</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">15</span>, <span class="dv">20</span>, <span class="dv">25</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">16</span>, <span class="dv">18</span>, <span class="dv">21</span>, <span class="dv">35</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Correlação entre x e y </span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">cor</span>(x,y)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>r</span></code></pre></div>
 <pre><code>[1] 0.9481413</code></pre>
 </div>
 <p><br></p>
@@ -2982,14 +2952,14 @@ Figure 7: Convergência do g de Hedges para o d de Cohen a medida que o tamanho 
 <p>Aqui está a transformação feita para moldar a distribuição amostral em formato de distribuição normal:</p>
 <p><span class="math display">\[ z = 0.5 \log_e \left( \frac{1 + r}{1 - r} \right) \]</span></p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Fisher&#39;s z</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">log</span>((<span class="dv">1</span><span class="sc">+</span>r)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>r))</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>z</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Fisher&#39;s z</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">log</span>((<span class="dv">1</span><span class="sc">+</span>r)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>r))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>z</span></code></pre></div>
 <pre><code>[1] 1.813054</code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-17"></span>
-<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-17-1.png" alt="Por que não podemos usar correlações brutas na metanálise? Aqui fizemos a simulação de 5.000 estudos pequenos (n=30) onde a correlação populacional é alta (0.85). Na distribuição amostral da correlação de Pearson vemos que ela fica assimétrica, espremida à direita. Quando fazemos a transformação de Fischer a distribuição torna-se aproximadamente normal e simétrica, com intervalos indo de menos a mais infinito." width="960" />
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-16"></span>
+<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-16-1.png" alt="Por que não podemos usar correlações brutas na metanálise? Aqui fizemos a simulação de 5.000 estudos pequenos (n=30) onde a correlação populacional é alta (0.85). Na distribuição amostral da correlação de Pearson vemos que ela fica assimétrica, espremida à direita. Quando fazemos a transformação de Fischer a distribuição torna-se aproximadamente normal e simétrica, com intervalos indo de menos a mais infinito." width="960" />
 <p class="caption">
 Figure 8: Por que não podemos usar correlações brutas na metanálise? Aqui fizemos a simulação de 5.000 estudos pequenos (n=30) onde a correlação populacional é alta (0.85). Na distribuição amostral da correlação de Pearson vemos que ela fica assimétrica, espremida à direita. Quando fazemos a transformação de Fischer a distribuição torna-se aproximadamente normal e simétrica, com intervalos indo de menos a mais infinito.
 </p>
@@ -3030,8 +3000,7 @@ Figure 8: Por que não podemos usar correlações brutas na metanálise? Aqui fi
 </tr>
 </tbody>
 </table>
-<p><br>
-<br></p>
+<p><br></p>
 <h2 id="dados-binários-simnão-sucessofracasso">3. Dados Binários (Sim/Não, Sucesso/Fracasso)</h2>
 <h3 id="grupo-único-proporções">3.1. Grupo Único: Proporções</h3>
 <h4 id="a-o-que-é-3">a) O que é?</h4>
@@ -3039,34 +3008,34 @@ Figure 8: Por que não podemos usar correlações brutas na metanálise? Aqui fi
 <p>A proporção é calculada como:</p>
 <p><span class="math display">\[ p = \frac{k}{n} \]</span></p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Definir valores: k (eventos) e n (total)</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">50</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo da Proporção Bruta </span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> k <span class="sc">/</span> n</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Proporção (p):&quot;</span>, p))</span></code></pre></div>
-<pre><code>[1] &quot;Proporção (p): 0.25&quot;</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Definir valores: k (eventos) e n (total)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo da Proporção Bruta </span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> k <span class="sc">/</span> n</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>p</span></code></pre></div>
+<pre><code>[1] 0.25</code></pre>
 </div>
 <p><br></p>
 <p>O erro padrão da proporção é calculado como:</p>
 <span class="math display">\[ SE_p = \sqrt{\frac{p(1-p)}{n}} \]</span>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Erro Padrão da Proporção</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>se_p <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((p <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p)) <span class="sc">/</span> n)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão (Raw):&quot;</span>, se_p))</span></code></pre></div>
-<pre><code>[1] &quot;Erro Padrão (Raw): 0.0306186217847897&quot;</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Erro Padrão da Proporção</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>se_p <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((p <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p)) <span class="sc">/</span> n)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>se_p</span></code></pre></div>
+<pre><code>[1] 0.03061862</code></pre>
 </div>
 <h4 id="b-o-problema-dos-extremos">b) O problema dos extremos</h4>
 <p>Como a proporção é limitada entre 0 e 1, surgem problemas quando o valor de <span class="math inline">\(p\)</span> é muito próximo de 0 ou de 1.</p>
 <ul>
-<li><strong>Erro Padrão Comprimido</strong>: O erro padrão é artificialmente reduzido, levando a uma superestimação da precisão.</li>
-<li><strong>Distribuição Assimétrica</strong>: A distribuição amostral deixa de ser normal (Sino) e torna-se enviesada (<em>skewed</em>) à esquerda ou direita, pois é impossível ter valores fora do intervalo 0-1.</li>
+<li><p><strong>Erro Padrão Comprimido</strong>: O erro padrão é artificialmente reduzido, levando a uma superestimação da precisão.</p></li>
+<li><p><strong>Distribuição Assimétrica</strong>: A distribuição amostral deixa de ser normal (Sino) e torna-se enviesada (<em>skewed</em>) à esquerda ou direita, pois é impossível ter valores fora do intervalo 0-1.</p></li>
 </ul>
 <p><br></p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-18"></span>
-<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-18-1.png" alt="A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95). Isso faz com que a distribuição de proporção bruta seja espremida e assimétrica para a direita. B. O erro padrão associado a essa distribuição é máximo  no centro e menor nas pontas, o que não é intuitivo pois nas pontas temos menor certeza." width="960" />
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-17"></span>
+<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-17-1.png" alt="A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95). Isso faz com que a distribuição de proporção bruta seja espremida e assimétrica para a direita. B. O erro padrão associado a essa distribuição é máximo  no centro e menor nas pontas, o que não é intuitivo pois nas pontas temos menor certeza." width="960" />
 <p class="caption">
 Figure 9: A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95). Isso faz com que a distribuição de proporção bruta seja espremida e assimétrica para a direita. B. O erro padrão associado a essa distribuição é máximo no centro e menor nas pontas, o que não é intuitivo pois nas pontas temos menor certeza.
 </p>
@@ -3077,29 +3046,28 @@ Figure 9: A. Simulação de distribuição amostral de 10.000 estudos de grande 
 <p>A transformação da proporção para logit da proporção:</p>
 <p><span class="math display">\[ p_{\text{logit}} = \log_e \left( \frac{p}{1-p} \right) \]</span></p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># O logit transforma o intervalo 0-1 em -inf a +inf</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>p_logit <span class="ot">&lt;-</span> <span class="fu">log</span>(p <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> p))</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Proporção Transformada (Logit):&quot;</span>, p_logit))</span></code></pre></div>
-<pre><code>[1] &quot;Proporção Transformada (Logit): -1.09861228866811&quot;</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># O logit transforma o intervalo 0-1 em -inf a +inf</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>p_logit <span class="ot">&lt;-</span> <span class="fu">log</span>(p <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> p))</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>p_logit</span></code></pre></div>
+<pre><code>[1] -1.098612</code></pre>
 </div>
 <p><br></p>
 <p>O erro padrão do logit da proporção:</p>
 <p><span class="math display">\[ SE_{p_{\text{logit}}} = \sqrt{\frac{1}{np} + \frac{1}{n(1-p)}} \]</span></p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>se_logit <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span> <span class="sc">/</span> (n <span class="sc">*</span> p)) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">/</span> (n <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p))))</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Erro Padrão (Logit):&quot;</span>, se_logit))</span></code></pre></div>
-<pre><code>[1] &quot;Erro Padrão (Logit): 0.163299316185545&quot;</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>se_logit <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span> <span class="sc">/</span> (n <span class="sc">*</span> p)) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">/</span> (n <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p))))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>se_logit</span></code></pre></div>
+<pre><code>[1] 0.1632993</code></pre>
 </div>
 <p><br></p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-20"></span>
-<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-20-1.png" alt="A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95) após a transformação logit. Isso faz com que a distribuição assuma um formato aproximadamente normal em que os limites transformam-se em menos e mais infinito. B. O erro padrão associado a essa distribuição é máximo nas pontas e menor no centro, o queé intuitivo pois no centro temos maior certeza." width="960" />
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-19"></span>
+<img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-19-1.png" alt="A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95) após a transformação logit. Isso faz com que a distribuição assuma um formato aproximadamente normal em que os limites transformam-se em menos e mais infinito. B. O erro padrão associado a essa distribuição é máximo nas pontas e menor no centro, o queé intuitivo pois no centro temos maior certeza." width="960" />
 <p class="caption">
 Figure 10: A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95) após a transformação logit. Isso faz com que a distribuição assuma um formato aproximadamente normal em que os limites transformam-se em menos e mais infinito. B. O erro padrão associado a essa distribuição é máximo nas pontas e menor no centro, o queé intuitivo pois no centro temos maior certeza.
 </p>
 </div>
 </div>
-<p><br></p>
 <p>Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter duas informações (colunas) de cada estudo incluído:</p>
 <ul>
 <li><span class="math inline">\(event\)</span>: O número de observações no subgrupo específico (<span class="math inline">\(k\)</span>).</li>
@@ -3132,11 +3100,10 @@ Figure 10: A. Simulação de distribuição amostral de 10.000 estudos de grande
 </tr>
 </tbody>
 </table>
-<p><br>
-<br></p>
+<p><br></p>
 <h3 id="razão-de-dois-grupos-razão-de-riscos-risk-ratio">3.2. Razão de dois Grupos: Razão de Riscos (Risk Ratio)</h3>
 <h4 id="a-o-que-é-4">a) O que é?</h4>
-<p>A Razão de Risco (também conhecida como Risco Relativo ou Risk Ratio - RR) é uma medida de efeito intuitiva e amplamente utilizada em pesquisas médicas, especialmente em ensaios clínicos controlados com desfechos binários (ou dicotômicos), como “morte vs. sobrevida” ou “doença vs. sem doença”.</p>
+<p>A Razão de Risco (também conhecida como Risco Relativo ou Risk Ratio - RR) é uma medida de efeito intuitiva e amplamente utilizada em pesquisas médicas, especialmente em ensaios clínicos controlados com desfechos binários, como “morte vs. sobrevida” ou “doença vs. sem doença”.</p>
 <p>O RR compara a probabilidade de um evento ocorrer no grupo tratado versus no grupo controle. Os dados brutos são geralmente extraídos de uma tabela <span class="math inline">\(2 \times 2\)</span>:</p>
 <table>
 <thead>
@@ -3162,6 +3129,7 @@ Figure 10: A. Simulação de distribuição amostral de 10.000 estudos de grande
 </tr>
 </tbody>
 </table>
+<p><br></p>
 <p>O risco em cada grupo é calculado dividindo o número de eventos pelo total de pacientes naquele grupo. Assim, a Razão de Risco é definida como:</p>
 <p><span class="math display">\[ RR = \frac{p_{trat}}{p_{cont}} = \frac{a / n_{trat}}{c / n_{cont}} \]</span></p>
 <ul>
@@ -3169,6 +3137,7 @@ Figure 10: A. Simulação de distribuição amostral de 10.000 estudos de grande
 <li>Se <span class="math inline">\(RR &lt; 1\)</span>: O tratamento reduz o risco do evento (fator de proteção).</li>
 <li>Se <span class="math inline">\(RR &gt; 1\)</span>: O tratamento aumenta o risco do evento (fator de risco).</li>
 </ul>
+<p>Vamos supor que estamos avaliando a segurança de um fármaco para o sistema renal. Então, separamos um grupo controle um grupo tratamento (que tomou o fármaco). Um <span class="math inline">\(RR\)</span> de 2 significa que pacientes que utilizam o fármaco apresentam um risco duas vezes maior de desenvolver nefropatia em comparação àqueles que utilizam placebo. Então, por exemplo, se o grupo controle apresentou um risco de 5% de nefropatia, o grupo tratamento apresentou de 10%.</p>
 <h4 id="b-novamente-o-problema-da-assimetria">b) Novamente… O problema da assimetria 😁</h4>
 <p>Embora o RR seja intuitivo para interpretação clínica, ele possui propriedades estatísticas que dificultam a metanálise direta. Efeitos de mesma magnitude não são equidistantes em torno do valor nulo (1).</p>
 <p>Um efeito benéfico que reduz o risco pela metade resulta em um RR de 0,5. O efeito oposto (dobrar o risco) resulta em um RR de 2,0 (e não 1,5).</p>
@@ -3178,47 +3147,91 @@ Figure 10: A. Simulação de distribuição amostral de 10.000 estudos de grande
 <h4 id="c-erro-padrão">c) Erro Padrão</h4>
 <p><span class="math display">\[ SE_{LogRR} = \sqrt{\frac{1}{a} - \frac{1}{n_{trat}} + \frac{1}{c} - \frac{1}{n_{cont}}} \]</span></p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. Dados do Estudo (Tabela 2x2) ---</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>events_treat <span class="ot">&lt;-</span> <span class="dv">46</span>    <span class="co"># (a) Eventos no grupo tratamento</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>n_treat      <span class="ot">&lt;-</span> <span class="dv">248</span>   <span class="co"># (n1) Total grupo tratamento</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>events_ctrl  <span class="ot">&lt;-</span> <span class="dv">77</span>    <span class="co"># (c) Eventos no grupo controle</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>n_ctrl       <span class="ot">&lt;-</span> <span class="dv">251</span>   <span class="co"># (n2) Total grupo controle</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2. Cálculo dos Riscos Individuais ---</span></span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>risk_treat <span class="ot">&lt;-</span> events_treat <span class="sc">/</span> n_treat</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>risk_ctrl  <span class="ot">&lt;-</span> events_ctrl <span class="sc">/</span> n_ctrl</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 3. Cálculo da Razão de Risco (RR) ---</span></span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>RR <span class="ot">&lt;-</span> risk_treat <span class="sc">/</span> risk_ctrl</span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 4. Transformação Logarítmica (Para a Metanálise) ---</span></span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>log_RR <span class="ot">&lt;-</span> <span class="fu">log</span>(RR)</span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 5. Cálculo do Erro Padrão (SE) na escala Log ---</span></span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Fórmula: SE = sqrt(1/a + 1/c - 1/n1 - 1/n2)</span></span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>se_log_rr <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">/</span>events_treat) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">/</span>events_ctrl) <span class="sc">-</span> (<span class="dv">1</span><span class="sc">/</span>n_treat) <span class="sc">-</span> (<span class="dv">1</span><span class="sc">/</span>n_ctrl))</span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Exibindo Resultados ---</span></span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Razão de Risco (RR): %.4f</span><span class="sc">\n</span><span class="st">&quot;</span>, RR))</span></code></pre></div>
-<pre><code>[1] &quot;Razão de Risco (RR): 0.6046\n&quot;</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Log Razão de Risco:  %.4f</span><span class="sc">\n</span><span class="st">&quot;</span>, log_RR))</span></code></pre></div>
-<pre><code>[1] &quot;Log Razão de Risco:  -0.5031\n&quot;</code></pre>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Erro Padrão (Log):   %.4f</span><span class="sc">\n</span><span class="st">&quot;</span>, se_log_rr))</span></code></pre></div>
-<pre><code>[1] &quot;Erro Padrão (Log):   0.1634\n&quot;</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>events_treat <span class="ot">&lt;-</span> <span class="dv">46</span>    </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>n_treat      <span class="ot">&lt;-</span> <span class="dv">248</span>   </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>events_ctrl  <span class="ot">&lt;-</span> <span class="dv">77</span>    </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>n_ctrl       <span class="ot">&lt;-</span> <span class="dv">251</span> </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Riscos Individuais </span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>risk_treat <span class="ot">&lt;-</span> events_treat <span class="sc">/</span> n_treat</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>risk_ctrl  <span class="ot">&lt;-</span> events_ctrl <span class="sc">/</span> n_ctrl</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Razão de Risco (RR) </span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>RR <span class="ot">&lt;-</span> risk_treat <span class="sc">/</span> risk_ctrl</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Transformação Logarítmica </span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>log_RR <span class="ot">&lt;-</span> <span class="fu">log</span>(RR)</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Erro Padrão (SE) na escala Log </span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>se_log_rr <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">/</span>events_treat) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">/</span>events_ctrl) <span class="sc">-</span> (<span class="dv">1</span><span class="sc">/</span>n_treat) <span class="sc">-</span> (<span class="dv">1</span><span class="sc">/</span>n_ctrl))</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">risk_ratio =</span> RR, <span class="at">log_RR =</span> log_RR, <span class="at">se_RR =</span> se_log_rr)</span></code></pre></div>
+<pre><code>risk_ratio     log_RR      se_RR 
+ 0.6046292 -0.5031398  0.1634314 </code></pre>
 </div>
+<p><br></p>
+<p>Para conduzir uma metanálise de razão de riscos, seu banco de dados precisa obrigatoriamente conter quatro informações (colunas) de cada estudo incluído:</p>
+<ul>
+<li><span class="math inline">\(event_{tratamento}\)</span>: O número de eventos no grupo tratamento.</li>
+<li><span class="math inline">\(n_{tratamento}\)</span>: O tamanho total do grupo tratamento.</li>
+<li><span class="math inline">\(event_{controle}\)</span>: O número de eventos no grupo controle.</li>
+<li><span class="math inline">\(n_{controle}\)</span>: O tamanho total do grupo controle.</li>
+</ul>
+<p><br></p>
+<table>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 13%" />
+<col style="width: 26%" />
+<col style="width: 13%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estudos</th>
+<th>event_tratamento</th>
+<th>n_tratamento</th>
+<th>event_controle</th>
+<th>n_controle</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Lee (2014)</td>
+<td>25</td>
+<td>55</td>
+<td>20</td>
+<td>55</td>
+</tr>
+<tr class="even">
+<td>Silva (2016)</td>
+<td>30</td>
+<td>60</td>
+<td>22</td>
+<td>60</td>
+</tr>
+<tr class="odd">
+<td>Ferreira (2020)</td>
+<td>28</td>
+<td>61</td>
+<td>21</td>
+<td>61</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
 <h3 id="outra-razão-de-dois-grupos-razão-de-chances-odds-ratio">3.3. Outra razão de dois grupos: Razão de Chances (Odds Ratio)</h3>
 <h4 id="a-o-que-é-chance">a) O que é chance?</h4>
-<p>Enquanto o Risk Ratio compara probabilidades (riscos), o Odds Ratio (OR), ou Razão de Chances, compara… chances (Odds). Embora pareçam sinônimos na linguagem coloquial, em estatística, “Risco” e “Chance” são matematicamente distintos.</p>
-<p>A intuição por trás do Odd é a razão entre o sucesso e o fracasso (ou evento e não-evento).Imagine que estamos analisando um jogo ou um tratamento.🔵 = Vitória (Evento/Sucesso)🔴 = Derrota (Não-Evento/Falha)</p>
+<p>Enquanto o Risk Ratio compara probabilidades (riscos), o Odds Ratio (OR), ou Razão de Chances, compara… chances (Odds). Embora pareçam sinônimos na linguagem informal, em estatística, “Risco” e “Chance” são matematicamente distintos. A intuição por trás do Odd é a razão entre o sucesso e o fracasso (ou evento e não-evento).</p>
+<p>Imagine que estamos analisando um time de futebol e vamos anotar quantas vitórias e derrotas ele tem. Vamos convencionar que 🔵 = Vitória (Evento/Sucesso) e 🔴 = Derrota (Não-Evento/Falha). Então, vamos supor que esse time em análise teve 3 vitórias e 2 derrotas (🔵🔵🔵🔴🔴). Assim:</p>
 <ul>
-<li><strong>Probabilidade (Risco)</strong>: É o número de vitórias dividido pelo total de partidas.Vamos supor que tivemos 3 vitórias e 2 derrotas (🔵🔵🔵🔴🔴)</li>
+<li><strong>Probabilidade (Risco)</strong>: É o número de vitórias dividido pelo total de partidas.</li>
 </ul>
 <p><span class="math display">\[P(\text{Vencer}) = \frac{3 \text{ (azuis)}}{5 \text{ (total)}} = 0,6 \text{ ou } 60\%\]</span></p>
 <ul>
-<li><strong>Chance (Odd)</strong>: É o número de vitórias dividido pelo número de derrotas. O denominador não inclui o total, apenas o complemento.🔵🔵🔵 🆚 🔴🔴</li>
+<li><strong>Chance (Odd)</strong>: É o número de vitórias dividido pelo número de derrotas. O denominador não inclui o total, apenas o complemento. Podemos falar que a chance é 3 para 2 (🔵🔵🔵 🆚 🔴🔴)</li>
 </ul>
 <p><span class="math display">\[\text{Odd} = \frac{3 \text{ (azuis)}}{2 \text{ (vermelhos)}} = 1,5\]</span></p>
-<p>Dizemos que a chance é de “3 para 2” (3:2).</p>
 <p>Mais formalmente podemos pensar em Razão de Chances a partir da tabela <span class="math inline">\(2 \times 2\)</span>:</p>
 <table>
 <thead>
@@ -3256,60 +3269,76 @@ Figure 10: A. Simulação de distribuição amostral de 10.000 estudos de grande
 <li><p><span class="math inline">\(\ln(0,25) \approx -1,38\)</span></p></li>
 <li><p><span class="math inline">\(\ln(4,00) \approx +1,38\)</span></p></li>
 </ul>
+<p>Aqui está um resumo de todas as transformações que falamos acima!</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Medida Original</th>
+<th style="text-align: left;">Problema Estatístico</th>
+<th style="text-align: left;">Transformação Necessária</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Proporção</strong></td>
+<td style="text-align: left;">Presa entre 0 e 1</td>
+<td style="text-align: left;"><strong>Logit</strong>: <span class="math inline">\(\ln(\frac{p}{1-p})\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Razão de Risco (RR)</strong></td>
+<td style="text-align: left;">Razão assimétrica</td>
+<td style="text-align: left;"><strong>Log Natural</strong>: <span class="math inline">\(\ln(RR)\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Razão de Chances (OR)</strong></td>
+<td style="text-align: left;">Assimétrica e não linear</td>
+<td style="text-align: left;"><strong>Log Natural</strong>: <span class="math inline">\(\ln(OR)\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Correlação (<span class="math inline">\(r\)</span>)</strong></td>
+<td style="text-align: left;">Teto/Chão em +1 e -1</td>
+<td style="text-align: left;"><strong>Fisher’s <span class="math inline">\(z\)</span></strong>: <span class="math inline">\(0.5 \times \ln(\frac{1+r}{1-r})\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
 <h4 id="c-e-se-divirmos-duas-chances-temos-as-razões-de-chances">c) E se divirmos duas chances? Temos as razões de chances!</h4>
 <p>O Odds Ratio (OR) é simplesmente a chance do evento no grupo tratado dividida pela chance do evento no grupo controle.</p>
 <p><span class="math display">\[ OR = \frac{\text{Odd}_{trat}}{\text{Odd}_{cont}} = \frac{a/b}{c/d} = \frac{a \times d}{b \times c} \]</span></p>
 <ul>
-<li><strong>Interpretação</strong>: O OR indica a força de associação entre duas variáveis. Por exemplo, se um estudo sobre uma mutação genética e câncer resulta em um <span class="math inline">\(OR = 6,88\)</span>, isso significa que a chance de alguém com a mutação ter câncer é 6,88 vezes maior do que alguém sem a mutação.</li>
+<li><strong>Interpretação</strong>: O OR indica a força de associação entre duas variáveis. Por exemplo, vamos falar do mesmo exemplo que demos na razão de riscos. Porém, vamos falar que temos uma Razão de Chances = 2. Isso significa que o tomar o fármaco aumenta a chance em 2 vezes de desenvolver nefropatia. Ou seja, no grupo tratado para cada pessoa que não tem nefropatia existem 2 que têm. No controle, a relação é de 1 para 1. Se outro estudo sobre uma mutação genética e câncer resulta em um <span class="math inline">\(OR = 6,88\)</span>, isso significa que a chance de alguém com a mutação ter câncer é 6,88 vezes maior do que alguém sem a mutação.</li>
 </ul>
 <h4 id="d-erro-padrão">d) Erro Padrão</h4>
 <p>E também podemos calcular o erro padrão do odds ratio atravé da fórmula:</p>
 <p><span class="math display">\[ SE_{\text{Log}OR} = \sqrt{\frac{1}{a} + \frac{1}{b} + \frac{1}{c} + \frac{1}{d}} \]</span></p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. Dados do Estudo (Tabela 2x2) ---</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Exemplo: Gene Mutado vs Câncer</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>events_treat <span class="ot">&lt;-</span> <span class="dv">23</span>    <span class="co"># (a) Com Mutação e Com Câncer</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>no_events_treat <span class="ot">&lt;-</span> <span class="dv">117</span> <span class="co"># (b) Com Mutação e SEM Câncer</span></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>events_ctrl  <span class="ot">&lt;-</span> <span class="dv">6</span>     <span class="co"># (c) Sem Mutação e Com Câncer</span></span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>no_events_ctrl <span class="ot">&lt;-</span> <span class="dv">210</span>  <span class="co"># (d) Sem Mutação e SEM Câncer</span></span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2. Cálculo dos Odds Individuais ---</span></span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>odd_treat <span class="ot">&lt;-</span> events_treat <span class="sc">/</span> no_events_treat</span>
-<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>odd_ctrl  <span class="ot">&lt;-</span> events_ctrl <span class="sc">/</span> no_events_ctrl</span>
-<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 3. Cálculo do Odds Ratio (OR) ---</span></span>
-<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>OR <span class="ot">&lt;-</span> odd_treat <span class="sc">/</span> odd_ctrl</span>
-<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 4. Cálculo do Erro Padrão (Log Scale) ---</span></span>
-<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>log_OR <span class="ot">&lt;-</span> <span class="fu">log</span>(OR)</span>
-<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>se_log_or <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">/</span>events_treat) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">/</span>no_events_treat) <span class="sc">+</span> </span>
-<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>                  (<span class="dv">1</span><span class="sc">/</span>events_ctrl) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">/</span>no_events_ctrl))</span>
-<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Exibindo Resultados ---</span></span>
-<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Odd Tratamento: %.4f</span><span class="sc">\n</span><span class="st">&quot;</span>, odd_treat))</span></code></pre></div>
-<pre><code>Odd Tratamento: 0.1966</code></pre>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Odd Controle:   %.4f</span><span class="sc">\n</span><span class="st">&quot;</span>, odd_ctrl))</span></code></pre></div>
-<pre><code>Odd Controle:   0.0286</code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>events_treat <span class="ot">&lt;-</span> <span class="dv">23</span>    </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>no_events_treat <span class="ot">&lt;-</span> <span class="dv">117</span> </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>events_ctrl  <span class="ot">&lt;-</span> <span class="dv">6</span>     </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>no_events_ctrl <span class="ot">&lt;-</span> <span class="dv">210</span>  </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo dos Odds Individuais </span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>odd_treat <span class="ot">&lt;-</span> events_treat <span class="sc">/</span> no_events_treat</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>odd_ctrl  <span class="ot">&lt;-</span> events_ctrl <span class="sc">/</span> no_events_ctrl</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Odds Ratio (OR) </span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>OR <span class="ot">&lt;-</span> odd_treat <span class="sc">/</span> odd_ctrl</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Erro Padrão (Log Scale) </span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>log_OR <span class="ot">&lt;-</span> <span class="fu">log</span>(OR)</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>se_log_or <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">/</span>events_treat) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">/</span>no_events_treat) <span class="sc">+</span> </span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>                  (<span class="dv">1</span><span class="sc">/</span>events_ctrl) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">/</span>no_events_ctrl))</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">chance_tratamento =</span> odd_treat, <span class="at">chance_controle =</span> odd_ctrl)</span></code></pre></div>
+<pre><code>chance_tratamento   chance_controle 
+       0.19658120        0.02857143 </code></pre>
 </div>
-<p>Ou utilizando um pacote específico</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(esc)</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">esc_2x2</span>(<span class="at">grp1yes =</span> events_treat, <span class="at">grp1no =</span> no_events_treat,</span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">grp2yes =</span> events_ctrl, <span class="at">grp2no =</span> no_events_ctrl,</span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">es.type =</span> <span class="st">&quot;or&quot;</span>)</span></code></pre></div>
-<pre><code>
-Effect Size Calculation for Meta Analysis
-
-     Conversion: 2x2 table (OR) coefficient to effect size odds ratio
-    Effect Size:   6.8803
- Standard Error:   0.4727
-       Variance:   0.2235
-       Lower CI:   2.7242
-       Upper CI:  17.3772
-         Weight:   4.4752</code></pre>
-</div>
+<p><br></p>
 <h4 id="e-diferença-de-odds-ratio-para-risk-ratio">e) Diferença de Odds Ratio para Risk Ratio</h4>
 <ul>
 <li><p><strong>Risk Ratio (RR)</strong>: É a razão entre duas probabilidades. É intuitivo. Se <span class="math inline">\(RR = 0,5\)</span>, o risco caiu pela metade.</p></li>
@@ -3320,49 +3349,294 @@ Effect Size Calculation for Meta Analysis
 <li><p>Tratados: 5 mortes em 100 pacientes.</p></li>
 <li><p>Controle: 10 mortes em 100 pacientes.</p></li>
 </ul>
-<p>O Risco Relativo é 0,5 (redução de 50%).O Odds Ratio é 0,47.Note que, mesmo com números pequenos, eles já não são idênticos. Em eventos frequentes, essa distância aumenta drasticamente. Porém, fique tranquilo que existem fórmulas para converter OR em RR se necessário!</p>
+<p>O Risco Relativo é 0,5 (redução de 50%). O Odds Ratio é 0,47. Note que, mesmo com números pequenos, eles já não são idênticos. Em eventos frequentes, essa distância aumenta drasticamente. Porém, fique tranquilo que existem fórmulas para converter OR em RR se necessário!</p>
+<p><br></p>
+<p>Para conduzir uma metanálise de razão de chances, seu banco de dados precisa obrigatoriamente conter quatro informações (colunas) de cada estudo incluído:</p>
+<ul>
+<li><span class="math inline">\(event_{tratamento}\)</span>: O número de eventos no grupo tratamento.</li>
+<li><span class="math inline">\(n_{tratamento}\)</span>: O tamanho total do grupo tratamento.</li>
+<li><span class="math inline">\(event_{controle}\)</span>: O número de eventos no grupo controle.</li>
+<li><span class="math inline">\(n_{controle}\)</span>: O tamanho total do grupo controle.</li>
+</ul>
+<p><br></p>
+<table>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 13%" />
+<col style="width: 26%" />
+<col style="width: 13%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estudos</th>
+<th>event_tratamento</th>
+<th>n_tratamento</th>
+<th>event_controle</th>
+<th>n_controle</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Lee (2014)</td>
+<td>25</td>
+<td>55</td>
+<td>20</td>
+<td>55</td>
+</tr>
+<tr class="even">
+<td>Silva (2016)</td>
+<td>30</td>
+<td>60</td>
+<td>22</td>
+<td>60</td>
+</tr>
+<tr class="odd">
+<td>Ferreira (2020)</td>
+<td>28</td>
+<td>61</td>
+<td>21</td>
+<td>61</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
 <h3 id="diferença-absoluta-de-dois-grupos-diferença-de-riscos-risk-difference">3.4. Diferença Absoluta de Dois Grupos: Diferença de Riscos (Risk Difference)</h3>
 <p>Além das razões (divisões), existe uma terceira medida fundamental: a Diferença de Risco (RD), também chamada de Redução <strong>Absoluta</strong> do Risco. Ao contrário do RR e OR que são medidas relativas, a RD é uma medida absoluta.</p>
 <p>Ela é calculada simplesmente subtraindo o risco do grupo controle pelo risco do grupo intervenção.</p>
 <p><span class="math display">\[RD = Risk_{trat} - Risk_{cont}\]</span></p>
-<p><strong>Exemplo</strong>:Imagine um estudo sobre apendicectomia incidental.</p>
+<p><strong>Exemplo</strong>: Imagine um estudo sobre apendicectomia:</p>
 <ul>
-<li><p>Risco de infecção sem cirurgia: <span class="math inline">\(1,3\%\)</span></p></li>
-<li><p>Risco de infecção com cirurgia: <span class="math inline">\(5,3\%\)</span></p></li>
+<li><p>Risco de infecção local sem cirurgia: <span class="math inline">\(1,3\%\)</span></p></li>
+<li><p>Risco de infecção local com cirurgia: <span class="math inline">\(5,3\%\)</span></p></li>
 </ul>
 <p><span class="math display">\[RD = 5,3\% - 1,3\% = +4,0\%\]</span></p>
-<p>Isso significa que a cirurgia adicionou um risco excedente de 4 pontos percentuais.</p>
+<p>Isso significa que a cirurgia adicionou um risco de 4% no desenvolvimento de uma infecção local.</p>
 <ul>
 <li><p>Se <span class="math inline">\(RD = 0\)</span>: Não há efeito.</p></li>
 <li><p>Se <span class="math inline">\(RD &lt; 0\)</span>: O tratamento reduziu o risco absoluto.</p></li>
 <li><p>Se <span class="math inline">\(RD &gt; 0\)</span>: O tratamento aumentou o risco absoluto.</p></li>
 </ul>
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. Dados do Estudo (Exemplo Apendicectomia) ---</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Grupo Tratado (Com cirurgia)</span></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>events_treat <span class="ot">&lt;-</span> <span class="dv">53</span></span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>n_treat      <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>non_events_treat <span class="ot">&lt;-</span> n_treat <span class="sc">-</span> events_treat</span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Grupo Controle (Sem cirurgia)</span></span>
-<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>events_ctrl  <span class="ot">&lt;-</span> <span class="dv">13</span></span>
-<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>n_ctrl       <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>non_events_ctrl <span class="ot">&lt;-</span> n_ctrl <span class="sc">-</span> events_ctrl</span>
-<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2. Cálculo dos Riscos ---</span></span>
-<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>risk_treat <span class="ot">&lt;-</span> events_treat <span class="sc">/</span> n_treat</span>
-<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>risk_ctrl  <span class="ot">&lt;-</span> events_ctrl <span class="sc">/</span> n_ctrl</span>
-<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 3. Cálculo da Diferença de Risco (RD) ---</span></span>
-<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>RD <span class="ot">&lt;-</span> risk_treat <span class="sc">-</span> risk_ctrl</span>
-<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Risco Tratamento: %.1f%%</span><span class="sc">\n</span><span class="st">&quot;</span>, risk_treat <span class="sc">*</span> <span class="dv">100</span>))</span></code></pre></div>
-<pre><code>Risco Tratamento: 5.3%</code></pre>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Risco Controle:   %.1f%%</span><span class="sc">\n</span><span class="st">&quot;</span>, risk_ctrl <span class="sc">*</span> <span class="dv">100</span>))</span></code></pre></div>
-<pre><code>Risco Controle:   1.3%</code></pre>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Diferença de Risco (RD): %.3f (ou %.1f p.p.)</span><span class="sc">\n</span><span class="st">&quot;</span>, RD, RD<span class="sc">*</span><span class="dv">100</span>))</span></code></pre></div>
-<pre><code>Diferença de Risco (RD): 0.040 (ou 4.0 p.p.)</code></pre>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grupo tratado</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>events_treat <span class="ot">&lt;-</span> <span class="dv">53</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>n_treat      <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>non_events_treat <span class="ot">&lt;-</span> n_treat <span class="sc">-</span> events_treat</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Grupo Controle </span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>events_ctrl  <span class="ot">&lt;-</span> <span class="dv">13</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>n_ctrl       <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>non_events_ctrl <span class="ot">&lt;-</span> n_ctrl <span class="sc">-</span> events_ctrl</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Riscos do Grupo Tratamento e Controle</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>risk_treat <span class="ot">&lt;-</span> events_treat <span class="sc">/</span> n_treat</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>risk_ctrl  <span class="ot">&lt;-</span> events_ctrl <span class="sc">/</span> n_ctrl</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Diferença de Risco (RD) </span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>RD <span class="ot">&lt;-</span> risk_treat <span class="sc">-</span> risk_ctrl</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>RD</span></code></pre></div>
+<pre><code>[1] 0.04</code></pre>
+</div>
+<p><br></p>
+<p>Para conduzir uma metanálise de diferença de riscos, seu banco de dados precisa obrigatoriamente conter quatro informações (colunas) de cada estudo incluído:</p>
+<ul>
+<li><span class="math inline">\(event_{tratamento}\)</span>: O número de eventos no grupo tratamento.</li>
+<li><span class="math inline">\(n_{tratamento}\)</span>: O tamanho total do grupo tratamento.</li>
+<li><span class="math inline">\(event_{controle}\)</span>: O número de eventos no grupo controle.</li>
+<li><span class="math inline">\(n_{controle}\)</span>: O tamanho total do grupo controle.</li>
+</ul>
+<p><br></p>
+<table>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 13%" />
+<col style="width: 26%" />
+<col style="width: 13%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estudos</th>
+<th>event_tratamento</th>
+<th>n_tratamento</th>
+<th>event_controle</th>
+<th>n_controle</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Lee (2014)</td>
+<td>25</td>
+<td>55</td>
+<td>20</td>
+<td>55</td>
+</tr>
+<tr class="even">
+<td>Silva (2016)</td>
+<td>30</td>
+<td>60</td>
+<td>22</td>
+<td>60</td>
+</tr>
+<tr class="odd">
+<td>Ferreira (2020)</td>
+<td>28</td>
+<td>61</td>
+<td>21</td>
+<td>61</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h2 id="pacote-meta">4. Pacote meta</h2>
+<p>O pacote meta é amplamente adotado em publicações médicas por seguir rigorosamente a metodologia da Cochrane Collaboration. Ele automatiza o fluxo complexo de transformar dados brutos em estimativas combinadas.</p>
+<h3 id="entendendo-os-argumentos-das-funções">4.1. Entendendo os Argumentos das Funções</h3>
+<p>As funções principais (metabin, metacont, metacor) compartilham argumentos que definem o rigor da sua análise:</p>
+<ul>
+<li><p><strong>data</strong>: O data frame que contém seus dados coletados.</p></li>
+<li><p><strong>sm</strong> (Summary Measure): Define a métrica alvo (ex: “RR”, “OR”, “MD”, “SMD”).</p></li>
+<li><p><strong>pooledvar</strong>: Argumento crucial na metacont. Ao definir como FALSE, você aplica a heterocedasticidade (Unpooled) para a Diferença de Médias (MD), protegendo sua análise contra o desbalanceamento amostral.</p></li>
+<li><p><strong>method.smd</strong>: Permite escolher entre Cohen e Hedges. Selecionar “Hedges” é o padrão ouro para corrigir o viés de superestimação em amostras pequenas.</p></li>
+</ul>
+<h3 id="os-bastidores-te-e-sete">4.2. Os Bastidores: TE e seTE</h3>
+<p>Ao rodar o código, o R gera um objeto que armazena dois valores fundamentais que sãoa acessados através do $:</p>
+<ul>
+<li><p><strong>TE</strong> (Treatment Effect): É o tamanho do efeito individual de cada estudo. Para razão de riscos, odds ratio e correlação, este valor estará na escala transformada (<span class="math inline">\(\ln\)</span> ou Fisher’s <span class="math inline">\(z\)</span>) para garantir a simetria estatística e permitir o agrupamento.</p></li>
+<li><p><strong>seTE</strong> (Standard Error of TE): É o erro padrão do efeito. Ele dita o peso de cada estudo. Quanto menor esse valor, maior a precisão do estudo e mais influência ele terá no resultado final da metanálise.</p></li>
+</ul>
+<h3 id="dados-contínuos">4.3. Dados Contínuos</h3>
+<p>Primeiro devemos carregar os pacotes que iremos utilizar. Aqui vamos utilizar o <code>meta</code> e o <code>dplyr</code>. Se não os tem baixado pode utilizar o <code>install.packages</code>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(meta)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+</div>
+<p>Agora vamos simular dois estudos que investigaram a atuação de um fármaco em diminuir a pressão arterial. Então, a medida é a pressão arterial média.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>df_cont <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">estudo =</span> <span class="fu">c</span>(<span class="st">&quot;Estudo A&quot;</span>, <span class="st">&quot;Estudo B&quot;</span>),</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_e =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">100</span>), <span class="at">m_e =</span> <span class="fu">c</span>(<span class="dv">120</span>, <span class="dv">115</span>), <span class="at">sd_e =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>), <span class="co"># Grupo Experimental</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_c =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">100</span>), <span class="at">m_c =</span> <span class="fu">c</span>(<span class="dv">130</span>, <span class="dv">130</span>), <span class="at">sd_c =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>)  <span class="co"># Grupo Controle</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>df_cont</span></code></pre></div>
+<pre><code>    estudo n_e m_e sd_e n_c m_c sd_c
+1 Estudo A  50 120   10  50 130   10
+2 Estudo B 100 115   12 100 130   12</code></pre>
+</div>
+<h4 id="a-diferença-de-médias---metacont">a) Diferença de Médias - <code>metacont</code></h4>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: pooledvar=FALSE aplica a heterocedasticidade (Unpooled) como discutido.</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>meta_md <span class="ot">&lt;-</span> <span class="fu">metacont</span>(<span class="at">n.e =</span> n_e, <span class="at">mean.e =</span> m_e, <span class="at">sd.e =</span> sd_e,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">n.c =</span> n_c, <span class="at">mean.c =</span> m_c, <span class="at">sd.c =</span> sd_c,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> df_cont, <span class="at">studlab =</span> estudo,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">sm =</span> <span class="st">&quot;MD&quot;</span>, <span class="at">pooledvar =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>df_cont <span class="sc">%&gt;%</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mean_diff =</span> meta_md<span class="sc">$</span>TE,</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">se_mean_diff =</span> meta_md<span class="sc">$</span>seTE)</span></code></pre></div>
+<pre><code>    estudo n_e m_e sd_e n_c m_c sd_c mean_diff se_mean_diff
+1 Estudo A  50 120   10  50 130   10       -10     2.000000
+2 Estudo B 100 115   12 100 130   12       -15     1.697056</code></pre>
+</div>
+<h4 id="b-diferença-de-médias-padronizadas---metacont">b) Diferença de Médias Padronizadas - <code>metacont</code></h4>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># O pacote &#39;meta&#39; usa Hedges&#39; g por padrão para SMD.</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>meta_smd <span class="ot">&lt;-</span> <span class="fu">metacont</span>(<span class="at">n.e =</span> n_e, <span class="at">mean.e =</span> m_e, <span class="at">sd.e =</span> sd_e,</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">n.c =</span> n_c, <span class="at">mean.c =</span> m_c, <span class="at">sd.c =</span> sd_c,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> df_cont, <span class="at">studlab =</span> estudo,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">sm =</span> <span class="st">&quot;SMD&quot;</span>, <span class="at">method.smd =</span> <span class="st">&quot;Hedges&quot;</span>)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>df_cont <span class="sc">%&gt;%</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hedges_g =</span> meta_smd<span class="sc">$</span>TE,</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">se_hedges_g =</span> meta_smd<span class="sc">$</span>seTE)</span></code></pre></div>
+<pre><code>    estudo n_e m_e sd_e n_c m_c sd_c   hedges_g se_hedges_g
+1 Estudo A  50 120   10  50 130   10 -0.9923241   0.2124035
+2 Estudo B 100 115   12 100 130   12 -1.2452582   0.1547602</code></pre>
+</div>
+<h4 id="c-correlação---metacor">c) Correlação - <code>metacor</code></h4>
+<p>Aqui vamos simular dois estudos que avaliaram a correlação entre idade e capacidade pulmonar.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>df_cor <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">estudo =</span> <span class="fu">c</span>(<span class="st">&quot;Estudo A&quot;</span>, <span class="st">&quot;Estudo B&quot;</span>),</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> <span class="fu">c</span>(<span class="fl">0.45</span>, <span class="fl">0.60</span>),</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="fu">c</span>(<span class="dv">120</span>, <span class="dv">85</span>)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>df_cor</span></code></pre></div>
+<pre><code>    estudo    r   n
+1 Estudo A 0.45 120
+2 Estudo B 0.60  85</code></pre>
+</div>
+<p>O <code>meta</code> calcula automaticamente o z de Fischer:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo automático de Fisher&#39;s z</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>meta_r <span class="ot">&lt;-</span> <span class="fu">metacor</span>(<span class="at">cor =</span> r, <span class="at">n =</span> n, <span class="at">data =</span> df_cor, </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">studlab =</span> estudo, <span class="at">sm =</span> <span class="st">&quot;ZCOR&quot;</span>)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>df_cor <span class="sc">%&gt;%</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fisher_z =</span> meta_r<span class="sc">$</span>TE,</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">se_fisher_z=</span> meta_smd<span class="sc">$</span>seTE)</span></code></pre></div>
+<pre><code>    estudo    r   n  fisher_z se_fisher_z
+1 Estudo A 0.45 120 0.4847003   0.2124035
+2 Estudo B 0.60  85 0.6931472   0.1547602</code></pre>
+</div>
+<h3 id="dados-binários---metabin">4.4. Dados Binários - <code>metabin</code></h3>
+<p>Todas as formas de dado binário utilizam a função <code>metabin</code> o que muda é só o que vai ser inserido no argumento <code>sm</code>.
+Vamos simular dois estudos que investigaram a incidência de infarto em um pequeno município.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>df_bin <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">estudo =</span> <span class="fu">c</span>(<span class="st">&quot;Estudo A&quot;</span>, <span class="st">&quot;Estudo B&quot;</span>),</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">ev_e =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">46</span>),  <span class="at">n_e =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">248</span>), <span class="co"># Experimental</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ev_c =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">77</span>), <span class="at">n_c =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">251</span>)  <span class="co"># Controle</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>df_bin</span></code></pre></div>
+<pre><code>    estudo ev_e n_e ev_c n_c
+1 Estudo A    5 100   10 100
+2 Estudo B   46 248   77 251</code></pre>
+</div>
+<h4 id="a-razão-de-riscos">a) Razão de Riscos</h4>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>meta_rr <span class="ot">&lt;-</span> <span class="fu">metabin</span>(<span class="at">event.e =</span> ev_e, <span class="at">n.e =</span> n_e, </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">event.c =</span> ev_c, <span class="at">n.c =</span> n_c,</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> df_bin, <span class="at">studlab =</span> estudo, </span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sm =</span> <span class="st">&quot;RR&quot;</span>)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>df_bin <span class="sc">%&gt;%</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">risk_ratio =</span> meta_rr<span class="sc">$</span>TE,</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">se_risk_ratio=</span> meta_rr<span class="sc">$</span>seTE)</span></code></pre></div>
+<pre><code>    estudo ev_e n_e ev_c n_c risk_ratio se_risk_ratio
+1 Estudo A    5 100   10 100 -0.6931472     0.5291503
+2 Estudo B   46 248   77 251 -0.5031398     0.1634314</code></pre>
+</div>
+<h4 id="b-razão-de-chances">b) Razão de Chances</h4>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>meta_or <span class="ot">&lt;-</span> <span class="fu">metabin</span>(<span class="at">event.e =</span> ev_e, <span class="at">n.e =</span> n_e, </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">event.c =</span> ev_c, <span class="at">n.c =</span> n_c,</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> df_bin, <span class="at">studlab =</span> estudo, </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sm =</span> <span class="st">&quot;OR&quot;</span>)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>df_bin <span class="sc">%&gt;%</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">odds_ratio =</span> meta_or<span class="sc">$</span>TE,</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">se_odds_ratio=</span> meta_or<span class="sc">$</span>seTE)</span></code></pre></div>
+<pre><code>    estudo ev_e n_e ev_c n_c odds_ratio se_odds_ratio
+1 Estudo A    5 100   10 100 -0.7472144     0.5671309
+2 Estudo B   46 248   77 251 -0.6643764     0.2131285</code></pre>
+</div>
+<h4 id="c-diferença-de-riscos">c) Diferença de Riscos</h4>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>meta_or <span class="ot">&lt;-</span> <span class="fu">metabin</span>(<span class="at">event.e =</span> ev_e, <span class="at">n.e =</span> n_e, </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">event.c =</span> ev_c, <span class="at">n.c =</span> n_c,</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> df_bin, <span class="at">studlab =</span> estudo, </span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sm =</span> <span class="st">&quot;OR&quot;</span>)</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>df_bin <span class="sc">%&gt;%</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">odds_ratio =</span> meta_or<span class="sc">$</span>TE,</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">se_odds_ratio=</span> meta_or<span class="sc">$</span>seTE)</span></code></pre></div>
+<pre><code>    estudo ev_e n_e ev_c n_c odds_ratio se_odds_ratio
+1 Estudo A    5 100   10 100 -0.7472144     0.5671309
+2 Estudo B   46 248   77 251 -0.6643764     0.2131285</code></pre>
 </div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

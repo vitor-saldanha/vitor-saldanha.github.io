@@ -11,7 +11,7 @@ navbar:
     - text: "Estatística"
       href: estatistica.html
     - text: "Metanálise"
-      href: construcao.html
+      href: metanalise.html
     - text: "Blog"
       href: construcao.html
     - icon: fab fa-github

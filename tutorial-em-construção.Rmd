@@ -97,13 +97,12 @@ O que aconteceria se, em vez de fazer apenas um estudo medindo a HbA1c de 100 pa
 ```{r, echo = F, fig.cap="Aqui está representada uma distribuição verdadeira do nível de HbA1C em % de uma população. Foram feitos 10 estudos com 3 participantes que tentaram estimar a média da hemoglobina glicada da população. Perceba que esses estudos não conseguem estimar perfeitamente a média populacional. Existe uma diferença que é chamada de erro amostral."}
 set.seed(123)
 
-# --- 1. Definição do Cenário ---
 mu_real <- 7.0      
 sigma_real <- 1.0   
 n_estudos <- 10     
 n_pacientes <- 3    # N baixo para mostrar o caos
 
-# --- 2. Gerar Dados ---
+# Gerar Dados 
 dados_amostras <- data.frame(
   estudo_id = rep(1:n_estudos, each = n_pacientes),
   hba1c = rnorm(n_estudos * n_pacientes, mean = mu_real, sd = sigma_real)
@@ -491,7 +490,7 @@ sample <- rnorm(n = 50, mean = 20, sd = 5)
 
 # Calcular a média
 media_calculada <- mean(sample)
-print(paste("Média:", media_calculada))
+media_calculada
 ```
 
 <br>
@@ -503,7 +502,7 @@ $$ SE_{\bar{x}} = \frac{s}{\sqrt{n}} $$
 ```{r se_media}
 # Calcular o Erro Padrão (SD dividido pela raiz quadrada de n)
 erro_padrao <- sd(sample) / sqrt(50)
-print(paste("Erro Padrão:", erro_padrao))
+erro_padrao
 ```
 
 <br>
@@ -541,8 +540,10 @@ n1 <- 20; m1 <- 130; s1 <- 15
 n2 <- 20; m2 <- 140; s2 <- 15
 
 MD <- m1 - m2
-print(paste("Diferença Média (MD):", MD, "mmHg"))
+MD
 ```
+
+<br>
 
 **Quando usar?** Só podemos usar a MD quando todos os estudos incluídos na metanálise mediram o desfecho exatamente na mesma escala/unidade. Exemplo Prático (Pressão Arterial): Imagine que você está estudando um novo anti-hipertensivo.
 
@@ -555,7 +556,7 @@ Como ambos falam a "mesma língua" (mmHg), podemos calcular que o remédio baixo
 
 #### b) Erro Padrão
 
-##### Entendendo a Problemática
+##### ❓ Entendendo a Problemática
 
 Nós temos duas formas de calcular o erro padrão, a depender se considerarmos que as duas medidas pertencentes a uma mesma população ou duas populações diferentes. No primeiro caso, consideramos que o desvio padrão verdadeiro de cada grupo é igual entre si. Ou seja, está é um pressuposto estatístico de homocedasticidade. No segundo caso os desvio padrões não tem o mesmo valor, então estamos falando de heterocedasticidade. 
 
@@ -567,7 +568,7 @@ Em cenários de desbalanceamento amostral ($n_1 \neq n_2$), a abordagem agrupada
 
 - **Impacto na Meta-Análise:** O algoritmo de inverso da variância entende que este estudo é extremamente preciso (o que é falso) e atribui a ele um peso desproporcionalmente alto. Um estudo "ruidoso" e de baixa qualidade estatística passa a dominar a estimativa do efeito global.
 
-##### Assumindo o mesmo desvio padrão (homocedasticidade)
+##### ⚖️ Assumindo o mesmo desvio padrão (homocedasticidade)
 
 Calcula-se o desvio padrão agrupado ($s_{pooled}$) através da fórmula
 
@@ -581,17 +582,17 @@ $$ SE_{MD_{between}} = s_{pooled} \sqrt{\frac{1}{n_1} + \frac{1}{n_2}} $$
 s_pooled <- sqrt( (((n1-1)*s1^2) + ((n2-1)*s2^2)) / (n1 + n2 - 2) )
 
 se_md <- s_pooled * sqrt((1/n1) + (1/n2))
-print(paste("Erro Padrão (Agrupado):", round(se_md, 3)))
+se_md
 ```
 
 
-##### Assumindo desvios padrões diferentes (heterocedasticidade)
+##### ≠ Assumindo desvios padrões diferentes (heterocedasticidade)
 
 $$ SE_{unpooled} = \sqrt{ \frac{s_1^2}{n_1} + \frac{s_2^2}{n_2} } $$
 ```{r}
 se_unpooled <- sqrt( (s1^2 / n1) + (s2^2 / n2) )
 
-print(paste("Erro Padrão (Não Agrupado):", round(se_unpooled, 4)))
+se_unpooled
 ```
 
 <br>
@@ -613,7 +614,6 @@ Para conduzir uma metanálise de diferenças de médias brutas, seu banco de dad
 | Silva (2016)     | 30    | 60 | 1.3 | 25  | 48  | 1.4 |
 | Ferreira (2020)    | 28    | 61 | 0.9 | 25  | 40  | 1.2 |
 
-<br>
 <br>
 
 ### 2.3. Dois grupos com escalas diferentes: Diferença de Médias Padronizadas
@@ -700,26 +700,14 @@ print(final_plot)
 
 #### b) Erro Padrão
 
-##### Fórmula Mais Comum (Homocedasticidade)
+##### 📌 Fórmula Mais Comum (Homocedasticidade)
 
 Essa fórmula para o cálculo do d de Cohen utiliza o desvio padrão agrupado. E, como falamos antes, ele assume que ambos os desvios padrões são iguais. Porém, essa fórmula acaba sendo mais utilizada.
 
 $$ d = \frac{\bar{x}_1 - \bar{x}_2}{s_{pooled}} $$
 
-```{r}
-# Instalar pacote se necessário: install.packages("esc")
-library(esc)
 
-effect_size <- esc_mean_sd(
-  grp1m = 15, grp1sd = 5, grp1n = 50,
-  grp2m = 20, grp2sd = 5, grp2n = 50
-)
-
-# O resultado mostra o 'es' (Effect Size) d de Cohen
-print(effect_size)
-```
-
-##### Fórmulas para Heterocedasticidade
+##### 👀 Fórmulas para Heterocedasticidade
 
 Existem duas formas de calcular o d de Cohen assumindo que os desvios não são os mesmos. Podemos fazer uma média entre os dois.
 
@@ -802,24 +790,16 @@ A fórmula de aproximação mais comum para esse fator depende do tamanho total 
 
 $$J \approx 1 - \frac{3}{4N - 9}$$
 ```{r}
-# --- 1. Suponha um estudo pequeno
 smd_bruto <- 0.5   # Cohen's d
 n_total   <- 10    # Amostra extremamente pequena (5 em cada grupo)
 
-# --- 2. Cálculo Manual do Hedges' g ---
 # Fator de correção J
 correction_factor <- 1 - (3 / (4 * n_total - 9))
 
 # Hedges' g
 hedges_g_manual <- smd_bruto * correction_factor
 
-cat(sprintf("SMD Bruto (Cohen's d): %.4f\n", smd_bruto))
-# O valor de g é menor, corrigindo a superestimação!!
-cat(sprintf("Hedges' g (N=%d):      %.4f\n", n_total, hedges_g_manual))
-
-# --- 3. Cálculo usando pacote 'esc' (Recomendado) ---
-library(esc)
-hedges_g(d = smd_bruto, totaln = n_total)
+c(smd_bruto = smd_bruto, hedges_g = hedges_g_manual)
 ```
 
 
@@ -867,7 +847,7 @@ E esse resultado pode ser obtido através da função `cor`:
 x <- c(10, 12, 15, 20, 25)
 y <- c(6, 16, 18, 21, 35)
 
-# Calculate the correlation between x and y
+# Correlação entre x e y 
 r <- cor(x,y)
 r
 ```
@@ -996,7 +976,6 @@ Para conduzir uma metanálise de correlação, seu banco de dados precisa obriga
 | Ferreira (2020)    | 28    | 0.71 |
 
 <br>
-<br>
 
 
 ## 3. Dados Binários (Sim/Não, Sucesso/Fracasso)
@@ -1018,8 +997,7 @@ n <- 200
 
 # Cálculo da Proporção Bruta 
 p <- k / n
-print(paste("Proporção (p):", p))
-
+p
 ```
 
 <br>
@@ -1030,7 +1008,7 @@ $$ SE_p = \sqrt{\frac{p(1-p)}{n}} $$
 ```{r prop_se}
 # Erro Padrão da Proporção
 se_p <- sqrt((p * (1 - p)) / n)
-print(paste("Erro Padrão (Raw):", se_p))
+se_p
 ```
 
 
@@ -1039,6 +1017,7 @@ print(paste("Erro Padrão (Raw):", se_p))
 Como a proporção é limitada entre 0 e 1, surgem problemas quando o valor de $p$ é muito próximo de 0 ou de 1.
 
 - **Erro Padrão Comprimido**: O erro padrão é artificialmente reduzido, levando a uma superestimação da precisão.
+
 - **Distribuição Assimétrica**: A distribuição amostral deixa de ser normal (Sino) e torna-se enviesada (*skewed*) à esquerda ou direita, pois é impossível ter valores fora do intervalo 0-1.
 
 <br>
@@ -1144,7 +1123,7 @@ $$ p_{\text{logit}} = \log_e \left( \frac{p}{1-p} \right) $$
 ```{r}
 # O logit transforma o intervalo 0-1 em -inf a +inf
 p_logit <- log(p / (1 - p))
-print(paste("Proporção Transformada (Logit):", p_logit))
+p_logit
 ```
 
 <br>
@@ -1155,7 +1134,7 @@ $$ SE_{p_{\text{logit}}} = \sqrt{\frac{1}{np} + \frac{1}{n(1-p)}} $$
 
 ```{r logit_prop}
 se_logit <- sqrt((1 / (n * p)) + (1 / (n * (1 - p))))
-print(paste("Erro Padrão (Logit):", se_logit))
+se_logit
 ```
 
 <br>
@@ -1163,8 +1142,6 @@ print(paste("Erro Padrão (Logit):", se_logit))
 ```{r, echo=F, fig.width=10, fig.cap="A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95) após a transformação logit. Isso faz com que a distribuição assuma um formato aproximadamente normal em que os limites transformam-se em menos e mais infinito. B. O erro padrão associado a essa distribuição é máximo nas pontas e menor no centro, o queé intuitivo pois no centro temos maior certeza."}
 p1b + p2b
 ```
-
-<br>
 
 Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter duas informações (colunas) de cada estudo incluído:
 
@@ -1180,13 +1157,12 @@ Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoria
 | Ferreira (2020)    | 28    | 61 |
 
 <br>
-<br>
 
 ### 3.2. Razão de dois Grupos: Razão de Riscos (Risk Ratio)
 
 #### a) O que é?
 
-A Razão de Risco (também conhecida como Risco Relativo ou Risk Ratio - RR) é uma medida de efeito intuitiva e amplamente utilizada em pesquisas médicas, especialmente em ensaios clínicos controlados com desfechos binários (ou dicotômicos), como "morte vs. sobrevida" ou "doença vs. sem doença".
+A Razão de Risco (também conhecida como Risco Relativo ou Risk Ratio - RR) é uma medida de efeito intuitiva e amplamente utilizada em pesquisas médicas, especialmente em ensaios clínicos controlados com desfechos binários, como "morte vs. sobrevida" ou "doença vs. sem doença".
 
 O RR compara a probabilidade de um evento ocorrer no grupo tratado versus no grupo controle. Os dados brutos são geralmente extraídos de uma tabela $2 \times 2$:
 
@@ -1195,6 +1171,9 @@ O RR compara a probabilidade de um evento ocorrer no grupo tratado versus no gru
 | **Tratamento** | $a$          | $b$                   | $n_{trat}$ |
 | **Controle** | $c$          | $d$                   | $n_{cont}$ |
 
+
+<br>
+
 O risco em cada grupo é calculado dividindo o número de eventos pelo total de pacientes naquele grupo. Assim, a Razão de Risco é definida como:
 
 $$ RR = \frac{p_{trat}}{p_{cont}} = \frac{a / n_{trat}}{c / n_{cont}} $$
@@ -1202,6 +1181,8 @@ $$ RR = \frac{p_{trat}}{p_{cont}} = \frac{a / n_{trat}}{c / n_{cont}} $$
 - Se $RR = 1$: Não há diferença entre os grupos (hipótese nula).
 - Se $RR < 1$: O tratamento reduz o risco do evento (fator de proteção).
 - Se $RR > 1$: O tratamento aumenta o risco do evento (fator de risco).
+
+Vamos supor que estamos avaliando a segurança de um fármaco para o sistema renal. Então, separamos um grupo controle um grupo tratamento (que tomou o fármaco). Um $RR$ de 2 significa que pacientes que utilizam o fármaco apresentam um risco duas vezes maior de desenvolver nefropatia em comparação àqueles que utilizam placebo. Então, por exemplo, se o grupo controle apresentou um risco de 5% de nefropatia, o grupo tratamento apresentou de 10%. 
 
 #### b) Novamente... O problema da assimetria 😁
 
@@ -1220,30 +1201,25 @@ Nesta escala logarítmica, os valores são centralizados em 0 (nenhum efeito) e 
 $$ SE_{LogRR} = \sqrt{\frac{1}{a} - \frac{1}{n_{trat}} + \frac{1}{c} - \frac{1}{n_{cont}}} $$
 
 ```{r}
-# --- 1. Dados do Estudo (Tabela 2x2) ---
-events_treat <- 46    # (a) Eventos no grupo tratamento
-n_treat      <- 248   # (n1) Total grupo tratamento
-events_ctrl  <- 77    # (c) Eventos no grupo controle
-n_ctrl       <- 251   # (n2) Total grupo controle
+events_treat <- 46    
+n_treat      <- 248   
+events_ctrl  <- 77    
+n_ctrl       <- 251 
 
-# --- 2. Cálculo dos Riscos Individuais ---
+# Riscos Individuais 
 risk_treat <- events_treat / n_treat
 risk_ctrl  <- events_ctrl / n_ctrl
 
-# --- 3. Cálculo da Razão de Risco (RR) ---
+# Razão de Risco (RR) 
 RR <- risk_treat / risk_ctrl
 
-# --- 4. Transformação Logarítmica (Para a Metanálise) ---
+# Transformação Logarítmica 
 log_RR <- log(RR)
 
-# --- 5. Cálculo do Erro Padrão (SE) na escala Log ---
-# Fórmula: SE = sqrt(1/a + 1/c - 1/n1 - 1/n2)
+# Erro Padrão (SE) na escala Log 
 se_log_rr <- sqrt((1/events_treat) + (1/events_ctrl) - (1/n_treat) - (1/n_ctrl))
 
-# --- Exibindo Resultados ---
-print(sprintf("Razão de Risco (RR): %.4f\n", RR))
-print(sprintf("Log Razão de Risco:  %.4f\n", log_RR))
-print(sprintf("Erro Padrão (Log):   %.4f\n", se_log_rr))
+c(risk_ratio = RR, log_RR = log_RR, se_RR = se_log_rr)
 ```
 
 <br>
@@ -1264,25 +1240,22 @@ Para conduzir uma metanálise de razão de riscos, seu banco de dados precisa ob
 | Ferreira (2020)    | 28    | 61 | 21    | 61    |
 
 <br>
-<br>
 
 ### 3.3. Outra razão de dois grupos: Razão de Chances (Odds Ratio)
 
 #### a) O que é chance?
 
-Enquanto o Risk Ratio compara probabilidades (riscos), o Odds Ratio (OR), ou Razão de Chances, compara... chances (Odds). Embora pareçam sinônimos na linguagem coloquial, em estatística, "Risco" e "Chance" são matematicamente distintos.
+Enquanto o Risk Ratio compara probabilidades (riscos), o Odds Ratio (OR), ou Razão de Chances, compara... chances (Odds). Embora pareçam sinônimos na linguagem informal, em estatística, "Risco" e "Chance" são matematicamente distintos. A intuição por trás do Odd é a razão entre o sucesso e o fracasso (ou evento e não-evento). 
 
-A intuição por trás do Odd é a razão entre o sucesso e o fracasso (ou evento e não-evento).Imagine que estamos analisando um jogo ou um tratamento.🔵 = Vitória (Evento/Sucesso)🔴 = Derrota (Não-Evento/Falha)
+Imagine que estamos analisando um time de futebol e vamos anotar quantas vitórias e derrotas ele tem. Vamos convencionar que 🔵 = Vitória (Evento/Sucesso) e 🔴 = Derrota (Não-Evento/Falha). Então, vamos supor que esse time em análise teve 3 vitórias e 2 derrotas (🔵🔵🔵🔴🔴). Assim:
 
-- **Probabilidade (Risco)**: É o número de vitórias dividido pelo total de partidas.Vamos supor que tivemos 3 vitórias e 2 derrotas (🔵🔵🔵🔴🔴)
+- **Probabilidade (Risco)**: É o número de vitórias dividido pelo total de partidas.
 
 $$P(\text{Vencer}) = \frac{3 \text{ (azuis)}}{5 \text{ (total)}} = 0,6 \text{ ou } 60\%$$
 
-- **Chance (Odd)**: É o número de vitórias dividido pelo número de derrotas. O denominador não inclui o total, apenas o complemento.🔵🔵🔵 🆚 🔴🔴
+- **Chance (Odd)**: É o número de vitórias dividido pelo número de derrotas. O denominador não inclui o total, apenas o complemento. Podemos falar que a chance é 3 para 2 (🔵🔵🔵 🆚 🔴🔴) 
 
 $$\text{Odd} = \frac{3 \text{ (azuis)}}{2 \text{ (vermelhos)}} = 1,5$$
-
-Dizemos que a chance é de "3 para 2" (3:2).
 
 Mais formalmente podemos pensar em Razão de Chances a partir da tabela $2 \times 2$:
 
@@ -1313,13 +1286,24 @@ Ao aplicar o Log, tornamos a distribuição simétrica ao redor de zero:
 
 - $\ln(4,00) \approx +1,38$
 
+Aqui está um resumo de todas as transformações que falamos acima!
+
+| Medida Original | Problema Estatístico | Transformação Necessária |
+| :--- | :--- | :--- |
+| **Proporção** | Presa entre 0 e 1 | **Logit**: $\ln(\frac{p}{1-p})$ |
+| **Razão de Risco (RR)** | Razão assimétrica | **Log Natural**: $\ln(RR)$ |
+| **Razão de Chances (OR)** | Assimétrica e não linear | **Log Natural**: $\ln(OR)$ |
+| **Correlação ($r$)** | Teto/Chão em +1 e -1 | **Fisher's $z$**: $0.5 \times \ln(\frac{1+r}{1-r})$ |
+
+<br> 
+
 #### c) E se divirmos duas chances? Temos as razões de chances!
 
 O Odds Ratio (OR) é simplesmente a chance do evento no grupo tratado dividida pela chance do evento no grupo controle.
 
 $$ OR = \frac{\text{Odd}_{trat}}{\text{Odd}_{cont}} = \frac{a/b}{c/d} = \frac{a \times d}{b \times c} $$
 
-- **Interpretação**: O OR indica a força de associação entre duas variáveis. Por exemplo, se um estudo sobre uma mutação genética e câncer resulta em um $OR = 6,88$, isso significa que a chance de alguém com a mutação ter câncer é 6,88 vezes maior do que alguém sem a mutação.
+- **Interpretação**: O OR indica a força de associação entre duas variáveis. Por exemplo, vamos falar do mesmo exemplo que demos na razão de riscos. Porém, vamos falar que temos uma Razão de Chances = 2. Isso significa que o tomar o fármaco aumenta a chance em 2 vezes de desenvolver nefropatia. Ou seja, no grupo tratado para cada pessoa que não tem nefropatia existem 2 que têm. No controle, a relação é de 1 para 1. Se outro estudo sobre uma mutação genética e câncer resulta em um $OR = 6,88$, isso significa que a chance de alguém com a mutação ter câncer é 6,88 vezes maior do que alguém sem a mutação. 
 
 #### d) Erro Padrão
 
@@ -1328,40 +1312,26 @@ E também podemos calcular o erro padrão do odds ratio atravé da fórmula:
 $$ SE_{\text{Log}OR} = \sqrt{\frac{1}{a} + \frac{1}{b} + \frac{1}{c} + \frac{1}{d}} $$
 
 ```{r}
-# --- 1. Dados do Estudo (Tabela 2x2) ---
-# Exemplo: Gene Mutado vs Câncer
-events_treat <- 23    # (a) Com Mutação e Com Câncer
-no_events_treat <- 117 # (b) Com Mutação e SEM Câncer
-events_ctrl  <- 6     # (c) Sem Mutação e Com Câncer
-no_events_ctrl <- 210  # (d) Sem Mutação e SEM Câncer
+events_treat <- 23    
+no_events_treat <- 117 
+events_ctrl  <- 6     
+no_events_ctrl <- 210  
 
-# --- 2. Cálculo dos Odds Individuais ---
+# Cálculo dos Odds Individuais 
 odd_treat <- events_treat / no_events_treat
 odd_ctrl  <- events_ctrl / no_events_ctrl
 
-# --- 3. Cálculo do Odds Ratio (OR) ---
+# Odds Ratio (OR) 
 OR <- odd_treat / odd_ctrl
 
-# --- 4. Cálculo do Erro Padrão (Log Scale) ---
+# Erro Padrão (Log Scale) 
 log_OR <- log(OR)
 se_log_or <- sqrt((1/events_treat) + (1/no_events_treat) + 
                   (1/events_ctrl) + (1/no_events_ctrl))
 
-
-
-# --- Exibindo Resultados ---
-cat(sprintf("Odd Tratamento: %.4f\n", odd_treat))
-cat(sprintf("Odd Controle:   %.4f\n", odd_ctrl))
+c(chance_tratamento = odd_treat, chance_controle = odd_ctrl)
 ```
-
-Ou utilizando um pacote específico
-
-```{r}
-library(esc)
-esc_2x2(grp1yes = events_treat, grp1no = no_events_treat,
-        grp2yes = events_ctrl, grp2no = no_events_ctrl,
-        es.type = "or")
-```
+<br>
 
 #### e) Diferença de Odds Ratio para Risk Ratio
 
@@ -1375,7 +1345,7 @@ esc_2x2(grp1yes = events_treat, grp1no = no_events_treat,
 
 - Controle: 10 mortes em 100 pacientes.
 
-O Risco Relativo é 0,5 (redução de 50%).O Odds Ratio é 0,47.Note que, mesmo com números pequenos, eles já não são idênticos. Em eventos frequentes, essa distância aumenta drasticamente. Porém, fique tranquilo que existem fórmulas para converter OR em RR se necessário!
+O Risco Relativo é 0,5 (redução de 50%). O Odds Ratio é 0,47. Note que, mesmo com números pequenos, eles já não são idênticos. Em eventos frequentes, essa distância aumenta drasticamente. Porém, fique tranquilo que existem fórmulas para converter OR em RR se necessário!
 
 <br>
 
@@ -1395,7 +1365,6 @@ Para conduzir uma metanálise de razão de chances, seu banco de dados precisa o
 | Ferreira (2020)    | 28    | 61 | 21    | 61    |
 
 <br>
-<br>
 
 ### 3.4. Diferença Absoluta de Dois Grupos: Diferença de Riscos (Risk Difference)
 
@@ -1405,15 +1374,15 @@ Ela é calculada simplesmente subtraindo o risco do grupo controle pelo risco do
 
 $$RD = Risk_{trat} - Risk_{cont}$$
 
-**Exemplo**:Imagine um estudo sobre apendicectomia incidental.
+**Exemplo**: Imagine um estudo sobre apendicectomia:
 
-- Risco de infecção sem cirurgia: $1,3\%$
+- Risco de infecção local sem cirurgia: $1,3\%$
 
-- Risco de infecção com cirurgia: $5,3\%$
+- Risco de infecção local com cirurgia: $5,3\%$
 
 $$RD = 5,3\% - 1,3\% = +4,0\%$$
 
-Isso significa que a cirurgia adicionou um risco excedente de 4 pontos percentuais.
+Isso significa que a cirurgia adicionou um risco de 4% no desenvolvimento de uma infecção local. 
 
 - Se $RD = 0$: Não há efeito.
 
@@ -1422,29 +1391,26 @@ Isso significa que a cirurgia adicionou um risco excedente de 4 pontos percentua
 - Se $RD > 0$: O tratamento aumentou o risco absoluto.
 
 ```{r}
-# --- 1. Dados do Estudo (Exemplo Apendicectomia) ---
-# Grupo Tratado (Com cirurgia)
+# Grupo tratado
 events_treat <- 53
 n_treat      <- 1000
 non_events_treat <- n_treat - events_treat
 
-# Grupo Controle (Sem cirurgia)
+# Grupo Controle 
 events_ctrl  <- 13
 n_ctrl       <- 1000
 non_events_ctrl <- n_ctrl - events_ctrl
 
-# --- 2. Cálculo dos Riscos ---
+# Riscos do Grupo Tratamento e Controle
 risk_treat <- events_treat / n_treat
 risk_ctrl  <- events_ctrl / n_ctrl
 
-# --- 3. Cálculo da Diferença de Risco (RD) ---
+# Diferença de Risco (RD) 
 RD <- risk_treat - risk_ctrl
 
-
-cat(sprintf("Risco Tratamento: %.1f%%\n", risk_treat * 100))
-cat(sprintf("Risco Controle:   %.1f%%\n", risk_ctrl * 100))
-cat(sprintf("Diferença de Risco (RD): %.3f (ou %.1f p.p.)\n", RD, RD*100))
+RD
 ```
+
 
 <br>
 
@@ -1464,4 +1430,158 @@ Para conduzir uma metanálise de diferença de riscos, seu banco de dados precis
 | Ferreira (2020)    | 28    | 61 | 21    | 61    |
 
 <br>
-<br>
+
+## 4. Pacote meta
+
+O pacote meta é amplamente adotado em publicações médicas por seguir rigorosamente a metodologia da Cochrane Collaboration. Ele automatiza o fluxo complexo de transformar dados brutos em estimativas combinadas.
+
+### 4.1. Entendendo os Argumentos das Funções
+
+As funções principais (metabin, metacont, metacor) compartilham argumentos que definem o rigor da sua análise:
+
+- **data**: O data frame que contém seus dados coletados.
+
+- **sm** (Summary Measure): Define a métrica alvo (ex: "RR", "OR", "MD", "SMD").
+
+- **pooledvar**: Argumento crucial na metacont. Ao definir como FALSE, você aplica a heterocedasticidade (Unpooled) para a Diferença de Médias (MD), protegendo sua análise contra o desbalanceamento amostral.
+
+- **method.smd**: Permite escolher entre Cohen e Hedges. Selecionar "Hedges" é o padrão ouro para corrigir o viés de superestimação em amostras pequenas.
+
+### 4.2. Os Bastidores: TE e seTE 
+
+Ao rodar o código, o R gera um objeto que armazena dois valores fundamentais que sãoa acessados através do $:
+
+- **TE** (Treatment Effect): É o tamanho do efeito individual de cada estudo. Para razão de riscos, odds ratio e correlação, este valor estará na escala transformada ($\ln$ ou Fisher's $z$) para garantir a simetria estatística e permitir o agrupamento.
+
+- **seTE** (Standard Error of TE): É o erro padrão do efeito. Ele dita o peso de cada estudo. Quanto menor esse valor, maior a precisão do estudo e mais influência ele terá no resultado final da metanálise.
+
+### 4.3. Dados Contínuos
+
+Primeiro devemos carregar os pacotes que iremos utilizar. Aqui vamos utilizar o `meta` e o `dplyr`. Se não os tem baixado pode utilizar o `install.packages`.
+
+```{r}
+library(meta)
+library(dplyr)
+```
+
+Agora vamos simular dois estudos que investigaram a atuação de um fármaco em diminuir a pressão arterial. Então, a medida é a pressão arterial média.
+
+```{r}
+df_cont <- data.frame(
+  estudo = c("Estudo A", "Estudo B"),
+  n_e = c(50, 100), m_e = c(120, 115), sd_e = c(10, 12), # Grupo Experimental
+  n_c = c(50, 100), m_c = c(130, 130), sd_c = c(10, 12)  # Grupo Controle
+)
+
+df_cont
+```
+
+#### a) Diferença de Médias - `metacont`
+
+```{r}
+# Note: pooledvar=FALSE aplica a heterocedasticidade (Unpooled) como discutido.
+meta_md <- metacont(n.e = n_e, mean.e = m_e, sd.e = sd_e,
+                    n.c = n_c, mean.c = m_c, sd.c = sd_c,
+                    data = df_cont, studlab = estudo,
+                    sm = "MD", pooledvar = FALSE)
+
+df_cont %>%
+  mutate(mean_diff = meta_md$TE,
+         se_mean_diff = meta_md$seTE)
+```
+
+#### b) Diferença de Médias Padronizadas - `metacont`
+
+
+```{r}
+# O pacote 'meta' usa Hedges' g por padrão para SMD.
+meta_smd <- metacont(n.e = n_e, mean.e = m_e, sd.e = sd_e,
+                     n.c = n_c, mean.c = m_c, sd.c = sd_c,
+                     data = df_cont, studlab = estudo,
+                     sm = "SMD", method.smd = "Hedges")
+
+df_cont %>%
+  mutate(hedges_g = meta_smd$TE,
+         se_hedges_g = meta_smd$seTE)
+```
+
+#### c) Correlação - `metacor`
+
+Aqui vamos simular dois estudos que avaliaram a correlação entre idade e capacidade pulmonar. 
+
+```{r}
+df_cor <- data.frame(
+  estudo = c("Estudo A", "Estudo B"),
+  r = c(0.45, 0.60),
+  n = c(120, 85)
+)
+
+df_cor
+```
+
+O `meta` calcula automaticamente o z de Fischer:
+
+```{r}
+# Cálculo automático de Fisher's z
+meta_r <- metacor(cor = r, n = n, data = df_cor, 
+                  studlab = estudo, sm = "ZCOR")
+
+df_cor %>%
+  mutate(fisher_z = meta_r$TE,
+         se_fisher_z= meta_smd$seTE)
+```
+
+### 4.4. Dados Binários - `metabin`
+
+Todas as formas de dado binário utilizam a função `metabin` o que muda é só o que vai ser inserido no argumento `sm`.
+Vamos simular dois estudos que investigaram a incidência de infarto em um pequeno município.
+
+```{r}
+df_bin <- data.frame(
+  estudo = c("Estudo A", "Estudo B"),
+  ev_e = c(5, 46),  n_e = c(100, 248), # Experimental
+  ev_c = c(10, 77), n_c = c(100, 251)  # Controle
+)
+
+df_bin
+```
+
+#### a) Razão de Riscos
+
+```{r}
+meta_rr <- metabin(event.e = ev_e, n.e = n_e, 
+                   event.c = ev_c, n.c = n_c,
+                   data = df_bin, studlab = estudo, 
+                   sm = "RR")
+
+df_bin %>%
+  mutate(risk_ratio = meta_rr$TE,
+         se_risk_ratio= meta_rr$seTE)
+```
+
+#### b) Razão de Chances
+
+```{r}
+meta_or <- metabin(event.e = ev_e, n.e = n_e, 
+                   event.c = ev_c, n.c = n_c,
+                   data = df_bin, studlab = estudo, 
+                   sm = "OR")
+
+df_bin %>%
+  mutate(odds_ratio = meta_or$TE,
+         se_odds_ratio= meta_or$seTE)
+```
+
+#### c) Diferença de Riscos
+
+```{r}
+meta_or <- metabin(event.e = ev_e, n.e = n_e, 
+                   event.c = ev_c, n.c = n_c,
+                   data = df_bin, studlab = estudo, 
+                   sm = "OR")
+
+df_bin %>%
+  mutate(odds_ratio = meta_or$TE,
+         se_odds_ratio= meta_or$seTE)
+```
+

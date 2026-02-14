@@ -1,5 +1,7 @@
 ---
 title: "Tutoriais de Metanálise"
+pagetitle: "Tutoriais de Metanálise"
+date: "`r Sys.Date()`"
 site: distill::distill_website
 ---
 
@@ -13,8 +15,53 @@ body {
 }
 </style>
 
-Aqui ficarão seus projetos específicos de metanálise.
+## Conteúdo
 
-## Projetos Recentes
-```{r}
-# Seus códigos de metanálise virão aqui
+<div class="tutorial-grid l-body-outset">
+
+<div class="card-blog">
+<img src="fotos/metanalise/effectsize.jpg" class="card-img-top" alt="Imagem Effect Size">
+
+<div class="card-body">
+<span class="card-tag">
+<i class="fas fa-fire"></i> Básico
+</span>
+<h5 class="card-title">Tamanho de Efeitos</h5>
+
+<a href="tutorial-metanalise-effectsize.html" class="card-btn">
+Acessar Aula <i class="fas fa-arrow-right"></i>
+</a>
+</div>
+</div>
+
+<div class="card-blog">
+<img src="fotos/metanalise/models.jpg" class="card-img-top" alt="Modelos">
+
+<div class="card-body">
+<span class="card-tag">
+<i class="fas fa-chart-bar"></i> Intermediário
+</span>
+<h5 class="card-title">Modelos de Pooling</h5>
+
+<a href="construcao.html" class="card-btn">
+Acessar Aula <i class="fas fa-arrow-right"></i>
+</a>
+</div>
+</div>
+
+<div class="card-blog">
+<img src="fotos/metanalise/heterogeneity.jpg" class="card-img-top" alt="Imagem Hetero">
+
+<div class="card-body">
+<span class="card-tag">
+<i class="fas fa-chart-bar"></i> Intermediário
+</span>
+<h5 class="card-title">Heterogeneidade</h5>
+
+<a href="construcao.html" class="card-btn">
+Acessar Aula <i class="fas fa-arrow-right"></i>
+</a>
+</div>
+</div>
+
+</div>

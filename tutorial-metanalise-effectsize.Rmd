@@ -1,12 +1,12 @@
 ---
-title: "Regressão Linear"
-pagetitle: "Regressão Linear"
+title: "Tamanho de Efeitos"
+pagetitle: "Effect Sizes"
 description: |
-  Uma introdução prática aos modelos lineares no R.
+  Uma introdução prática tamanho de Efeitos para metanálise em R.
 output:
   distill::distill_article:
     toc: true
-    toc_depth: 6
+    toc_depth: 2
     toc_float: true
     css: toc-styles.css
     self_contained: false
@@ -48,7 +48,7 @@ min-height: 300px; /* Altura mínima garantida */
 width: 100%;
 
 /* Imagem de Fundo - Substitua pela URL da sua imagem */
-background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1953&q=80');
+background-image: url('https://images.unsplash.com/photo-1672092590672-3feb81f3123a?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
 background-size: cover;
 background-position: center center;
 background-repeat: no-repeat;
@@ -188,10 +188,10 @@ padding-top: 20px;
 <div class="hero-banner">
 <div class="hero-overlay">
 <div class="hero-content">
-<h1 class="hero-title">Regressão Linear</h1>
+<h1 class="hero-title">Effect Sizes</h1>
 
 <p class="hero-subtitle">
-Uma introdução prática aos modelos lineares no R
+Uma introdução prática aos tamanho de efeitos para metanálise em R
 </p>
 
 </div>
@@ -204,117 +204,1630 @@ Uma introdução prática aos modelos lineares no R
 ############## CONTEUDO ####################
 ############################################  -->
 
+
+```{css, echo = F}
+/* Estilo para a caixa de código */
+d-article pre {
+background-color: #f6f8fa !important;  /* O !important força a mudança da cor */
+border: 1px solid #e1e4e8 !important;  /* Força a borda */
+border-radius: 6px;        /* Cantos arredondados */
+padding: 12px;             /* Espaço interno para o texto não colar na borda */
+box-shadow: none;          /* Remove sombras padrões se houver */
+}
+```
+
+```{css, echo=FALSE}
+h1, h2, h3, h4 {
+  border-bottom: 1px solid #dddddd; /* Cria a linha cinza fina embaixo */
+  padding-bottom: 12px;              /* Espaço entre o texto e a linha */
+  margin-bottom: 18px;              /* Espaço depois da linha para o próximo parágrafo */
+  margin-top: 28px;                 /* Espaço antes do título */
+```
+
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(patchwork)
 library(gridExtra)
+library(cowplot)
+library(grid)
+library(MASS)      # Para gerar dados correlacionados (mvrnorm)
+library(knitr)
+
+# Ativar o botão de copiar
+xaringanExtra::use_clipboard(
+  button_text = "Copiar",
+  success_text = "Copiado!",
+  error_text = "Pressione Ctrl+C para copiar"
+)
 ```
 
-```{r proportion}
-k <- 25
-n <- 125
 
-p <- k/n
-p
 
-sqrt((p*(1-p))/n)
+## 1. Fundamentos
 
+### 1.1. O que é tamanho de efeito?
+
+O tamanho de efeito é uma métrica utilizada para quantificar a relação entre duas entidades, capturando tanto a direção quanto a magnitude desse fenômeno. Diferente de um simples teste de hipótese (que diz se algo funcionou ou não), o tamanho de efeito nos diz o quanto funcionou. Essencialmente, é a moeda comum que permite comparar e combinar resultados de estudos diferentes em uma metanálise.
+
+- **Média Amostral**
+  - Ex: "Qual é a altura média de crianças de 10 anos nesta população específica?"
+  
+- **Proporções**
+  - Ex: "Qual é a prevalência de burnout em profissionais de enfermagem que trabalham em UTI?"
+
+- **Coeficiente de Correlação** (ex: r de Pearson)
+  - Ex: "Existe uma associação entre o nível de escolaridade dos pais e o sucesso acadêmico dos filhos?" → Ou seja, avaliar a relação de duas variáveis contínuas.
+
+- **Diferença de Médias** (ex: Cohen's d, Hedges' g)
+  - Ex: "O novo medicamento causa uma redução maior na pressão arterial comparado ao grupo controle?" → Ou seja, comparar grupos (Intervenção vs. Controle) usando uma variável.
+
+- **Razão de Chances ou Risco** (Odds Ratio / Risk Ratio)
+  - Ex: "Fumantes têm maior probabilidade de desenvolver câncer de pulmão do que não fumantes?" → Ou seja, avaliar desfechos binários (Sim/Não, Doente/Saudável, Vivo/Morto).
+
+
+### 1.2. Entendendo Amostragem
+
+#### a) População vs. Amostragem
+
+Imagine que quiséssemos saber o nível médio exato de Hemoglobina Glicada (HbA1c) de todos os pacientes diabéticos do mundo sob tratamento com um novo fármaco.
+
+Se tivéssemos recursos infinitos, mediríamos a HbA1c de cada um desses milhões de pacientes. Ao final, teríamos uma distribuição com uma média exata (ex: 7,5%) e um desvio padrão exato. Na estatística, chamamos esses valores de Parâmetros Populacionais. Eles representam a verdade biológica absoluta sobre aquele tratamento.
+
+o mundo real, nunca temos tempo, dinheiro ou capacidade logística para medir a população inteira. É aqui que entra a ciência prática: nós fazemos uma **Amostragem**.
+
+Quando um pesquisador publica um Ensaio Clínico Randomizado (RCT) com 100 pacientes para testar esse fármaco, ele está pegando apenas uma pequena fatia da população global. Com base nos dados desses 100 pacientes, ele calcula uma média e um desvio padrão. Mas atenção: estes não são os Parâmetros Populacionais. Eles são apenas Estimativas.
+
+<br>
+
+> **A Realidade Estatística**: É extremamente improvável que a média de HbA1c encontrada nesse estudo seja exatamente igual à média real da população mundial (7,5%). Sempre haverá um erro aleatório.
+
+<br>
+
+#### b) Teorema do Limite Central: E se repetíssemos a amostragem? 
+
+O que aconteceria se, em vez de fazer apenas um estudo medindo a HbA1c de 100 pacientes, nós repetíssemos esse mesmo estudo 1.000 vezes? Teríamos 1.000 médias diferentes (7,2%, 7,1%, 7,5%, 7,3%...). Se colocarmos todas essas médias em um gráfico (histograma), observaremos um fenômeno fascinante:
+
+1. A maioria das médias dos estudos vai se acumular em torno de um valor central.
+
+2. Algumas poucas médias (os estudos "azarados" ou extremos) ficarão mais afastadas.
+
+```{r, echo = F, fig.cap="Aqui está representada uma distribuição verdadeira do nível de HbA1C em % de uma população. Foram feitos 10 estudos com 3 participantes que tentaram estimar a média da hemoglobina glicada da população. Perceba que esses estudos não conseguem estimar perfeitamente a média populacional. Existe uma diferença que é chamada de erro amostral."}
+set.seed(123)
+
+mu_real <- 7.0      
+sigma_real <- 1.0   
+n_estudos <- 10     
+n_pacientes <- 3    # N baixo para mostrar o caos
+
+# Gerar Dados 
+dados_amostras <- data.frame(
+  estudo_id = rep(1:n_estudos, each = n_pacientes),
+  hba1c = rnorm(n_estudos * n_pacientes, mean = mu_real, sd = sigma_real)
+)
+
+dados_resumo <- dados_amostras %>%
+  group_by(estudo_id) %>%
+  summarise(media_amostral = mean(hba1c))
+
+# --- 3. Gráfico Superior (População) ---
+x_range <- seq(mu_real - 4*sigma_real, mu_real + 4*sigma_real, length.out = 1000)
+dados_populacao <- data.frame(
+  x = x_range,
+  y = dnorm(x_range, mean = mu_real, sd = sigma_real)
+)
+limites_x <- c(4, 10) 
+
+plot_top <- ggplot(dados_populacao, aes(x = x, y = y)) +
+  geom_area(fill = "grey90", color = "black", size = 0.8) +
+  geom_vline(xintercept = mu_real, linetype = "dashed", size = 1, color = "#E74C3C") +
+  labs(title = "População (Parâmetro)", y = "", x = NULL) +
+  scale_x_continuous(limits = limites_x) +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 16))
+
+# --- 4. Gráfico Inferior (Amostras) ---
+plot_bottom <- ggplot() +
+  # A. Linha Vertical da Verdade
+  geom_vline(xintercept = mu_real, linetype = "dashed", size = 0.8, color = "#E74C3C", alpha = 0.5) +
+  
+  # B. Linhas de ERRO (Setas)
+  # Nota: Aqui usamos 'estudo_id' numérico direto no Y
+  geom_segment(data = dados_resumo, 
+               aes(x = media_amostral, xend = mu_real, 
+                   y = estudo_id, yend = estudo_id),
+               color = "red", linetype = "solid", size = 0.8, 
+               arrow = arrow(length = unit(0.2, "cm"))) +
+  
+  # C. Pontos Brutos (Pacientes)
+  geom_point(data = dados_amostras, 
+             aes(x = hba1c, y = estudo_id), 
+             color = "grey60", alpha = 0.8, size = 2) +
+  
+  # D. Média da Amostra (Losango Azul)
+  geom_point(data = dados_resumo, 
+             aes(x = media_amostral, y = estudo_id), 
+             shape = 18, size = 5, color = "blue") +
+  
+  # Estética
+  labs(x = "Nível de HbA1c", y = "Estudo Nº") +
+  
+  # AQUI ESTAVA O PROBLEMA: Agora definimos explicitamente como contínuo, 
+  # mas forçamos 'breaks' inteiros para parecerem linhas.
+  scale_x_continuous(limits = limites_x) +
+  scale_y_continuous(breaks = 1:n_estudos) + 
+  
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major.y = element_line(color = "grey95"),
+    panel.grid.minor = element_blank()
+  )
+
+# --- 5. Combinar ---
+final_plot <- plot_top / plot_bottom + plot_layout(heights = c(1, 4))
+
+print(final_plot)
 ```
 
-```{r proportion_graph, code_folding = "Mostrar Código"}
-# Transformação em Ln
-# Função para calcular o Logit (Fórmula 3.7)
-calc_logit <- function(p) {
-  # Proteção para p=0 ou p=1 para evitar infinitos
-  if (any(p <= 0 | p >= 1)) warning("Valores de p devem estar entre 0 e 1 (exclusivo).")
-  return(log(p / (1 - p)))
-}
+Essa coleção de médias de vários estudos hipotéticos cria o que chamamos de Distribuição Amostral. Aqui entra uma das regras mais importantes da estatística para a metanálise. Você pode se perguntar: "E se os dados originais dos pacientes não forem normais?" (Ex: tempo de internação hospitalar, que geralmente não segue uma curva normal).
 
-# Função para calcular o Erro Padrão do Logit (Fórmula 3.8)
-calc_se_logit <- function(p, n) {
-  term1 <- 1 / (n * p)
-  term2 <- 1 / (n * (1 - p))
-  return(sqrt(term1 + term2))
-}
+O **Teorema do Limite Central** afirma que, independentemente da distribuição dos dados originais (seja uniforme, exponencial, etc.), se pegarmos as médias dessas amostragens, a distribuição dessas médias será sempre Normal (uma curva de sino).
 
-# Função auxiliar: Erro Padrão da proporção original (sem log)
-# Fórmula clássica: sqrt(p(1-p)/n)
-calc_se_raw <- function(p, n) {
-  return(sqrt((p * (1 - p)) / n))
+```{r, echo = F, fig.cap="Foram retiradas amostras pequenas (n = 5), médias (n = 30) e grandes (n = 100) de uma distribuição populacional exponencial e calculadas a média de cada amostra. Perceba que a distribuição amostral das médias (mesmo que a distribuição amostral original não seja normal) vai aproximando-se de uma distribuição normal. Perceba também que quanto maior a amostra menor o desvio padrão dessa distribuição amostral (vamos chamar depois isso de menor erro amostral :D)"}
+set.seed(42)
+
+# --- 1. CORES E ESTÉTICA ---
+cor_pop_fill   <- "#FAE5D3"  
+cor_pop_line   <- "#D35400"  
+cor_samp_fill  <- "#D1F2EB"  
+cor_samp_line  <- "#117864"  
+cor_seta       <- "#F1C40F"  
+cor_seta_baixo <- "#5DADE2"  
+
+# Tema base limpo
+theme_clean <- theme_classic() +
+  theme(
+    axis.line = element_line(color = "grey85"),
+    axis.ticks = element_line(color = "grey85"),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 12),
+    axis.title = element_text(size = 10),
+    plot.background = element_rect(fill = "white", color = NA),
+    plot.margin = margin(t = 10, r = 10, b = 10, l = 10) 
+  )
+
+# --- 2. DADOS ---
+populacao <- rexp(50000, rate = 0.8) 
+df_pop <- data.frame(x = populacao)
+
+# --- 3. GRÁFICO SUPERIOR ---
+plot_pop <- ggplot(df_pop, aes(x = x)) +
+  geom_histogram(bins = 40, fill = cor_pop_fill, color = cor_pop_line, size = 0.2) +
+  labs(title = "Population", y = "Frequency", x = "") +
+  scale_x_continuous(breaks = 0:8, limits = c(0, 8), expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  theme_clean
+
+# --- 4. FUNÇÃO PARA OS GRÁFICOS DE BAIXO ---
+criar_plot_amostra <- function(n, show_y_label = FALSE) {
+  medias <- replicate(2000, mean(sample(populacao, n)))
+  df_medias <- data.frame(m = medias)
   
+  p <- ggplot(df_medias, aes(x = m)) +
+    geom_histogram(bins = 30, fill = cor_samp_fill, color = cor_samp_line, size = 0.2) +
+    # Mantendo X e Y com "chão" no zero
+    scale_x_continuous(limits = c(0, 4), breaks = c(0, 1, 2, 3, 4)) + 
+    scale_y_continuous(expand = c(0, 0)) +
+    theme_clean +
+    theme(
+      axis.text.x = element_text(size = 9, color = "grey30"), 
+      # AQUI ESTÁ A MUDANÇA: Garante que o texto do eixo Y sempre apareça
+      axis.text.y = element_text(size = 8, color = "grey40"), 
+      plot.margin = margin(t = 5, r = 8, b = 15, l = 5) # Ajuste leve na margem direita para os números não cortarem
+    )
   
+  # Condicional apenas para o TÍTULO do eixo ("Frequency"), não para os números
+  if(show_y_label) {
+    p <- p + labs(y = "Frequency", x = "")
+  } else {
+    p <- p + labs(y = "", x = "") 
+  }
+  return(p)
 }
 
-library(ggplot2)
-library(gridExtra) # Para organizar os gráficos lado a lado
+# Gerar os gráficos (Todos agora terão números no eixo Y)
+p5   <- criar_plot_amostra(5, show_y_label = TRUE)  # Este tem o título "Frequency"
+p30  <- criar_plot_amostra(30, show_y_label = FALSE) # Este tem apenas números
+p100 <- criar_plot_amostra(100, show_y_label = FALSE) # Este tem apenas números
 
-# --- PARTE A: Comparação dos valores do Erro Padrão ---
+# --- 5. MONTAGEM DO LAYOUT ---
+# Usamos align = "h" e axis = "tb" para garantir que os eixos fiquem alinhados 
+# mesmo com larguras de números diferentes (ex: 500 vs 1000)
+row_bottom <- plot_grid(
+  p5, p30, p100, 
+  nrow = 1, 
+  align = "h", axis = "tb",
+  labels = c("n=5", "n=30", "n=100"), 
+  label_size = 11, 
+  label_y = 0.02,   
+  label_x = 0.5,    
+  hjust = 0.5,
+  vjust = 0         
+)
 
-n_exemplo <- 100
-p_seq <- seq(0.01, 0.99, length.out = 100) # Sequência de p de 1% a 99%
+grid_plots <- plot_grid(
+  plot_pop, 
+  row_bottom, 
+  ncol = 1, 
+  rel_heights = c(1, 1.3), 
+  scale = 0.95             
+)
+
+# --- 6. SETAS E DETALHES FINAIS ---
+final_plot <- ggdraw(grid_plots) +
+  # Setas Superiores
+  draw_line(x = c(0.40, 0.20), y = c(0.53, 0.42), color = cor_seta, size = 1.2, arrow = arrow(length = unit(0.25, "cm"), type = "closed")) +
+  draw_line(x = c(0.5, 0.5), y = c(0.53, 0.42), color = cor_seta, size = 1.2, arrow = arrow(length = unit(0.25, "cm"), type = "closed")) +
+  draw_line(x = c(0.60, 0.80), y = c(0.53, 0.42), color = cor_seta, size = 1.2, arrow = arrow(length = unit(0.25, "cm"), type = "closed")) +
+  
+  # Seta Inferior
+  draw_line(x = c(0.05, 0.95), y = c(0.01, 0.01), color = cor_seta_baixo, size = 2, arrow = arrow(length = unit(0.4, "cm"), type = "closed"))
+
+print(final_plot)
+```
+
+<br>
+
+> **Por que isso importa na medicina?** Não precisamos nos preocupar tanto se a variável biológica original (como carga viral ) tem uma distribuição estranha. Desde que tenhamos um número amostral suficiente (geralmente acima de 30), podemos assumir que as médias dos estudos que vamos combinar na metanálise se comportam como uma curva Normal.
+
+<br>
+
+#### c) Erro Padrão: Quão precisa é a média das amostragens?
+
+Agora que sabemos que as médias de vários estudos formam uma curva, precisamos medir a "largura" dessa curva. É aqui que muita gente confunde Desvio Padrão com Erro Padrão. Vamos diferenciar:
+
+- **Desvio Padrão (SD)**: Mede o quanto UMA amostragem está espalhada. É a variação biológica entre paciente e paciente (ex: o quanto a glicemia varia entre os sujeitos do estudo).
+
+- **Erro Padrão (SE)**: Mede o quanto a média de várias amostragens está espalhada. Ele é, basicamente, o desvio padrão das médias de vários estudos.
+
+```{r, echo=F, fig.cap="Simulação feita com 5.000 estudos com tamanho amostral pequeno (n = 30) com média verdadeira de HbA1c de 7% e desvio padrão de 1%. Perceba que esses 5.000 estudos tem uma distribuição amostral de média seguindo uma distribuição normal. O desvio padrão dessa distribuição amostral chama-se erro padrçao."}
+set.seed(42)
+
+# --- 1. Parâmetros do Diabetes (HbA1c) ---
+mu_hba1c <- 7.0      # Média Real
+sigma_hba1c <- 1.0   # Desvio Padrão Real
+n_amostra <- 30      # Tamanho de cada estudo
+
+# Cálculo do Erro Padrão Teórico (Para desenhar a linha exata)
+se_teorico <- sigma_hba1c / sqrt(n_amostra) # ~0.18
+
+# --- 2. Simulação ---
+# 5000 estudos simulados
+medias_simuladas <- replicate(5000, mean(rnorm(n_amostra, mean = mu_hba1c, sd = sigma_hba1c)))
+df_sim <- data.frame(m = medias_simuladas)
+
+# --- 3. Cálculos de Posição para o Gráfico ---
+# Descobrir a altura máxima da curva normal para posicionar a linha ACIMA dela
+altura_max <- dnorm(mu_hba1c, mean = mu_hba1c, sd = se_teorico)
+posicao_linha_y <- altura_max * 1.05  # 5% acima do pico
+posicao_texto_y <- altura_max * 1.12  # Um pouco acima da linha
+
+# --- 4. O Gráfico ---
+ggplot(df_sim, aes(x = m)) +
+  # A. Histograma (Dados Simulados)
+  geom_histogram(aes(y = ..density..), bins = 50, 
+                 fill = "#D1F2EB", color = "white", alpha = 0.8) +
+  
+  # B. Curva Normal Teórica (O "Sino")
+  stat_function(fun = dnorm, args = list(mean = mu_hba1c, sd = se_teorico),
+                color = "#117864", size = 1.2) +
+  
+  # C. Linha Central (Média) - Tracejada até o topo
+  geom_segment(aes(x = mu_hba1c, xend = mu_hba1c, y = 0, yend = posicao_linha_y), 
+               linetype = "dashed", color = "grey60", size = 0.8) +
+  
+  # D. A Linha Horizontal do Erro Padrão (Simétrica: Esquerda e Direita)
+  # Vai de (Média - SE) até (Média + SE)
+  geom_segment(aes(x = mu_hba1c - se_teorico, xend = mu_hba1c + se_teorico, 
+                   y = posicao_linha_y, yend = posicao_linha_y),
+               color = "#E74C3C", size = 1.2) +
+  
+  # E. Pontas da linha (para parecer uma régua de medida |---|)
+  geom_segment(aes(x = mu_hba1c - se_teorico, xend = mu_hba1c - se_teorico,
+                   y = posicao_linha_y - 0.05, yend = posicao_linha_y + 0.05),
+               color = "#E74C3C", size = 1.2) +
+  geom_segment(aes(x = mu_hba1c + se_teorico, xend = mu_hba1c + se_teorico,
+                   y = posicao_linha_y - 0.05, yend = posicao_linha_y + 0.05),
+               color = "#E74C3C", size = 1.2) +
+
+  # F. Rótulo
+  annotate("text", x = mu_hba1c, y = posicao_texto_y, 
+           label = "Erro Padrão (SE)", color = "#E74C3C", fontface = "bold", size = 5) +
+  
+  # Estética Limpa
+  labs(x = "Média de HbA1c (%)", y = "Densidade") +
+  scale_x_continuous(breaks = seq(6, 8, 0.2)) + # Escala focada nos valores de HbA1c
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) + # Mais espaço no topo para o texto
+  theme_classic(base_size = 14) +
+  theme(
+    axis.line.y = element_blank(), # Remove eixo Y para ficar mais limpo
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.y = element_blank()
+  )
+```
+
+<br>
+
+**Como interpretar?**: O Erro Padrão é uma medição do quão representativas são nossas amostragens em relação à população.
+
+- **Alto Erro Padrão**: As médias dos estudos variam muito entre si. O estudo é pouco preciso.
+
+- **Baixo Erro Padrão**: As médias variam pouco. O estudo é uma boa representação da população.
+
+```{r, echo=F, fig.cap="Foi feita uma simulação com desvio padrão fixo de 15 e valores crescentes de tamanho amostral (5, 10, 15...). Perceba que o erro padrão decresce aproximadamente exponencialmente com o tamanho amostral. "}
+# Simular o comportamento do Erro Padrão
+n_vals <- seq(5, 200, by = 5)
+sd_fixo <- 15 # Vamos supor um desvio padrão fixo de 15 unidades (ex: pressão arterial)
 
 df_erro <- data.frame(
-  p = p_seq,
-  se_raw = calc_se_raw(p_seq, n_exemplo),
-  se_logit = calc_se_logit(p_seq, n_exemplo)
+  n = n_vals,
+  se = sd_fixo / sqrt(n_vals) # A fórmula mágica
 )
 
-# Gráfico 1: Erro Padrão da Proporção (Original)
-g1 <- ggplot(df_erro, aes(x=p, y=se_raw)) +
-  geom_line(color="blue", size=1.2) +
-  labs(title = "Erro Padrão da Proporção (Raw)",
-       subtitle = "O erro é menor nas pontas",
-       y = "SE (p)", x = "Proporção (p)") +
-  theme_minimal()
+g3 <- ggplot(df_erro, aes(x = n, y = se)) +
+  # Linha da tendência
+  geom_line(color = "#E74C3C", size = 1.5) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 10)) +
+  # Pontos para marcar os steps
+  geom_point(size = 3, color = "#C0392B") +
+  # Área sombreada para dar ideia de redução da incerteza
+  geom_area(fill = "#E74C3C", alpha = 0.2) +
+  labs(
+    x = "Tamanho da Amostra (n)",
+    y = "Erro Padrão (SE)"
+  ) +
+  theme_classic(base_size = 14) +
+  scale_x_continuous(expand = c(0, 0), limits = c(5, NA), breaks = seq(0, 200, 50))
 
-# Gráfico 2: Erro Padrão do Logit (Transformado)
-g2 <- ggplot(df_erro, aes(x=p, y=se_logit)) +
-  geom_line(color="red", size=1.2) +
-  labs(title = "Erro Padrão do Logit",
-       subtitle = "O erro aumenta nas pontas (estica a escala)",
-       y = "SE (logit)", x = "Proporção (p)") +
-  theme_minimal()
+print(g3)
+```
 
-# --- PARTE B: Simulação para mostrar a NORMALIDADE ---
-# Vamos simular um caso onde p é baixo (assimétrico) para ver o efeito.
+*Nota: O Erro Padrão será sempre menor que o Desvio Padrão, pois as médias são naturalmente menos dispersas do que as observações individuais.*
+
+```{r, echo=F, fig.cap="Em cinza temos a distribuição populacional do nível de HbA1c (%), perceba que ela é mais espalhada. Ao fazer estudos para retirar a média desse valor, temos uma quantidade menos espalhada de médias. O desvio padrão dessa distribuição amostral é chamado de erro padrão."}
+library(ggplot2)
+library(dplyr)
+library(patchwork)
 
 set.seed(123)
-n_sim <- 50       # Tamanho da amostra em cada estudo
-replications <- 10000 # Quantidade de "estudos" simulados
-true_p <- 0.10    # Uma proporção verdadeira baixa (gera assimetria)
 
-# Gerar dados binomiais
-sim_counts <- rbinom(replications, n_sim, true_p)
-sim_p <- sim_counts / n_sim
+# 1. Simular uma População "Real" (ex: 100.000 pacientes)
+# Usaremos uma distribuição Gamma para dar uma leve assimetria (comum em biologia)
+# Média aprox 7.0, mas com cauda longa
+populacao <- rgamma(100000, shape = 15, scale = 0.5) 
+media_real <- mean(populacao)
+sd_pop <- sd(populacao)
 
-# Remover casos onde p=0 ou p=1 para o logit não dar erro
-valid_indices <- sim_p > 0 & sim_p < 1
-sim_p <- sim_p[valid_indices]
+# 2. Simular a "Amostragem Repetida" (O exercício mental da Metanálise)
+# Vamos pegar 1.000 amostras de 30 pacientes cada e tirar a média
+n_amostra <- 30
+n_simulacoes <- 1000
 
-# Calcular transformações
-df_sim <- data.frame(
-  raw_p = sim_p,
-  logit_p = calc_logit(sim_p)
+medias_amostrais <- replicate(n_simulacoes, {
+  amostra <- sample(populacao, n_amostra)
+  mean(amostra)
+})
+
+# Preparar dados para plotar
+df_pop <- data.frame(valor = populacao, tipo = "População (Pacientes Individuais)")
+df_medias <- data.frame(valor = medias_amostrais, tipo = "Distribuição das Médias (Estudos)")
+
+# GRÁFICO 1: A Comparação
+g1 <- ggplot() +
+  # Curva da População (Fundo, cinza)
+  geom_density(data = df_pop, aes(x = valor, fill = "População"), 
+               alpha = 0.4, color = "grey40") +
+  # Curva das Médias (Frente, destaque)
+  geom_density(data = df_medias, aes(x = valor, fill = "Médias dos Estudos"), 
+               alpha = 0.7, color = "darkblue") +
+  # Linha da Média Real
+  geom_vline(xintercept = media_real, linetype = "dashed", size = 1) +
+  # Decoração
+  scale_fill_manual(values = c("População" = "#999999", "Médias dos Estudos" = "#2E86C1"), name = "") +
+  labs(
+    x = "Nível de HbA1c (%)",
+    y = "Densidade"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "bottom") +
+  annotate("text", x = 10, y = 0.2, label = "Desvio Padrão (SD)\né a largura desta curva", color = "grey30", hjust=0) +
+  annotate("text", x = 8.5, y = 1, label = "Erro Padrão (SE)\né a largura desta curva", color = "#2E86C1", hjust=0, fontface="bold")
+
+print(g1)
+```
+
+
+<br>
+
+#### d) Erro Padrão: E se eu tiver apenas um estudo?
+
+Você deve estar pensando: "Mas eu só tenho UM estudo em mãos, eu não repeti a amostragem 1.000 vezes. Como eu descubro o Erro Padrão?"
+
+A estatística nos dá um atalho. É possível estimar o erro padrão tendo apenas uma amostragem (o estudo que você está lendo). Existe uma "Fórmula Especial" para o Erro Padrão da Média:
+
+$$SE = \frac{s}{\sqrt{n}}$$
+
+Onde:
+
+- $\sigma$ = Desvio Padrão (do estudo).
+
+- $n$ = Tamanho da amostra (número de pacientes).
+
+> **Interpretação para Metanálise**: Olhe para a fórmula. O $n$ está no denominador. Isso prova matematicamente que quanto maior o número de pacientes ($n$), menor será o erro padrão ($SE$).Na metanálise, estudos com $SE$ menor (mais precisos) ganharão mais peso na decisão final.
+
+<br>
+
+
+
+## 2. Dados Contínuos (Variáveis Numéricas)
+
+### 2.1. Grupo Único: Média Aritmétrica Simples
+
+A média aritmética é uma das medidas de tendência central possíveis de serem utilizadas em metanálises. Ela deve ser necessariamente utilizada quando todos os estudos utilizam a mesma métrica e não há um grupo controle. Por exemplo, para investigar a altura média de uma população. 
+
+Ela é calculada da seguinte forma:
+
+$$ \bar{x} = \frac{\sum_{i=1}^{n} x_i}{n} $$
+
+```{r media}
+# Definir semente para reprodutibilidade
+set.seed(100)
+
+# Gerar uma amostra aleatória (n=50) com média 20 e desvio padrão 5
+sample <- rnorm(n = 50, mean = 20, sd = 5)
+
+# Calcular a média
+media_calculada <- mean(sample)
+media_calculada
+```
+
+<br>
+
+Nós já falamos sobre como calcular o erro padrão da média. Mas aqui está relembrando para você!
+
+$$ SE_{\bar{x}} = \frac{s}{\sqrt{n}} $$
+
+```{r se_media}
+# Calcular o Erro Padrão (SD dividido pela raiz quadrada de n)
+erro_padrao <- sd(sample) / sqrt(50)
+erro_padrao
+```
+
+<br>
+
+Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter três informações (colunas) de cada estudo incluído:
+
+- $n$: O tamanho da amostra (número de observações).
+- $mean$: A média relatada no estudo.
+- $sd$: O desvio padrão da variável.
+
+<br>
+<br>
+
+| Estudos     | n | mean       | sd |
+|----------|-------|--------------|--------------|
+| Lee (2014)      | 25    | 55    | 1.2 |
+| Silva (2016)     | 30    | 60 | 1.3 |
+| Ferreira (2020)    | 28    | 61 | 0.9 |
+
+<br>
+<br>
+
+### 2.2. Dois grupos com mesma escala: Diferença de Médias Brutas (Não Padronizadas)
+
+#### a) O que é?
+
+A Diferença de Médias (MD) bruta é a forma mais simples e intuitiva de medir um efeito. Ela é simplesmente a subtração da média do grupo intervenção pela média do grupo controle.
+
+$$ MD_{between} = \bar{x}_1 - \bar{x}_2 $$
+```{r}
+# Grupo 1 (Intervenção): Média 130 mmHg, SD 15
+# Grupo 2 (Controle): Média 140 mmHg, SD 15
+
+n1 <- 20; m1 <- 130; s1 <- 15
+n2 <- 20; m2 <- 140; s2 <- 15
+
+MD <- m1 - m2
+MD
+```
+
+<br>
+
+**Quando usar?** Só podemos usar a MD quando todos os estudos incluídos na metanálise mediram o desfecho exatamente na mesma escala/unidade. Exemplo Prático (Pressão Arterial): Imagine que você está estudando um novo anti-hipertensivo.
+
+- Estudo A mediu a pressão arterial sistólica em mmHg.
+
+- Estudo B mediu a pressão arterial sistólica em mmHg.
+
+Como ambos falam a "mesma língua" (mmHg), podemos calcular que o remédio baixou a pressão em média -10 mmHg. Isso é uma diferença de média bruta. 
+
+
+#### b) Erro Padrão
+
+##### ❓ Entendendo a Problemática
+
+Nós temos duas formas de calcular o erro padrão, a depender se considerarmos que as duas medidas pertencentes a uma mesma população ou duas populações diferentes. No primeiro caso, consideramos que o desvio padrão verdadeiro de cada grupo é igual entre si. Ou seja, está é um pressuposto estatístico de homocedasticidade. No segundo caso os desvio padrões não tem o mesmo valor, então estamos falando de heterocedasticidade. 
+
+Em cenários de desbalanceamento amostral ($n_1 \neq n_2$), a abordagem agrupada falha em capturar a verdadeira incerteza da estimativa. Isso gera um erro comum em metanálise, já que o estudo com menor número de pacientes geralmente possui a maior variância (grande variabilidade em amostra pequena). Isso faz com quê:
+
+- **O Erro Matemático:** O método agrupado (pooled) ignora a alta variância do grupo pequeno, "diluindo-a" com a variância menor do grupo grande.
+
+- **A Consequência:** O Erro Padrão calculado é artificialmente pequeno.
+
+- **Impacto na Meta-Análise:** O algoritmo de inverso da variância entende que este estudo é extremamente preciso (o que é falso) e atribui a ele um peso desproporcionalmente alto. Um estudo "ruidoso" e de baixa qualidade estatística passa a dominar a estimativa do efeito global.
+
+##### ⚖️ Assumindo o mesmo desvio padrão (homocedasticidade)
+
+Calcula-se o desvio padrão agrupado ($s_{pooled}$) através da fórmula
+
+$$ s_{pooled} = \sqrt{\frac{(n_1 - 1)s^2_1 + (n_2 - 1)s^2_2}{n_1 + n_2 - 2}} $$
+<br>
+
+Então, utilizamos esse desvio padrão agrupado para calcular o erro padrão.
+$$ SE_{MD_{between}} = s_{pooled} \sqrt{\frac{1}{n_1} + \frac{1}{n_2}} $$
+
+```{r}
+s_pooled <- sqrt( (((n1-1)*s1^2) + ((n2-1)*s2^2)) / (n1 + n2 - 2) )
+
+se_md <- s_pooled * sqrt((1/n1) + (1/n2))
+se_md
+```
+
+
+##### ≠ Assumindo desvios padrões diferentes (heterocedasticidade)
+
+$$ SE_{unpooled} = \sqrt{ \frac{s_1^2}{n_1} + \frac{s_2^2}{n_2} } $$
+```{r}
+se_unpooled <- sqrt( (s1^2 / n1) + (s2^2 / n2) )
+
+se_unpooled
+```
+
+<br>
+
+Para conduzir uma metanálise de diferenças de médias brutas, seu banco de dados precisa obrigatoriamente conter seis informações (colunas) de cada estudo incluído:
+
+- $N_{tratamento}$: O tamanho da amostra do grupo tratamento.
+- $mean_{tratamento}$: A média do grupo tratamento.
+- $sd_{tratamento}$: O desvio padrão do grupo tratamento.
+- $N_{controle}$: O tamanho da amostra do grupo controle.
+- $mean_{controle}$: A média do grupo controle.
+- $sd_{controle}$: O desvio padrão do grupo controle.
+
+<br>
+
+| Estudos | n_tratamento | mean_tratamento | sd_tratamento | n_controle | mean_controle | sd_controle |
+|----------|-------|--------------|--------------|--------------| --------------|--------------|
+| Lee (2014)      | 25    | 55    | 1.2 | 25 | 50   | 1.5 |
+| Silva (2016)     | 30    | 60 | 1.3 | 25  | 48  | 1.4 |
+| Ferreira (2020)    | 28    | 61 | 0.9 | 25  | 40  | 1.2 |
+
+<br>
+
+### 2.3. Dois grupos com escalas diferentes: Diferença de Médias Padronizadas
+
+#### a) O que é?
+
+A diferença de médias padronizadas (SMD) expressa a diferença entre os grupos em unidades de desvios-padrão, e não na unidade original de medida. Quando usar? É essencial quando os estudos medem o mesmo desfecho (construto), mas usam escalas/instrumentos diferentes.
+
+Exemplo Prático (Depressão): Você quer ver se Terapia Cognitiva Comportamental reduz depressão.Estudo A usou a Escala de Beck (BDI) (vai de 0 a 63).Estudo B usou a Escala de Hamilton (HAM-D) (vai de 0 a 50).Não podemos unir estudos que utilizam Beck com os que utilizam Hamilton sem fazer nenhum tratamento.
+
+A solução é padronizar! Esse procedimento que falamos acima sobre calcular a diferença baseada em unidades de desvio padrão é, em outras palavras, calcular o Cohen's d. Por exemplo, se o resultado for $d = -0.5$, significa que o tratamento reduziu a depressão em "meio desvio padrão", independente da escala usada.
+
+<br>
+
+**Interpretação Visual** (Sobreposição) O Cohen's d nos diz o quanto as curvas dos dois grupos se separaram:
+
+- $d = 0.2$ (Pequeno): Grande sobreposição entre os grupos (as curvas quase se tocam).
+
+- $d = 0.5$ (Médio): Separação visível.
+
+- $d = 0.8$ (Grande): Clara separação entre tratado e controle.
+
+```{r, echo = F, fig.width=10, fig.cap="Representação visual do d de Cohen. Perceba que quanto maior o seu valor, maior a separação entre os grupos. E, assim, consequemente, menor será a área de intersecção entre as curvas. Por isso, que ele representa uma forma de quantificar a diferença entre grupos."}
+
+cor_laranja <- "#E67E22"
+cor_roxo    <- "#2980B9"
+espessura_linha <- 2
+
+# Tema limpo para remover eixos e adicionar a borda preta
+theme_box <- theme_void() +
+  theme(
+    plot.margin = margin(10, 10, 10, 10),
+    panel.border = element_rect(color = "black", fill = NA, size = 1.5), # A caixa preta
+    plot.background = element_rect(fill = "white", color = NA) # Fundo branco limpo
+  )
+
+# --- 2. Função para Gerar Cada Gráfico ---
+plot_simple_cohen <- function(d) {
+  
+  # Sequência do eixo X suficiente para cobrir as duas curvas
+  x_range <- seq(-4, 4 + d, length.out = 1000)
+  
+  # Dados das duas curvas normais
+  df <- data.frame(
+    x = x_range,
+    y_controle = dnorm(x_range, mean = 0, sd = 1),
+    y_tratado  = dnorm(x_range, mean = d, sd = 1)
+  )
+  
+  # Criar o plot
+  p <- ggplot(df, aes(x = x)) +
+    # Linha Laranja (Controle, Média 0)
+    geom_line(aes(y = y_controle), color = cor_laranja, size = espessura_linha) +
+    # Linha Roxa (Tratado, Média d)
+    geom_line(aes(y = y_tratado), color = cor_roxo, size = espessura_linha) +
+    
+    # Rótulo no canto superior esquerdo
+    # Posicionamos fixo em x=-3 e y=0.35 para ficar no canto
+    annotate("text", x = -3.2, y = 0.35, label = paste0("d=", d), 
+             hjust = 0, size = 8, fontface = "plain") +
+    
+    # Aplicar o tema limpo com borda
+    theme_box +
+    # Fixar limites para garantir que o texto fique sempre no mesmo lugar relativo
+    coord_cartesian(xlim = c(-3.5, 3.5 + d), ylim = c(0, 0.42), expand = FALSE)
+
+  return(p)
+}
+
+# --- 3. Gerar os 4 Gráficos ---
+p1 <- plot_simple_cohen(0.5)
+p2 <- plot_simple_cohen(1)
+p3 <- plot_simple_cohen(2)
+p4 <- plot_simple_cohen(3)
+
+# --- 4. Combinar em Grid 2x2 ---
+# Usamos patchwork para juntar tudo
+final_plot <- (p1 + p2) / (p3 + p4)
+
+# Exibir
+print(final_plot)
+```
+
+
+#### b) Erro Padrão
+
+##### 📌 Fórmula Mais Comum (Homocedasticidade)
+
+Essa fórmula para o cálculo do d de Cohen utiliza o desvio padrão agrupado. E, como falamos antes, ele assume que ambos os desvios padrões são iguais. Porém, essa fórmula acaba sendo mais utilizada.
+
+$$ d = \frac{\bar{x}_1 - \bar{x}_2}{s_{pooled}} $$
+
+
+##### 👀 Fórmulas para Heterocedasticidade
+
+Existem duas formas de calcular o d de Cohen assumindo que os desvios não são os mesmos. Podemos fazer uma média entre os dois.
+
+$$ d = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{s_1^2 + s_2^2}{2}}} $$
+Uma forma mais comum e segura de fazer isso é utilizando uma métrica chamada Delta de Glass. Invés de dividir pela média de dois desvios padrões, dividimos apenas pelo desvio do grupo controle. 
+
+$$ \Delta_{\text{Glass}} = \frac{\bar{x}_1 - \bar{x}_2}{SD_{\text{controle}}} $$
+
+Embora seja comum assumir variâncias iguais (Homocedasticidade) e usar o desvio padrão agrupado (Pooled) para calcular o d de Cohen, isso pode ser um erro se o tratamento alterar a variabilidade dos dados.
+
+#### c) Correção para Tamanho Amostral Pequeno
+
+Em estudos com amostras pequenas (especialmente quando o $n$ total $\le 20$), o cálculo padrão do SMD tende a superestimar o verdadeiro tamanho do efeito na população. Isso ocorre porque o desvio padrão da amostra, usado no denominador do Cohen’s $d$, tende a subestimar o desvio padrão real da população nesses casos.Como a metanálise frequentemente lida com estudos pequenos, usar o SMD bruto pode inflar artificialmente o resultado final da intervenção.
+
+Para corrigir esse viés, aplicamos um fator de correção ($J$) ao SMD bruto. O resultado é uma métrica ajustada chamada Hedges' $g$.
+
+$$g = \text{Cohen's } d \times J$$
+
+O fator de correção $J$ é sempre menor que 1, o que "puxa" o valor do efeito ligeiramente para baixo.
+
+- Quanto menor a amostra, maior é a correção (o $g$ fica perceptivelmente menor que o $d$). 
+
+- Quanto maior a amostra, o fator de correção se aproxima de 1 e a diferença entre $g$ e $d$ torna-se irrelevante.
+
+```{r, echo = F, fig.width=8, fig.height= 6,fig.cap="Convergência do g de Hedges para o d de Cohen a medida que o tamanho amostral aumenta. Ou seja, a diminuição do tamanho do efeito ocorre apenas em tamanhos amostrais pequenos."}
+# --- 1. Gerando os Dados ---
+# Definimos uma sequência de tamanhos de amostra
+sample_sizes <- seq(10, 200, by = 5)
+
+# Definimos o tamanho de efeito fixo (Cohen's d)
+cohen_d <- 0.5
+
+# Calculamos o Hedges' g correspondente para cada tamanho de amostra
+# Fórmula: g = d * (1 - 3/(4N - 9))
+g_values <- cohen_d * (1 - (3 / (4 * sample_sizes - 9)))
+
+# Criamos um data frame (o ggplot precisa disso)
+df_plot <- data.frame(
+  N = sample_sizes,
+  EffectSize = g_values
 )
 
-# Gráfico 3: Histograma da Proporção Original
-g3 <- ggplot(df_sim, aes(x=raw_p)) +
-  geom_histogram(aes(y=..density..), bins=15, fill="blue", alpha=0.6) +
-  geom_density(color="darkblue", size=1) +
-  labs(title = "Distribuição de p (Original)",
-       subtitle = paste0("Assimétrica à direita (p real = ", true_p, ")"),
-       x = "Proporção") +
-  theme_minimal()
-
-# Gráfico 4: Histograma do Logit
-g4 <- ggplot(df_sim, aes(x=logit_p)) +
-  geom_histogram(aes(y=..density..), bins=30, fill="red", alpha=0.6) +
-  geom_density(color="darkred", size=1) +
-  labs(title = "Distribuição Logit (Transformada)",
-       subtitle = "Aproximação da Normal (Gaussiana)",
-       x = "Logit") +
-  theme_minimal()
-
-# Exibir os gráficos
-grid.arrange(g1, g2, g3, g4, ncol=2)
+# --- 2. Criando o Gráfico com ggplot2 ---
+ggplot(df_plot, aes(x = N, y = EffectSize)) +
+  
+  # Adiciona a linha de referência do Cohen's d (Tracejada Vermelha)
+  geom_hline(aes(yintercept = cohen_d, color = "Cohen's d (SMD)"), 
+             linetype = "dashed", size = 1) +
+  
+  # Adiciona a linha da curva do Hedges' g (Sólida Azul)
+  geom_line(aes(color = "Hedges' g"), size = 1.2) +
+  
+  # --- Estilização e Cores ---
+  # Define as cores manualmente para criar a legenda automaticamente
+  scale_color_manual(name = "Métrica", 
+                     values = c("Hedges' g" = "#2E86C1",      # Azul profissional
+                                "Cohen's d (SMD)" = "#E74C3C")) + # Vermelho suave
+  
+  # --- Textos e Títulos ---
+  labs(
+    x = "Tamanho Total da Amostra (N)",
+    y = "Tamanho do Efeito Estimado"
+  ) +
+  
+  # --- Ajuste de Escala (Zoom) ---
+  # Focamos no intervalo relevante para ver a curva aproximando
+  coord_cartesian(ylim = c(0.48, 0.505)) +
+  
+  # --- Tema Visual ---
+  theme_minimal() + # Tema limpo
+  theme(
+    legend.position = "bottom", # Legenda na parte inferior
+    plot.title = element_text(face = "bold", size = 14),
+    axis.title = element_text(face = "bold")
+  )
 ```
+
+
+A fórmula de aproximação mais comum para esse fator depende do tamanho total da amostra ($N$):
+
+$$J \approx 1 - \frac{3}{4N - 9}$$
+```{r}
+smd_bruto <- 0.5   # Cohen's d
+n_total   <- 10    # Amostra extremamente pequena (5 em cada grupo)
+
+# Fator de correção J
+correction_factor <- 1 - (3 / (4 * n_total - 9))
+
+# Hedges' g
+hedges_g_manual <- smd_bruto * correction_factor
+
+c(smd_bruto = smd_bruto, hedges_g = hedges_g_manual)
+```
+
+
+Um ponto de confusão comum na literatura científica é a nomenclatura. Muitos autores usam o termo "SMD" ou até mesmo "Cohen's $d$" de forma genérica, mesmo quando aplicaram a correção de Hedges. Ao extrair dados para sua metanálise, é crucial verificar na metodologia do artigo se o valor reportado foi corrigido para viés de pequena amostra.
+
+Para conduzir uma metanálise de diferenças de médias brutas, seu banco de dados precisa obrigatoriamente conter seis informações (colunas) de cada estudo incluído:
+
+- $N_{tratamento}$: O tamanho da amostra do grupo tratamento.
+- $mean_{tratamento}$: A média do grupo tratamento.
+- $sd_{tratamento}$: O desvio padrão do grupo tratamento.
+- $N_{controle}$: O tamanho da amostra do grupo controle.
+- $mean_{controle}$: A média do grupo controle.
+- $sd_{controle}$: O desvio padrão do grupo controle.
+
+<br>
+
+| Estudos | n_tratamento | mean_tratamento | sd_tratamento | n_controle | mean_controle | sd_controle |
+|----------|-------|--------------|--------------|--------------| --------------|--------------|
+| Lee (2014)      | 25    | 55    | 1.2 | 25 | 50   | 1.5 |
+| Silva (2016)     | 30    | 60 | 1.3 | 25  | 48  | 1.4 |
+| Ferreira (2020)    | 28    | 61 | 0.9 | 25  | 40  | 1.2 |
+
+<br>
+<br>
+
+
+### 2.4. Um grupo e duas métricas: Correlação
+
+#### a) O que é?
+
+A correlação é uma medida de tamanho de efeito que expressa a força da relação ("co-variação") entre duas variáveis contínuas.Exemplo Prático: Imagine que queremos investigar a relação entre Idade (anos) e Pressão Arterial Sistólica (mmHg). Se a correlação for positiva e forte, significa que conforme a idade aumenta, a pressão também tende a subir.
+
+A forma mais comum é a Correlação de Pearson ($r$). Uma de suas maiores vantagens é que ela padroniza os dados. Isso significa que não importa a unidade de medida usada no estudo original.Estudo Exemplo, o estudo A mediu altura em centímetros. Estudo B mediu altura em polegadas.Uma correlação de $r=0.50$ no Estudo A é matematicamente idêntica a $r=0.50$ no Estudo B, permitindo que comparemos os efeitos diretamente.
+
+A correlação de Pearson é calculada da seguinte forma:
+
+
+$$ r_{xy} = \frac{\sigma^2_{xy}}{\sigma_x \sigma_y} $$
+
+<br>
+
+E esse resultado pode ser obtido através da função `cor`: 
+
+```{r}
+x <- c(10, 12, 15, 20, 25)
+y <- c(6, 16, 18, 21, 35)
+
+# Correlação entre x e y 
+r <- cor(x,y)
+r
+```
+
+<br>
+
+O erro padrão associado é calculado através da fórmula:
+
+$$ SE_{r_{xy}} = \frac{1 - r^2_{xy}}{\sqrt{n - 2}} $$
+
+#### b) Interpretando magnitude
+
+Cohen propôs regras de bolso para classificar a força dessa relação, mas lembre-se que o contexto clínico importa muito.
+
+- **$r \approx 0.10$** (Efeito Pequeno): A relação existe, mas é sutil e influenciada por muitos outros fatores.
+
+- **$r \approx 0.30$** (Efeito Moderado): A relação é visível a olho nu nos dados.
+
+- **$r \approx 0.50$** (Efeito Grande): Uma variável prediz a outra fortemente.
+
+#### c) O Problema Estatístico e a Solução (Fisher's z)
+
+Assim como acontece com proporções, correlações são "presas" dentro de um intervalo (de -1 a +1).Se um estudo encontra uma correlação muito alta (ex: $r = 0.95$ entre dois testes diagnósticos), a distribuição amostral fica espremida no teto do 1.0, gerando erros padrões incorretos e enviesados.Para corrigir isso na metanálise, usamos a Transformação Fisher's z. Ela "estica" o intervalo de -1 a 1 para infinito, tornando a distribuição Normal e permitindo cálculos precisos de erro padrão.
+
+Aqui está a transformação feita para moldar a distribuição amostral em formato de distribuição normal:
+
+$$ z = 0.5 \log_e \left( \frac{1 + r}{1 - r} \right) $$
+
+```{r}
+# Calculate Fisher's z
+z <- 0.5*log((1+r)/(1-r))
+z
+```
+
+```{r, echo = F, fig.width=10, fig.cap="Por que não podemos usar correlações brutas na metanálise? Aqui fizemos a simulação de 5.000 estudos pequenos (n=30) onde a correlação populacional é alta (0.85). Na distribuição amostral da correlação de Pearson vemos que ela fica assimétrica, espremida à direita. Quando fazemos a transformação de Fischer a distribuição torna-se aproximadamente normal e simétrica, com intervalos indo de menos a mais infinito."}
+set.seed(42)
+
+# --- PARTE 1: Simulação dos Dados ---
+n_sim <- 5000     # Número de estudos simulados
+n_sample <- 30    # Tamanho pequeno de amostra
+true_rho <- 0.85  # Correlação verdadeira ALTA (Glicemia maq A vs maq B)
+
+# Função para simular UM estudo e calcular seu r
+get_simulated_r <- function() {
+  # Gera dados para 30 pacientes com correlação de 0.85
+  data <- mvrnorm(n = n_sample, mu = c(0,0), 
+                  Sigma = matrix(c(1, true_rho, true_rho, 1), 2))
+  cor(data[,1], data[,2]) # Calcula o r de Pearson
+}
+
+# Rodar a simulação 5000 vezes
+sim_r_values <- replicate(n_sim, get_simulated_r())
+
+# Aplicar a transformação de Fisher's z
+sim_z_values <- 0.5 * log((1 + sim_r_values) / (1 - sim_r_values))
+
+# Calcular o valor verdadeiro de z para referência
+true_z <- 0.5 * log((1 + true_rho) / (1 - true_rho))
+
+# Juntar em um data frame
+df_sim <- data.frame(r = sim_r_values, z = sim_z_values)
+
+
+# --- PARTE 2: Gráficos Didáticos ---
+
+# Estética
+cor_raw <- "#E67E22" # Laranja para bruto
+cor_trans <- "#2980B9" # Azul para transformado
+
+# GRÁFICO 1: O Problema (Correlação Bruta r)
+p1 <- ggplot(df_sim, aes(x = r)) +
+  # Histograma
+  geom_histogram(aes(y = ..density..), bins = 35, fill = cor_raw, color = "white", alpha = 0.7) +
+  # Linha de Densidade
+  geom_density(color = "#D35400", size = 1) +
+  # Linha da Verdade (0.85)
+  geom_vline(xintercept = true_rho, linetype = "dashed", color = "black", size = 1) +
+  # O "Muro" do 1.0
+  geom_vline(xintercept = 1.0, color = "#C0392B", size = 1.5) +
+  annotate("text", x = 0.98, y = 1, label = "Paredão (Max 1.0)", color = "#C0392B", angle = 90, hjust=0) +
+  
+  labs(x = "Correlação de Pearson (r)", y = "Densidade") +
+  theme_minimal() +
+  xlim(0.4, 1.05) # Focando na área de interesse
+
+# GRÁFICO 2: A Solução (Fisher's z)
+p2 <- ggplot(df_sim, aes(x = z)) +
+  # Histograma
+  geom_histogram(aes(y = ..density..), bins = 35, fill = cor_trans, color = "white", alpha = 0.7) +
+  # Linha de Densidade
+  geom_density(color = "#1F618D", size = 1) +
+  # Linha da Verdade Transformada
+  geom_vline(xintercept = true_z, linetype = "dashed", color = "black", size = 1) +
+  
+  labs(x = "Valor Transformado (z)", y = "Densidade") +
+  theme_minimal() +
+  xlim(0.4, 2.5) # Ajustando escala para visualizar o z
+
+# --- Combinar ---
+final_plot <- p1 + p2 +
+  plot_annotation(
+    theme = theme(plot.title = element_text(face = "bold", size = 16))
+  )
+
+print(final_plot)
+
+```
+
+Sabendo o tamanho amostral podemos calcular o erro padrão do Z de Fischer através dessa fórmula:
+
+$$ SE_z = \frac{1}{\sqrt{n - 3}} $$
+
+<br>
+
+Para conduzir uma metanálise de correlação, seu banco de dados precisa obrigatoriamente conter duas informações (colunas) de cada estudo incluído:
+
+- $N$: O tamanho da amostra do grupo.
+- $cor$: A correlação entre as medidas.
+
+<br>
+
+| Estudos | n | cor |
+|----------|-------|--------------
+| Lee (2014)      | 25    | 0.88    |
+| Silva (2016)     | 30    | 0.80 |
+| Ferreira (2020)    | 28    | 0.71 |
+
+<br>
+
+
+## 3. Dados Binários (Sim/Não, Sucesso/Fracasso)
+
+### 3.1. Grupo Único: Proporções
+
+#### a) O que é?
+
+A proporção é uma medida de tendência central que especifica quantas unidades de uma amostra pertencem a um subgrupo específico (ex: prevalência de uma doença). Novamente, trata-se de uma medida em que não há comparação de grupos. Ela varia entre 0 e 1 e é calculada dividindo o número de eventos ($k$) pelo tamanho total da amostra ($n$).
+
+A proporção é calculada como:
+
+$$ p = \frac{k}{n} $$
+
+```{r prop}
+# Definir valores: k (eventos) e n (total)
+k <- 50
+n <- 200
+
+# Cálculo da Proporção Bruta 
+p <- k / n
+p
+```
+
+<br>
+
+O erro padrão da proporção é calculado como: 
+
+$$ SE_p = \sqrt{\frac{p(1-p)}{n}} $$
+```{r prop_se}
+# Erro Padrão da Proporção
+se_p <- sqrt((p * (1 - p)) / n)
+se_p
+```
+
+
+#### b) O problema dos extremos
+
+Como a proporção é limitada entre 0 e 1, surgem problemas quando o valor de $p$ é muito próximo de 0 ou de 1.
+
+- **Erro Padrão Comprimido**: O erro padrão é artificialmente reduzido, levando a uma superestimação da precisão.
+
+- **Distribuição Assimétrica**: A distribuição amostral deixa de ser normal (Sino) e torna-se enviesada (*skewed*) à esquerda ou direita, pois é impossível ter valores fora do intervalo 0-1.
+
+<br>
+
+```{r, echo=F, message=FALSE, warning=F, fig.width=10, fig.cap="A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95). Isso faz com que a distribuição de proporção bruta seja espremida e assimétrica para a direita. B. O erro padrão associado a essa distribuição é máximo  no centro e menor nas pontas, o que não é intuitivo pois nas pontas temos menor certeza."}
+# --- CONFIGURAÇÃO ESTÉTICA ---
+cor_raw   <- "#E67E22" # Laranja (Proporção Bruta)
+cor_logit <- "#2980B9" # Azul (Logit)
+theme_set(theme_minimal(base_size = 12))
+
+# ==============================================================================
+# PARTE 1: SIMULAÇÃO DA DISTRIBUIÇÃO (SKEWNESS / ASSIMETRIA)
+# ==============================================================================
+
+set.seed(42)
+n_sim <- 10000    # Número de estudos simulados
+n_sample <- 300   # Tamanho da amostra pequeno/médio
+p_real <- 0.95   # Proporção EXTREMA (perto de 1.0)
+
+# 1. Gerar os dados
+# rbinom gera o número de sucessos (k)
+sim_k <- rbinom(n_sim, size = n_sample, prob = p_real)
+sim_p <- sim_k / n_sample
+
+# 2. Filtrar 0 e 1 puros para o Logit não dar Infinito (limitação matemática)
+validos <- sim_p > 0 & sim_p < 1
+sim_p_clean <- sim_p[validos]
+
+# 3. Transformar para Logit
+sim_logit <- log(sim_p_clean / (1 - sim_p_clean))
+
+# DF para plotagem
+df_dist <- data.frame(
+  type = c(rep("Proporção Bruta (p)", length(sim_p_clean)), 
+           rep("Transformação Logit", length(sim_logit))),
+  value = c(sim_p_clean, sim_logit)
+)
+
+# --- Gráfico 1.A: A Assimetria (Skewed) ---
+p1a <- ggplot(data.frame(x = sim_p_clean), aes(x = x)) +
+  geom_histogram(aes(y = ..density..), bins = 100, fill = cor_raw, color = "white", alpha=0.8) +
+  geom_density(color = "#D35400", size = 1) +
+  geom_vline(xintercept = 1.0, linetype = "dashed", color = "black") +
+  scale_x_continuous(limits = c(0.5,1)) + 
+  labs(title = "A. Proporção Bruta (p)", x = "Proporção Estimada", y = "Densidade")
+
+# --- Gráfico 1.B: A Normalização (Logit) ---
+p1b <- ggplot(data.frame(x = sim_logit), aes(x = x)) +
+  geom_histogram(aes(y = ..density..), bins = 20, fill = cor_logit, color = "white", alpha=0.8) +
+  geom_density(color = "#1F618D", size = 1) +
+  labs(title = "A. Após Transformação Logit", 
+       x = "Logit Value", y = "Densidade")
+
+# ==============================================================================
+# PARTE 2: A COMPRESSÃO DO ERRO PADRÃO (PRECISÃO ARTIFICIAL)
+# ==============================================================================
+
+# Vamos criar uma sequência de p de 0.01 até 0.99
+seq_p <- seq(0.01, 0.99, length.out = 200)
+n_fixo <- 100
+
+# Fórmulas de Erro Padrão
+se_raw <- sqrt((seq_p * (1 - seq_p)) / n_fixo)
+se_logit <- sqrt(1/(n_fixo * seq_p) + 1/(n_fixo * (1 - seq_p)))
+
+df_se <- data.frame(
+  p = seq_p,
+  se_raw = se_raw,
+  se_logit = se_logit
+)
+
+# --- Gráfico 2.A: O Problema (Compressão) ---
+p2a <- ggplot(df_se, aes(x = p, y = se_raw)) +
+  geom_line(color = cor_raw, size = 1.5) +
+  geom_area(fill = cor_raw, alpha = 0.2) +
+  annotate("text", x = 0.5, y = 0.04, label = "Máximo Erro\n(p=0.5)", color = "grey30") +
+  annotate("text", x = 0.9, y = 0.02, label = "Erro 'Falso'\nBaixo", fontface="bold", color = "#D35400") +
+  labs(title = "B. Erro Padrão da Proporção (SE p)", 
+       x = "Valor de p", y = "Tamanho do Erro (SE)") +
+  scale_y_continuous(limits = c(0, 0.06))
+
+# --- Gráfico 2.B: A Solução (Expansão) ---
+p2b <- ggplot(df_se, aes(x = p, y = se_logit)) +
+  geom_line(color = cor_logit, size = 1.5) +
+  geom_area(fill = cor_logit, alpha = 0.2) +
+  annotate("text", x = 0.9, y = 0.5, label = "Erro Real\nAlto", fontface="bold", color = "#1F618D") +
+  labs(title = "B. Erro Padrão do Logit (SE logit)",
+       x = "Valor de p", y = "Tamanho do Erro (SE)")
+
+p1a + p2a
+```
+
+
+#### c) A solução 😁
+
+Para corrigir isso em metanálises, utilizamos a transformação em log natural - chamada de **logit**. Ela remove a restrição de intervalo 0-1, garantindo que a distribuição amostral seja aproximadamente normal e os erros padrão não sejam enviesados.
+
+A transformação da proporção para logit da proporção:
+
+$$ p_{\text{logit}} = \log_e \left( \frac{p}{1-p} \right) $$
+
+
+```{r}
+# O logit transforma o intervalo 0-1 em -inf a +inf
+p_logit <- log(p / (1 - p))
+p_logit
+```
+
+<br>
+
+O erro padrão do logit da proporção:
+
+$$ SE_{p_{\text{logit}}} = \sqrt{\frac{1}{np} + \frac{1}{n(1-p)}} $$
+
+```{r logit_prop}
+se_logit <- sqrt((1 / (n * p)) + (1 / (n * (1 - p))))
+se_logit
+```
+
+<br>
+
+```{r, echo=F, fig.width=10, fig.cap="A. Simulação de distribuição amostral de 10.000 estudos de grande tamanho (n = 300) em que a proporção populacional (verdadeira) é alta (0.95) após a transformação logit. Isso faz com que a distribuição assuma um formato aproximadamente normal em que os limites transformam-se em menos e mais infinito. B. O erro padrão associado a essa distribuição é máximo nas pontas e menor no centro, o queé intuitivo pois no centro temos maior certeza."}
+p1b + p2b
+```
+
+Para conduzir uma metanálise de médias, seu banco de dados precisa obrigatoriamente conter duas informações (colunas) de cada estudo incluído:
+
+- $event$: O número de observações no subgrupo específico ($k$).
+- $n$: O tamanho total da amostra.
+
+<br>
+
+| Estudos | event | n | 
+|----------|-------|--------------|
+| Lee (2014)      | 25    | 55    | 
+| Silva (2016)     | 30    | 60 | 
+| Ferreira (2020)    | 28    | 61 |
+
+<br>
+
+### 3.2. Razão de dois Grupos: Razão de Riscos (Risk Ratio)
+
+#### a) O que é?
+
+A Razão de Risco (também conhecida como Risco Relativo ou Risk Ratio - RR) é uma medida de efeito intuitiva e amplamente utilizada em pesquisas médicas, especialmente em ensaios clínicos controlados com desfechos binários, como "morte vs. sobrevida" ou "doença vs. sem doença".
+
+O RR compara a probabilidade de um evento ocorrer no grupo tratado versus no grupo controle. Os dados brutos são geralmente extraídos de uma tabela $2 \times 2$:
+
+|                  | Evento ($E$) | Não Evento ($\neg E$) | Total      |
+| :--------------- | :----------: | :-------------------: | :--------: |
+| **Tratamento** | $a$          | $b$                   | $n_{trat}$ |
+| **Controle** | $c$          | $d$                   | $n_{cont}$ |
+
+
+<br>
+
+O risco em cada grupo é calculado dividindo o número de eventos pelo total de pacientes naquele grupo. Assim, a Razão de Risco é definida como:
+
+$$ RR = \frac{p_{trat}}{p_{cont}} = \frac{a / n_{trat}}{c / n_{cont}} $$
+
+- Se $RR = 1$: Não há diferença entre os grupos (hipótese nula).
+- Se $RR < 1$: O tratamento reduz o risco do evento (fator de proteção).
+- Se $RR > 1$: O tratamento aumenta o risco do evento (fator de risco).
+
+Vamos supor que estamos avaliando a segurança de um fármaco para o sistema renal. Então, separamos um grupo controle um grupo tratamento (que tomou o fármaco). Um $RR$ de 2 significa que pacientes que utilizam o fármaco apresentam um risco duas vezes maior de desenvolver nefropatia em comparação àqueles que utilizam placebo. Então, por exemplo, se o grupo controle apresentou um risco de 5% de nefropatia, o grupo tratamento apresentou de 10%. 
+
+#### b) Novamente... O problema da assimetria 😁
+
+Embora o RR seja intuitivo para interpretação clínica, ele possui propriedades estatísticas que dificultam a metanálise direta. Efeitos de mesma magnitude não são equidistantes em torno do valor nulo (1).
+
+Um efeito benéfico que reduz o risco pela metade resulta em um RR de 0,5. O efeito oposto (dobrar o risco) resulta em um RR de 2,0 (e não 1,5).
+
+Isso significa que a distribuição das Razões de Risco não segue uma curva normal. Para corrigir isso e garantir a normalidade assintótica necessária para os cálculos de ponderação na metanálise, realizamos uma transformação logarítmica natural:
+
+$$ \text{Log}RR = \ln(RR) $$
+
+Nesta escala logarítmica, os valores são centralizados em 0 (nenhum efeito) e tornam-se simétricos (ex: $\ln(0,5) \approx -0,69$ e $\ln(2) \approx +0,69$).
+
+#### c) Erro Padrão
+
+$$ SE_{LogRR} = \sqrt{\frac{1}{a} - \frac{1}{n_{trat}} + \frac{1}{c} - \frac{1}{n_{cont}}} $$
+
+```{r}
+events_treat <- 46    
+n_treat      <- 248   
+events_ctrl  <- 77    
+n_ctrl       <- 251 
+
+# Riscos Individuais 
+risk_treat <- events_treat / n_treat
+risk_ctrl  <- events_ctrl / n_ctrl
+
+# Razão de Risco (RR) 
+RR <- risk_treat / risk_ctrl
+
+# Transformação Logarítmica 
+log_RR <- log(RR)
+
+# Erro Padrão (SE) na escala Log 
+se_log_rr <- sqrt((1/events_treat) + (1/events_ctrl) - (1/n_treat) - (1/n_ctrl))
+
+c(risk_ratio = RR, log_RR = log_RR, se_RR = se_log_rr)
+```
+
+<br>
+
+Para conduzir uma metanálise de razão de riscos, seu banco de dados precisa obrigatoriamente conter quatro informações (colunas) de cada estudo incluído:
+
+- $event_{tratamento}$: O número de eventos no grupo tratamento.
+- $n_{tratamento}$: O tamanho total do grupo tratamento.
+- $event_{controle}$: O número de eventos no grupo controle.
+- $n_{controle}$: O tamanho total do grupo controle.
+
+<br>
+
+| Estudos | event_tratamento | n_tratamento | event_controle | n_controle |
+|----------|-------|--------------|-------|--------------|
+| Lee (2014)      | 25    | 55    | 20    | 55    | 
+| Silva (2016)     | 30    | 60 | 22    | 60    |
+| Ferreira (2020)    | 28    | 61 | 21    | 61    |
+
+<br>
+
+### 3.3. Outra razão de dois grupos: Razão de Chances (Odds Ratio)
+
+#### a) O que é chance?
+
+Enquanto o Risk Ratio compara probabilidades (riscos), o Odds Ratio (OR), ou Razão de Chances, compara... chances (Odds). Embora pareçam sinônimos na linguagem informal, em estatística, "Risco" e "Chance" são matematicamente distintos. A intuição por trás do Odd é a razão entre o sucesso e o fracasso (ou evento e não-evento). 
+
+Imagine que estamos analisando um time de futebol e vamos anotar quantas vitórias e derrotas ele tem. Vamos convencionar que 🔵 = Vitória (Evento/Sucesso) e 🔴 = Derrota (Não-Evento/Falha). Então, vamos supor que esse time em análise teve 3 vitórias e 2 derrotas (🔵🔵🔵🔴🔴). Assim:
+
+- **Probabilidade (Risco)**: É o número de vitórias dividido pelo total de partidas.
+
+$$P(\text{Vencer}) = \frac{3 \text{ (azuis)}}{5 \text{ (total)}} = 0,6 \text{ ou } 60\%$$
+
+- **Chance (Odd)**: É o número de vitórias dividido pelo número de derrotas. O denominador não inclui o total, apenas o complemento. Podemos falar que a chance é 3 para 2 (🔵🔵🔵 🆚 🔴🔴) 
+
+$$\text{Odd} = \frac{3 \text{ (azuis)}}{2 \text{ (vermelhos)}} = 1,5$$
+
+Mais formalmente podemos pensar em Razão de Chances a partir da tabela $2 \times 2$:
+
+|                  | Evento ($E$) | Não Evento ($\neg E$) |
+| :--------------- | :----------: | :-------------------: | 
+| **Tratamento** | $a$          | $b$                   | 
+| **Controle** | $c$          | $d$                   | 
+
+Analisando a tabela vemos que temos duas razões de chances. A do evento ocorrer no grupo tratado e de ocorrer no grupo controle:
+
+$$ \text{Odd}_{trat} = \frac{a}{b} \quad \text{e} \quad \text{Odd}_{cont} = \frac{c}{d} $$
+
+#### b) E novamente... A assimetria!
+
+Assim como no Risco Relativo, os Odds sofrem com problemas de assimetria.
+
+- Chance de 1 para 4 (🔵🔴🔴🔴🔴): $1/4 = 0,25$
+
+- Chance de 4 para 1 (🔵🔵🔵🔵🔴): $4/1 = 4,00$
+
+Note que o inverso de 0,25 é 4. Em uma escala linear, 0,25 está muito perto de 1 (o valor nulo), enquanto 4 está muito longe. Para resolver isso e realizar a metanálise, usamos a transformação logarítmica. O logaritmo do Odd é chamado de Logit.
+
+$$\text{Logit} = \ln(\text{Odd}) = \ln\left(\frac{p}{1-p}\right)$$
+
+Ao aplicar o Log, tornamos a distribuição simétrica ao redor de zero: 
+
+- $\ln(0,25) \approx -1,38$
+
+- $\ln(4,00) \approx +1,38$
+
+Aqui está um resumo de todas as transformações que falamos acima!
+
+| Medida Original | Problema Estatístico | Transformação Necessária |
+| :--- | :--- | :--- |
+| **Proporção** | Presa entre 0 e 1 | **Logit**: $\ln(\frac{p}{1-p})$ |
+| **Razão de Risco (RR)** | Razão assimétrica | **Log Natural**: $\ln(RR)$ |
+| **Razão de Chances (OR)** | Assimétrica e não linear | **Log Natural**: $\ln(OR)$ |
+| **Correlação ($r$)** | Teto/Chão em +1 e -1 | **Fisher's $z$**: $0.5 \times \ln(\frac{1+r}{1-r})$ |
+
+<br> 
+
+#### c) E se divirmos duas chances? Temos as razões de chances!
+
+O Odds Ratio (OR) é simplesmente a chance do evento no grupo tratado dividida pela chance do evento no grupo controle.
+
+$$ OR = \frac{\text{Odd}_{trat}}{\text{Odd}_{cont}} = \frac{a/b}{c/d} = \frac{a \times d}{b \times c} $$
+
+- **Interpretação**: O OR indica a força de associação entre duas variáveis. Por exemplo, vamos falar do mesmo exemplo que demos na razão de riscos. Porém, vamos falar que temos uma Razão de Chances = 2. Isso significa que o tomar o fármaco aumenta a chance em 2 vezes de desenvolver nefropatia. Ou seja, no grupo tratado para cada pessoa que não tem nefropatia existem 2 que têm. No controle, a relação é de 1 para 1. Se outro estudo sobre uma mutação genética e câncer resulta em um $OR = 6,88$, isso significa que a chance de alguém com a mutação ter câncer é 6,88 vezes maior do que alguém sem a mutação. 
+
+#### d) Erro Padrão
+
+E também podemos calcular o erro padrão do odds ratio atravé da fórmula:
+
+$$ SE_{\text{Log}OR} = \sqrt{\frac{1}{a} + \frac{1}{b} + \frac{1}{c} + \frac{1}{d}} $$
+
+```{r}
+events_treat <- 23    
+no_events_treat <- 117 
+events_ctrl  <- 6     
+no_events_ctrl <- 210  
+
+# Cálculo dos Odds Individuais 
+odd_treat <- events_treat / no_events_treat
+odd_ctrl  <- events_ctrl / no_events_ctrl
+
+# Odds Ratio (OR) 
+OR <- odd_treat / odd_ctrl
+
+# Erro Padrão (Log Scale) 
+log_OR <- log(OR)
+se_log_or <- sqrt((1/events_treat) + (1/no_events_treat) + 
+                  (1/events_ctrl) + (1/no_events_ctrl))
+
+c(chance_tratamento = odd_treat, chance_controle = odd_ctrl)
+```
+<br>
+
+#### e) Diferença de Odds Ratio para Risk Ratio
+
+- **Risk Ratio (RR)**: É a razão entre duas probabilidades. É intuitivo. Se $RR = 0,5$, o risco caiu pela metade.
+
+- **Odds Ratio (OR)**: É a razão entre duas chances. É menos intuitivo, mas matematicamente mais robusto (permite regressão logística, simetria logarítmica, etc).
+
+**Quando eles divergem?** Quando o evento é raro (ex: < 10%), o $OR \approx RR$. Porém, quando o evento é comum, o OR tende a exagerar o efeito percebido. Observe este exemplo prático de um estudo:
+
+- Tratados: 5 mortes em 100 pacientes.
+
+- Controle: 10 mortes em 100 pacientes.
+
+O Risco Relativo é 0,5 (redução de 50%). O Odds Ratio é 0,47. Note que, mesmo com números pequenos, eles já não são idênticos. Em eventos frequentes, essa distância aumenta drasticamente. Porém, fique tranquilo que existem fórmulas para converter OR em RR se necessário!
+
+<br>
+
+Para conduzir uma metanálise de razão de chances, seu banco de dados precisa obrigatoriamente conter quatro informações (colunas) de cada estudo incluído:
+
+- $event_{tratamento}$: O número de eventos no grupo tratamento.
+- $n_{tratamento}$: O tamanho total do grupo tratamento.
+- $event_{controle}$: O número de eventos no grupo controle.
+- $n_{controle}$: O tamanho total do grupo controle.
+
+<br>
+
+| Estudos | event_tratamento | n_tratamento | event_controle | n_controle |
+|----------|-------|--------------|-------|--------------|
+| Lee (2014)      | 25    | 55    | 20    | 55    | 
+| Silva (2016)     | 30    | 60 | 22    | 60    |
+| Ferreira (2020)    | 28    | 61 | 21    | 61    |
+
+<br>
+
+### 3.4. Diferença Absoluta de Dois Grupos: Diferença de Riscos (Risk Difference)
+
+Além das razões (divisões), existe uma terceira medida fundamental: a Diferença de Risco (RD), também chamada de Redução **Absoluta** do Risco. Ao contrário do RR e OR que são medidas relativas, a RD é uma medida absoluta. 
+
+Ela é calculada simplesmente subtraindo o risco do grupo controle pelo risco do grupo intervenção.
+
+$$RD = Risk_{trat} - Risk_{cont}$$
+
+**Exemplo**: Imagine um estudo sobre apendicectomia:
+
+- Risco de infecção local sem cirurgia: $1,3\%$
+
+- Risco de infecção local com cirurgia: $5,3\%$
+
+$$RD = 5,3\% - 1,3\% = +4,0\%$$
+
+Isso significa que a cirurgia adicionou um risco de 4% no desenvolvimento de uma infecção local. 
+
+- Se $RD = 0$: Não há efeito.
+
+- Se $RD < 0$: O tratamento reduziu o risco absoluto.
+
+- Se $RD > 0$: O tratamento aumentou o risco absoluto.
+
+```{r}
+# Grupo tratado
+events_treat <- 53
+n_treat      <- 1000
+non_events_treat <- n_treat - events_treat
+
+# Grupo Controle 
+events_ctrl  <- 13
+n_ctrl       <- 1000
+non_events_ctrl <- n_ctrl - events_ctrl
+
+# Riscos do Grupo Tratamento e Controle
+risk_treat <- events_treat / n_treat
+risk_ctrl  <- events_ctrl / n_ctrl
+
+# Diferença de Risco (RD) 
+RD <- risk_treat - risk_ctrl
+
+RD
+```
+
+
+<br>
+
+Para conduzir uma metanálise de diferença de riscos, seu banco de dados precisa obrigatoriamente conter quatro informações (colunas) de cada estudo incluído:
+
+- $event_{tratamento}$: O número de eventos no grupo tratamento.
+- $n_{tratamento}$: O tamanho total do grupo tratamento.
+- $event_{controle}$: O número de eventos no grupo controle.
+- $n_{controle}$: O tamanho total do grupo controle.
+
+<br>
+
+| Estudos | event_tratamento | n_tratamento | event_controle | n_controle |
+|----------|-------|--------------|-------|--------------|
+| Lee (2014)      | 25    | 55    | 20    | 55    | 
+| Silva (2016)     | 30    | 60 | 22    | 60    |
+| Ferreira (2020)    | 28    | 61 | 21    | 61    |
+
+<br>
+
+## 4. Pacote meta
+
+O pacote meta é amplamente adotado em publicações médicas por seguir rigorosamente a metodologia da Cochrane Collaboration. Ele automatiza o fluxo complexo de transformar dados brutos em estimativas combinadas.
+
+### 4.1. Entendendo os Argumentos das Funções
+
+As funções principais (metabin, metacont, metacor) compartilham argumentos que definem o rigor da sua análise:
+
+- **data**: O data frame que contém seus dados coletados.
+
+- **sm** (Summary Measure): Define a métrica alvo (ex: "RR", "OR", "MD", "SMD").
+
+- **pooledvar**: Argumento crucial na metacont. Ao definir como FALSE, você aplica a heterocedasticidade (Unpooled) para a Diferença de Médias (MD), protegendo sua análise contra o desbalanceamento amostral.
+
+- **method.smd**: Permite escolher entre Cohen e Hedges. Selecionar "Hedges" é o padrão ouro para corrigir o viés de superestimação em amostras pequenas.
+
+### 4.2. Os Bastidores: TE e seTE 
+
+Ao rodar o código, o R gera um objeto que armazena dois valores fundamentais que sãoa acessados através do $:
+
+- **TE** (Treatment Effect): É o tamanho do efeito individual de cada estudo. Para razão de riscos, odds ratio e correlação, este valor estará na escala transformada ($\ln$ ou Fisher's $z$) para garantir a simetria estatística e permitir o agrupamento.
+
+- **seTE** (Standard Error of TE): É o erro padrão do efeito. Ele dita o peso de cada estudo. Quanto menor esse valor, maior a precisão do estudo e mais influência ele terá no resultado final da metanálise.
+
+### 4.3. Dados Contínuos
+
+Primeiro devemos carregar os pacotes que iremos utilizar. Aqui vamos utilizar o `meta` e o `dplyr`. Se não os tem baixado pode utilizar o `install.packages`.
+
+```{r}
+library(meta)
+library(dplyr)
+```
+
+Agora vamos simular dois estudos que investigaram a atuação de um fármaco em diminuir a pressão arterial. Então, a medida é a pressão arterial média.
+
+```{r}
+df_cont <- data.frame(
+  estudo = c("Estudo A", "Estudo B"),
+  n_e = c(50, 100), m_e = c(120, 115), sd_e = c(10, 12), # Grupo Experimental
+  n_c = c(50, 100), m_c = c(130, 130), sd_c = c(10, 12)  # Grupo Controle
+)
+
+df_cont
+```
+
+#### a) Diferença de Médias - `metacont`
+
+```{r}
+# Note: pooledvar=FALSE aplica a heterocedasticidade (Unpooled) como discutido.
+meta_md <- metacont(n.e = n_e, mean.e = m_e, sd.e = sd_e,
+                    n.c = n_c, mean.c = m_c, sd.c = sd_c,
+                    data = df_cont, studlab = estudo,
+                    sm = "MD", pooledvar = FALSE)
+
+df_cont %>%
+  mutate(mean_diff = meta_md$TE,
+         se_mean_diff = meta_md$seTE)
+```
+
+#### b) Diferença de Médias Padronizadas - `metacont`
+
+
+```{r}
+# O pacote 'meta' usa Hedges' g por padrão para SMD.
+meta_smd <- metacont(n.e = n_e, mean.e = m_e, sd.e = sd_e,
+                     n.c = n_c, mean.c = m_c, sd.c = sd_c,
+                     data = df_cont, studlab = estudo,
+                     sm = "SMD", method.smd = "Hedges")
+
+df_cont %>%
+  mutate(hedges_g = meta_smd$TE,
+         se_hedges_g = meta_smd$seTE)
+```
+
+#### c) Correlação - `metacor`
+
+Aqui vamos simular dois estudos que avaliaram a correlação entre idade e capacidade pulmonar. 
+
+```{r}
+df_cor <- data.frame(
+  estudo = c("Estudo A", "Estudo B"),
+  r = c(0.45, 0.60),
+  n = c(120, 85)
+)
+
+df_cor
+```
+
+O `meta` calcula automaticamente o z de Fischer:
+
+```{r}
+# Cálculo automático de Fisher's z
+meta_r <- metacor(cor = r, n = n, data = df_cor, 
+                  studlab = estudo, sm = "ZCOR")
+
+df_cor %>%
+  mutate(fisher_z = meta_r$TE,
+         se_fisher_z= meta_smd$seTE)
+```
+
+### 4.4. Dados Binários - `metabin`
+
+Todas as formas de dado binário utilizam a função `metabin` o que muda é só o que vai ser inserido no argumento `sm`.
+Vamos simular dois estudos que investigaram a incidência de infarto em um pequeno município.
+
+```{r}
+df_bin <- data.frame(
+  estudo = c("Estudo A", "Estudo B"),
+  ev_e = c(5, 46),  n_e = c(100, 248), # Experimental
+  ev_c = c(10, 77), n_c = c(100, 251)  # Controle
+)
+
+df_bin
+```
+
+#### a) Razão de Riscos
+
+```{r}
+meta_rr <- metabin(event.e = ev_e, n.e = n_e, 
+                   event.c = ev_c, n.c = n_c,
+                   data = df_bin, studlab = estudo, 
+                   sm = "RR")
+
+df_bin %>%
+  mutate(risk_ratio = meta_rr$TE,
+         se_risk_ratio= meta_rr$seTE)
+```
+
+#### b) Razão de Chances
+
+```{r}
+meta_or <- metabin(event.e = ev_e, n.e = n_e, 
+                   event.c = ev_c, n.c = n_c,
+                   data = df_bin, studlab = estudo, 
+                   sm = "OR")
+
+df_bin %>%
+  mutate(odds_ratio = meta_or$TE,
+         se_odds_ratio= meta_or$seTE)
+```
+
+#### c) Diferença de Riscos
+
+```{r}
+meta_or <- metabin(event.e = ev_e, n.e = n_e, 
+                   event.c = ev_c, n.c = n_c,
+                   data = df_bin, studlab = estudo, 
+                   sm = "OR")
+
+df_bin %>%
+  mutate(odds_ratio = meta_or$TE,
+         se_odds_ratio= meta_or$seTE)
+```
+
+<div class="rec-section">
+
+<div class="rec-title">
+<i class="fas fa-heart" style="color: #ff8fa3;"></i> 
+Gostou? Veja também:
+</div>
+
+<div class="rec-grid">
+<a href="tutorial-testet.html" class="rec-card">
+<i class="fas fa-chart-bar rec-icon"></i>
+<span class="rec-text">Teste T de Student</span>
+<span class="rec-sub">Comparação de médias</span>
+</a>
+
+<a href="tutorial-quiquadrado.html" class="rec-card">
+<i class="fas fa-table rec-icon"></i>
+<span class="rec-text">Qui-Quadrado</span>
+<span class="rec-sub">Dados categóricos</span>
+</a>
+
+<a href="metanalise.html" class="rec-card">
+<i class="fas fa-layer-group rec-icon"></i>
+<span class="rec-text">Metanálise</span>
+<span class="rec-sub">Introdução</span>
+</a>
+</div>
+
+<div class="rec-footer">
+<a href="estatistica.html" class="rec-btn-back">
+<i class="fas fa-arrow-left"></i> Voltar aos Tutoriais
+</a>
+</div>
+
+</div>
+
+<div class="author-footer">
+
+<span class="author-name">Escrito por Vítor Saldanha</span>
+
+<div class="author-bio">
+Estudante de medicina com foco em pesquisa acadêmica, estatística e medicina baseada em evidências.
+</div>
+
+<div class="post-meta-date">
+<i class="far fa-calendar-alt"></i> 
+Atualizado em: 28 de Dezembro de 2025
+</div>
+
+</div>
