@@ -41,9 +41,9 @@ Acessar Aula <i class="fas fa-arrow-right"></i>
 <span class="card-tag">
 <i class="fas fa-chart-bar"></i> Intermediário
 </span>
-<h5 class="card-title">Modelos de Pooling</h5>
+<h5 class="card-title">Combinando Tamanhos de Efeito</h5>
 
-<a href="construcao.html" class="card-btn">
+<a href="tutorial-metanalise-modelos-de-efeito.html" class="card-btn">
 Acessar Aula <i class="fas fa-arrow-right"></i>
 </a>
 </div>

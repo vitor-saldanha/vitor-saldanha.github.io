@@ -1,0 +1,974 @@
+---
+title: "Tamanho de Efeitos"
+pagetitle: "Effect Sizes"
+description: |
+  Uma introdução prática tamanho de Efeitos para metanálise em R.
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    css: toc-styles.css
+    self_contained: false
+    highlight: pygments
+    highlight_downlit: false
+---
+  
+```{css, echo=FALSE}
+.d-title{
+  display: none;
+}
+/* ==========================================================================
+  1. ESTILIZAÇÃO DO HERO BANNER (FULL WIDTH BREAKOUT)
+========================================================================== */
+  
+  .hero-container-full {
+    /* Técnica de "Breakout" para escapar do grid do Distill */
+      width: 100vw; 
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    
+    /* Reset de margens para evitar espaços brancos indesejados */
+      margin-top: -2rem; /* Ajuste fino dependendo do padding do navbar */
+      margin-bottom: 3rem;
+    
+    /* Garantir que não cause rolagem horizontal indesejada */
+      box-sizing: border-box;
+    overflow: hidden;
+    z-index: 5;
+  }
+
+.hero-banner {
+  /* Dimensões */
+    height: 40vh; /* Ocupa 50% da altura da viewport */
+    min-height: 300px; /* Altura mínima garantida */
+    width: 100%;
+  
+  /* Imagem de Fundo - Substitua pela URL da sua imagem */
+    background-image: url('https://images.unsplash.com/photo-1672092590672-3feb81f3123a?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  
+  /* Flexbox para centralização total do conteúdo */
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* Contexto de empilhamento */
+    position: relative;
+  z-index: 1;
+}
+
+/* Camada de Escurecimento (Overlay) */
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+    z-index: 2;
+    
+    /* Manter centralização para os filhos */
+      display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+/* Conteúdo Textual */
+  .hero-content {
+    z-index: 3;
+    text-align: center;
+    max-width: 800px;
+    padding: 0 20px;
+    color: #ffffff;
+  }
+
+/* Título Principal */
+  .hero-title {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    line-height: 1.2;
+    color: white!important; /* Importante para sobrescrever cores do tema Distill */
+  }
+
+/* Subtítulo */
+  .hero-subtitle {
+    font-size: 1.25rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+  }
+
+/* Botões */
+  .hero-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    margin: 5px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+
+.hero-btn.primary {
+  background-color: #4CAF50; /* Cor verde estilo RStudio/Distill */
+    color: white;
+  border: 2px solid #4CAF50;
+}
+
+.hero-btn.primary:hover {
+  background-color: #45a049;
+    transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.hero-btn.github {
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.hero-btn.github:hover {
+  background-color: white;
+  color: #333;
+}
+
+/* ==========================================================================
+  2. CORREÇÃO E ALINHAMENTO DO TABLE OF CONTENTS (TOC)
+========================================================================== */
+  
+  
+  
+  /* ==========================================================================
+  3. RESPONSIVIDADE (MOBILE)
+========================================================================== */
+  
+  /* Em telas menores que 1000px (ponto de quebra comum do Distill),
+o layout muda drasticamente. O TOC flutuante deve ser desativado. */
+  
+  @media screen and (max-width: 1000px) {
+    
+    /* Ajuste do Banner para Mobile */
+      .hero-banner {
+        height: 60vh; /* Mais alto em mobile para caber o texto verticalmente */
+      }
+    
+    .hero-title {
+      font-size: 2.2rem; /* Título menor */
+    }
+    
+    /* Reposicionar o TOC para o fluxo normal do documento */
+      .d-contents > nav.toc, 
+    #TOC {
+    position: relative!important;
+    top: 0!important;
+    width: 100%;
+    margin-bottom: 40px;
+    border-left: none;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+  }
+}
+```
+
+<div class="hero-container-full">
+<div class="hero-banner">
+<div class="hero-overlay">
+<div class="hero-content">
+<h1 class="hero-title">Combinando Tamanhos de Efeito</h1>
+
+<p class="hero-subtitle">
+Tutorial sobre modelos de efeitos em R
+</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="toc-spacer"></div>
+  
+  <!-- #######################################
+############## CONTEUDO ####################
+############################################  -->
+
+
+```{css, echo = F}
+/* Estilo para a caixa de código */
+  d-article pre {
+    background-color: #f6f8fa !important;  /* O !important força a mudança da cor */
+      border: 1px solid #e1e4e8 !important;  /* Força a borda */
+    border-radius: 6px;        /* Cantos arredondados */
+      padding: 12px;             /* Espaço interno para o texto não colar na borda */
+      box-shadow: none;          /* Remove sombras padrões se houver */
+  }
+```
+
+```{css, echo=FALSE}
+h1, h2, h3, h4 {
+  border-bottom: 1px solid #dddddd; /* Cria a linha cinza fina embaixo */
+  padding-bottom: 12px;              /* Espaço entre o texto e a linha */
+    margin-bottom: 18px;              /* Espaço depois da linha para o próximo parágrafo */
+    margin-top: 28px;                 /* Espaço antes do título */
+```
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(patchwork)
+library(gridExtra)
+library(cowplot)
+library(grid)
+library(knitr)
+
+# Ativar o botão de copiar
+xaringanExtra::use_clipboard(
+  button_text = "Copiar",
+  success_text = "Copiado!",
+  error_text = "Pressione Ctrl+C para copiar"
+)
+```
+
+## 1. Juntando Tamanhos de Efeito
+
+Na estatística, um modelo funciona como uma "teoria" ou uma "imitação da vida", utilizando fórmulas matemáticas para descrever processos do mundo real de forma idealizada. No contexto da metanálise, o modelo visa iluminar a "caixa-preta" que gera nossos dados, explicando os mecanismos pelos quais os tamanhos de efeito observados foram produzidos. O objetivo central é encontrar uma representação matemática que explique como podemos encontrar o efeito real subjacente a todos os estudos, mesmo quando os resultados individuais variam entre si. Assim, a especificação do modelo é o que permite interpretar as razões pelas quais os resultados dos estudos diferem e como eles podem ser combinados em um valor numérico único. E existem duas formas de integração que serão abordadas a seguir: o **modelo de efeitos fixos** e o **modelo de efeitos aleatórios**. 
+
+### 1.1. Modelo de Efeitos Fixos
+
+O modelo de efeito fixo assume que todos os tamanhos de efeito provêm de uma única população homogênea, o que significa que todos os estudos compartilham o mesmo tamanho de efeito verdadeiro, denotado por $\theta$. De acordo com este modelo, a única razão pela qual o efeito observado de um estudo ($\hat{\theta}_k$) desvia do valor real é o erro de amostragem ($\epsilon_k$), que ocorre porque cada estudo extrai apenas uma pequena amostra de uma população infinita. A relação matemática que descreve este processo é:
+
+$$\hat{\theta}_k = \theta + \epsilon_k$$
+
+Na figura a seguir são demostrados três estudos que tentaram medir um fenômeno de $\theta = 0.6$. Porém, nenhum deles atingiu exatamente esse tamanho de efeito. No modelo de efeitos fixos acredita-se que isso é causado unicamente por erro da amostragem. Assim, o efeito verdadeiro de cada estudo é necessariamente igual ao efeito verdadeiro sumarizado!
+
+```{r, echo=F, message=FALSE, warning=F, fig.width=8, fig.height=4, fig.cap="Demonstração que em um modelo de efeitos fixos existe um tamanho de de efeito verdadeiro da população que acredita-se ser o mesmo para todos os estudos. Porém, devido ao erro amostral os estudos diferem desse tamanho amostral constante."}
+# 1. Criando os dados para os estudos
+# Definimos theta (Efeito Verdadeiro Sumarizado) como 0.6
+df_estudos <- data.frame(
+  estudo = c("Estudo 1", "Estudo 2", "Estudo 3"),
+  y = c(3, 2, 1), # Posições verticais
+  true_val = c(0.6, 0.6, 0.6),
+  obs_val = c(0.4, 0.7, 0.5)
+)
+
+# 2. Construindo o gráfico
+ggplot(df_estudos) +
+  geom_label(aes(x = 0.1, y = y, label = estudo), 
+             fill = "#e9ecef",      # Cor do retângulo
+             color = "#252422",     # Cor do texto
+             linewidth = 0,        # Remove a borda do retângulo
+             fontface = "bold", 
+             family = "roboto",
+             size = 4.5,
+             hjust = 1) +
+  
+  # Linha vertical central (Efeito Verdadeiro Sumarizado)
+  geom_vline(xintercept = 0.6, color = "gray40", linewidth = 0.6, linetype ="dashed") +
+  
+  # Setas do erro de amostragem (epsilon)
+  geom_segment(aes(x = true_val, xend = obs_val, y = y, yend = y),
+               color = "#252422") +
+  
+  # Pontos: Efeito Verdadeiro Individual (Círculo) e Observado (Quadrado)
+  geom_point(aes(x = true_val, y = y), shape = 16, size = 7, color = "#005f73") +
+  geom_point(aes(x = obs_val, y = y), shape = 15, size = 7, color = "#fb8500") +
+  
+  # Marcador de Sumário no eixo (Triângulo)
+  annotate("point", x = 0.6, y = 0.35, shape = 25, fill = "#023047", size = 7) +
+  
+  # Rótulos matemáticos (Epsilon)
+  annotate("text", x = 0.5, y = 3.2, label = "epsilon[1]", parse = TRUE, size = 5) +
+  annotate("text", x = 0.65, y = 2.2, label = "epsilon[2]", parse = TRUE, size = 5) +
+  annotate("text", x = 0.55, y = 1.2, label = "epsilon[3]", parse = TRUE, size = 5) +
+  
+  # Anotações em Vermelho (Explicativas)
+  annotate("text", x = 0.85, y = 2.4, label = "Erro de Amostragem", color = "#ae2012", hjust = 0, fontface = "bold") +
+  annotate("segment", x = 0.84, y = 2.4, xend = 0.68, yend = 2.2, color = "#ae2012", linewidth = 1,
+           arrow = arrow(length = unit(0.2, "cm"))) +
+  
+  annotate("text", x = 0.85, y = 1.9, label = "Efeito Observado", color = "#ae2012", hjust = 0, fontface = "bold") +
+  annotate("segment", x = 0.84, y = 1.9, xend = 0.73, yend = 1.98, color = "#ae2012", linewidth = 1,
+           arrow = arrow(length = unit(0.2, "cm"))) +
+  
+  annotate("text", x = 0.85, y = 1.3, label = "Efeito Verdadeiro \nIndividual", color = "#ae2012", hjust = 0, fontface = "bold", lineheight = 1.1) +
+  annotate("segment", x = 0.84, y = 1.3, xend = 0.64, yend = 1.0, color = "#ae2012", linewidth = 1,
+           arrow = arrow(length = unit(0.2, "cm"))) +
+  
+  annotate("text", x = 0.85, y = 0.7, label = "Efeito Verdadeiro \nSumarizado", color = "#ae2012", hjust = 0, fontface = "bold", lineheight = 1.1) +
+  annotate("segment", x = 0.84, y = 0.7, xend = 0.64, yend = 0.40, color = "#ae2012", linewidth = 1, 
+           arrow = arrow(length = unit(0.2, "cm"))) +
+  
+  # Customização de Eixos e Escalas
+  scale_x_continuous(limits = c(0, 1.2), breaks = seq(0, 1.2, 0.1), name = "Tamanho do Efeito Verdadeiro (θ)") +
+  scale_y_continuous(limits = c(0, 3.5), breaks = c(1, 2, 3), 
+                     labels = c("Estudo 3:", "Estudo 2:", "Estudo 1:")) +
+  
+  # Estética Clean
+  theme_classic() +
+  theme(
+    text = element_text(family = "Roboto"),
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+     axis.line.x = element_line(color = "gray30", linewidth = 0.6),
+    axis.ticks.x = element_line(color = "gray30"),
+    axis.text.x = element_text(size = 11, color = "#252422", margin = margin(t = 10)),
+    axis.title.x = element_text(size = 13, color = "#252422", margin = margin(t = 10))
+  )
+```
+
+Neste cenário, estudos com amostras maiores possuem erros de amostragem menores e, portanto, maior precisão. Isso é representado por estudos que possuem uma curva normal de efeitos possíveis mais estreitas (curva do meio na figura 2). Para estudos com amostras menores, existe uma precisão menor de determinar o tamanho de efeito verdadeiro e isso é demostrado como uma curva normal mais larga.
+
+Essa precisão (erro padrão) é de extrema importância para metanálise. Isso porque a precisão de cada estudo atribui a ele um peso específico, calculado pelo inverso da variância. Esse peso define o quão influente cada estudo será na análise final, garantindo que estimativas com menor erro de amostragem tenham um impacto proporcionalmente maior no resultado combinado. Matematicamente, isto é expresso através do cálculo do Peso Individual ($W_i$), que é o inverso da variância do estudo ($V_{Y_i}$):
+
+$$W_{i} = \frac{1}{V_{Y_{i}}}$$
+
+Uma vez determinados os pesos, a Síntese dos Efeitos ($M$), também conhecida como média ponderada, é calculada pela soma dos produtos de cada efeito individual pelo seu peso, dividida pela soma total dos pesos:
+
+$$M = \frac{\sum_{i=1}^{k} W_{i} Y_{i}}{\sum_{i=1}^{k} W_{i}}$$
+
+Nesta fórmula, $Y_i$ representa o tamanho do efeito observado no estudo $i$, e $k$ é o número total de estudos incluídos na metanálise. Esta abordagem garante que estudos com maior precisão (menor erro padrão) tenham um peso matematicamente superior na estimativa global.
+
+```{r, echo=F, message=FALSE, warning=F, fig.width=8, fig.height=4, fig.cap="Cada estudo tem um erro padrão diferente. Estudos com erros padrões maiores possuem curvas mais largas, mostrando que existe uma possibilidade maior de tamanho de efeitos observáveis. Estudos com erros padrões menores possuem curvas mais estreitas, mostrando que existem menos possibilidades de tamanho de efeitos observáveis."}
+# 1. Função auxiliar para criar as curvas de densidade
+get_bell <- function(m, sd, h, name) {
+  x_seq <- seq(0, 1.2, length.out = 5000)
+  y_dens <- dnorm(x_seq, mean = m, sd = sd)
+  # Normalizamos a altura para não sobrepor os estudos
+  y_dens <- (y_dens / max(y_dens)) * 0.5 + h 
+  data.frame(x = x_seq, y = y_dens, estudo = name)
+}
+
+# 2. Gerando dados das curvas
+curves <- rbind(
+  get_bell(0.6, 0.18, 3, "Estudo 1"),
+  get_bell(0.6, 0.08, 2, "Estudo 2"),
+  get_bell(0.6, 0.12, 1, "Estudo 3")
+)
+
+# 3. Dados dos pontos
+df_points <- data.frame(
+  estudo = c("Estudo 1:", "Estudo 2:", "Estudo 3:"),
+  y = c(3, 2, 1),
+  true_val = 0.6,
+  obs_val = c(0.42, 0.68, 0.48)
+)
+
+# 4. Construindo o gráfico com a nova estética
+ggplot() +
+  # Linhas horizontais base (mais sutis)
+  geom_segment(aes(x = 0.1, xend = 1.1, y = 1, yend = 1), color = "gray80", linewidth = 0.4) +
+  geom_segment(aes(x = 0.1, xend = 1.1, y = 2, yend = 2), color = "gray80", linewidth = 0.4) +
+  geom_segment(aes(x = 0.1, xend = 1.1, y = 3, yend = 3), color = "gray80", linewidth = 0.4) +
+  
+  # Curvas de Distribuição
+  geom_line(data = curves, aes(x = x, y = y, group = estudo), color = "#252422", alpha = 0.6, linewidth = 0.8) +
+  
+  # Linha vertical central do Efeito Fixo (conforme o modelo)
+  geom_vline(xintercept = 0.6, color = "gray40", linewidth = 0.6, linetype = "dashed") +
+  
+  # Pontos: Verdadeiro (Círculo) e Observado (Quadrado) com cores do modelo
+  geom_point(data = df_points, aes(x = true_val, y = y), shape = 16, size = 7, color = "#005f73") +
+  geom_point(data = df_points, aes(x = obs_val, y = y), shape = 15, size = 7, color = "#fb8500") +
+  
+  # Triângulo do Sumário
+  annotate("point", x = 0.6, y = 0.35, shape = 25, fill = "#023047", size = 7) +
+  
+  # Escalas e Labels (seguindo o padrão do modelo)
+  scale_x_continuous(limits = c(0, 1.2), breaks = seq(0, 1.2, 0.1), 
+                     name = "Tamanho do Efeito Verdadeiro (θ)") +
+  scale_y_continuous(limits = c(0, 4)) +
+  
+  # Estética Clean aplicada
+  theme_classic() +
+  theme(
+    text = element_text(family = "Roboto"),
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.line.x = element_line(color = "gray30", linewidth = 0.6),
+    axis.ticks.x = element_line(color = "gray30"),
+    axis.text.x = element_text(size = 11, color = "#252422", margin = margin(t = 10)),
+    axis.title.x = element_text(size = 13, color = "#252422", margin = margin(t = 10))
+  )
+
+```
+
+
+### 1.2. Modelo de Efeitos Aleatórios
+
+Diferente do anterior, o modelo de efeitos aleatórios reconhece que os estudos raramente são perfeitamente homogêneos, pois podem variar em termos de composição amostral, intensidade da intervenção ou métodos de medição. Por exemplo, uma metanálise da eficácia de antidepressivos pode encontrar estudos com foco em idosos hospitalizados enquanto outro avalia adultos jovens ambulatoriais. Os estudos podem utilizar também dosagens distintas do medicamento ou até e escalas de avaliação variadas, como a de Hamilton ou a de Beck. Nesse cenário, fica claro que os estudos não estão medindo um efeito único, pois ou a população é diferente ou a intervenção é diferente. A solução é o modelo de efeitos aleatórios! Este modelo assume que existe uma distribuição de efeitos reais, e o objetivo da metanálise passa a ser a estimativa da média ($\mu$) dessa distribuição. 
+
+A variabilidade entre os tamanhos de efeitos reais é representada pelo parâmetro $\tau^2$ (tau-quadrado). Na figura a seguir estão mostrados três estudos conduzidos que apresentam três tamanhos de efeitos reais diferentes. Essa largura do efeito possível na curva normal é o que é chamado de $\tau^2$. Por exemplo, curva mais estreita apresenta menos efeitos reais possíveis e assim um $\tau^2$ menor.
+
+```{r, echo=F, message=FALSE, warning=F, fig.width=8, fig.height= 4, fig.cap="Em um modelo de efeitos aleatórios existe uma ampla possibilidade de tamanho de efeito real para cada estudo. Aqui são demonstrados 3 estudos com seus respectivos valores reais de tamanho de efeito. A média dos tamanhos de efeito verdadeiros não necessariamente coincide com o de cada estudo."}
+# 1. Dados da curva de distribuição (5000 pontos para suavidade total)
+x_seq <- seq(0.05, 1.15, length.out = 5000) 
+y_vals <- dnorm(x_seq, mean = 0.6, sd = 0.08)
+y_vals <- (y_vals / max(y_vals)) * 0.4 
+dist_reais <- data.frame(x = x_seq, y = y_vals)
+
+# 2. Dados dos efeitos reais individuais (theta_i)
+df_reais <- data.frame(
+  estudo = c("Study 3", "Study 2", "Study 1"),
+  x_real = c(0.5, 0.64, 0.55), 
+  y_topo = c(1, 1, 1), # Altura uniforme para os pontos
+  y_start = c(0.2, 0.35, 0.33) # Início das linhas sobre a curva
+)
+
+# 3. Construindo o gráfico com estética padronizada
+ggplot() +
+  # Curva normal da distribuição dos efeitos reais
+  geom_line(data = dist_reais, aes(x = x, y = y), color = "gray40", linewidth = 1) +
+  
+  # Linha vertical tracejada na média global mu (conforme o modelo)
+  geom_vline(xintercept = 0.6, color = "gray40", linewidth = 0.6, linetype = "dashed") +
+  
+  # Linhas verticais dos estudos (cor neutra do modelo)
+  geom_segment(data = df_reais, aes(x = x_real, xend = x_real, y = y_start, yend = y_topo),
+               color = "gray60", linewidth = 1) +
+  
+  # Pontos: Tamanhos de Efeito Real (Círculos #005f73 conforme o modelo)
+  geom_point(data = df_reais, aes(x = x_real, y = y_topo), 
+             shape = 16, size = 7, color = "#005f73") +
+  
+  # Triângulo do Sumário (Média mu - Cor #023047 conforme o modelo)
+  annotate("point", x = 0.6, y = 0.15, shape = 25, fill = "#023047", size = 6) +
+  
+  # --- ANOTAÇÕES EM VERMELHO (#ae2012) ---
+  annotate("text", x = 0.81, y = 1, label = "Tamanho do efeito real\npara cada estudo", 
+           color = "#ae2012", hjust = 0, fontface = "bold", lineheight = 0.9, family = "Arial") +
+  annotate("segment", x = 0.8, y = 1, xend = 0.7, yend = 1, color = "#ae2012", 
+           linewidth = 1, arrow = arrow(length = unit(0.2, "cm"), type = "closed")) +
+  
+  annotate("text", x = 0.81, y = 0.4, label = "Média da distribuição\ndos tamanhos de efeitos\nverdadeiros", 
+           color = "#ae2012", hjust = 0, fontface = "bold", lineheight = 0.9, family = "Arial") +
+  annotate("segment", x = 0.80, y = 0.4, xend = 0.63, yend = 0.2, color = "#ae2012", 
+           linewidth = 1, arrow = arrow(length = unit(0.2, "cm"), type = "closed")) +
+  
+  # Customização de Eixos (Padronizado com o modelo)
+  scale_x_continuous(limits = c(0, 1.2), breaks = seq(0, 1.2, 0.1), 
+                     name = "Média da Distribuição dos Tamanhos de Efeito ( μ )") +
+  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
+  
+  theme_classic() +
+  theme(
+    text = element_text(family = "Roboto"),
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.line.x = element_line(color = "gray30", linewidth = 0.6),
+    axis.ticks.x = element_line(color = "gray30"),
+    axis.text.x = element_text(size = 11, color = "#252422", margin = margin(t = 10)),
+    axis.title.x = element_text(size = 13, color = "#252422", margin = margin(t = 10))
+  )
+
+```
+
+Porém, assim como no modelo de efeitos fixos, existe o erro amostral. Então, o valor observado de um estudo desvia da média global devido a dois componentes de erro: o desvio do estudo em relação à média da distribuição ($\zeta_k$) e o erro de amostragem individual ($\epsilon_k$). A fórmula que expressa esta hierarquia é:
+
+$$\hat{\theta}_k = \mu + \zeta_k + \epsilon_k$$
+
+```{r, echo=F, message=FALSE, warning=F, fig.width=8, fig.height= 4, fig.cap="Cada estudo mede um tamanho de efeito, que não é igual ao tamanho de efeito verdadeiro para esse estudo. Além disso, esse tamanho de efeito verdadeiro do estudo não necessariamente coincide com a gama de possibilidades de efeitos verdadeiros."}
+# --- 1. CONFIGURAÇÃO DOS DADOS ---
+mu_val <- 0.6
+theta3_val <- 0.5
+y3_val <- 0.4
+h_points <- 1.8 
+
+# Curva Normal Ultra-Suave (5000 pontos)
+x_seq <- seq(0.1, 1.1, length.out = 5000)
+y_vals <- dnorm(x_seq, mean = mu_val, sd = 0.08)
+y_vals <- (y_vals / max(y_vals)) * 0.4 
+dist_mu <- data.frame(x = x_seq, y = y_vals)
+
+# --- 2. CONSTRUÇÃO DO GRÁFICO COM ESTÉTICA PREMIUM ---
+ggplot() +
+  # Curva normal da média mu (#252422)
+  geom_line(data = dist_mu, aes(x = x, y = y), linewidth = 1, color = "#252422") +
+  
+  # Linha vertical tracejada na média global mu
+  geom_vline(xintercept = mu_val, color = "gray50", linewidth = 0.6, linetype = "dashed") +
+  
+  # Linha vertical que liga o eixo ao efeito real theta3
+  geom_segment(aes(x = theta3_val, xend = theta3_val, y = 0.17, yend = h_points), 
+               linewidth = 0.8, color = "grey50") +
+  
+  # Pontos: theta3 (Círculo #005f73) e Y3 (Quadrado #fb8500)
+  annotate("point", x = theta3_val, y = h_points, shape = 16, size = 7, color = "#005f73") +
+  annotate("point", x = y3_val, y = h_points, shape = 15, size = 7, color = "#fb8500") +
+  
+  # Triângulo da média mu exatamente no eixo (#023047)
+  annotate("point", x = mu_val, y = 0.15, shape = 25, fill = "#023047", size = 6) +
+  
+  # Seta epsilon3 (erro amostral - #252422)
+  geom_segment(aes(x = y3_val + 0.02, xend = theta3_val - 0.02, y = h_points, yend = h_points),
+               linewidth = 1, color = "grey50") +
+  annotate("text", x = (y3_val + theta3_val)/2, y = h_points - 0.2, 
+           label = "bold(epsilon)", parse = TRUE, size = 5.5, color = "#252422", family = "Arial") +
+  
+  # Seta zeta3 (variabilidade entre estudos - #252422)
+  geom_segment(aes(x = theta3_val + 0.01, xend = mu_val - 0.01, y = h_points/2, yend = h_points/2),
+               arrow = arrow(length = unit(0.2, "cm"), ends = "both", type = "closed"),
+               linewidth = 1, color = "#252422") +
+  annotate("text", x = (theta3_val + mu_val)/2, y = h_points/2 + 0.25, 
+           label = "bold(zeta)", parse = TRUE, size = 5.5, color = "#252422", family = "Arial") +
+  
+  # Rótulos de identificação (Y3 e theta3)
+  annotate("text", x = y3_val, y = h_points + 0.25, label = "Y", parse = TRUE, size = 5, color = "#252422") +
+  annotate("text", x = theta3_val, y = h_points + 0.25, label = "theta", parse = TRUE, size = 5, color = "#252422") +
+  
+  # --- ANOTAÇÕES DIDÁTICAS EM VERMELHO (#ae2012) ---
+  annotate("text", x = 0.05, y = 1.25, label = "Tamanho do efeito \nobservado", 
+           color = "#ae2012", fontface = "bold", hjust = 0, family = "Arial") +
+  annotate("segment", x = 0.3, y = 1.45, xend = 0.37, yend = h_points - 0.1, color = "#ae2012", 
+           linewidth = 1, arrow = arrow(length = unit(0.25, "cm"), type = "closed")) +
+  
+  annotate("text", x = 0.72, y = 1.8, label = "Tamanho do efeito real\npara esse estudo", 
+           color = "#ae2012", fontface = "bold", hjust = 0, lineheight = 0.9, family = "Arial") +
+  annotate("segment", x = 0.69, y = 1.8, xend = 0.53, yend = h_points, color = "#ae2012", 
+           linewidth = 1, arrow = arrow(length = unit(0.25, "cm"), type = "closed")) +
+  
+  annotate("text", x = 0.05, y = 0.75, label = "Diferença entre efeito\nreal e o observado", 
+           color = "#ae2012", fontface = "bold", hjust = 0, lineheight = 0.9, family = "Arial") +
+  annotate("segment", x = 0.3, y = 0.9, xend = 0.44, yend = h_points - 0.3, color = "#ae2012", 
+           linewidth = 1, arrow = arrow(length = unit(0.25, "cm"), type = "closed")) +
+  
+  annotate("text", x = 0.72, y = 1.15, label = "Desvio da média para\na observação", 
+           color = "#ae2012", fontface = "bold", hjust = 0, lineheight = 0.9, family = "Arial") +
+  annotate("segment", x = 0.69, y = 1.15, xend = 0.58, yend = 1.15, color = "#ae2012", 
+           linewidth = 1, arrow = arrow(length = unit(0.25, "cm"), type = "closed")) +
+  
+  # --- CUSTOMIZAÇÃO DE EIXOS E ESCALAS ---
+  scale_x_continuous(limits = c(0, 1.2), breaks = seq(0, 1.2, 0.1), 
+                     name = expression("Média da Distribuição ( " * mu * " )" )) +
+  scale_y_continuous(limits = c(0, 2.3), expand = c(0,0)) +
+  
+  theme_classic() +
+  theme(
+    text = element_text(family = "Roboto"),
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.line.x = element_line(color = "gray30", linewidth = 0.6),
+    axis.ticks.x = element_line(color = "gray30"),
+    axis.text.x = element_text(size = 11, color = "#252422", margin = margin(t = 10)),
+    axis.title.x = element_text(size = 13, color = "#252422", margin = margin(t = 10))
+  )
+```
+
+Agora juntando todos os conceitos percebemos que esse modelo funciona como a figura 3. Cada estudo tem sua precisão de um efeito real ligeiramente diferente 😊
+
+```{r, echo=F, message=FALSE, warning=F, fig.width=8, fig.height= 5, fig.cap="Unindo as duas noções vemos o cenário completo."}
+# --- 1. CONFIGURAÇÃO DOS DADOS ---
+mu_global <- 0.6
+
+# Definindo os estudos conforme o modelo (adicionando os labels para o geom_label)
+df_estudos <- data.frame(
+  estudo = c("Estudo 1:", "Estudo 2:", "Estudo 3:"),
+  y_pos = c(3, 2, 1),
+  theta = c(0.55, 0.65, 0.48), 
+  obs = c(0.35, 0.70, 0.67),
+  sd = c(0.18, 0.08, 0.12)
+)
+
+# Função para gerar as curvas normais suavizadas (5000 pontos para não pixelar)
+get_curve <- function(m, sd, h) {
+  x_seq <- seq(0, 1.2, length.out = 5000)
+  y_dens <- dnorm(x_seq, mean = m, sd = sd)
+  y_dens <- (y_dens / max(y_dens)) * 0.4 + h # Escala e altura no gráfico
+  data.frame(x = x_seq, y = y_dens)
+}
+
+# Criando as curvas para os 3 estudos
+curve1 <- get_curve(df_estudos$theta[1], df_estudos$sd[1], df_estudos$y_pos[1])
+curve2 <- get_curve(df_estudos$theta[2], df_estudos$sd[2], df_estudos$y_pos[2])
+curve3 <- get_curve(df_estudos$theta[3], df_estudos$sd[3], df_estudos$y_pos[3])
+
+# --- 2. CONSTRUÇÃO DO GRÁFICO COM ESTÉTICA PREMIUM ---
+ggplot() +
+
+  # Linha vertical central tracejada (Média Global mu)
+  geom_vline(xintercept = mu_global, color = "grey50", linewidth = 0.6, linetype = "dashed") +
+  
+  # Curvas de Distribuição de cada estudo (#252422 com transparência para profundidade)
+  geom_line(data = curve1, aes(x = x, y = y), color = "#252422", alpha = 0.5, linewidth = 0.8) +
+  geom_line(data = curve2, aes(x = x, y = y), color = "#252422", alpha = 0.5, linewidth = 0.8) +
+  geom_line(data = curve3, aes(x = x, y = y), color = "#252422", alpha = 0.5, linewidth = 0.8) +
+  
+  # Linhas horizontais de cada estudo (sutis em cinza claro)
+  geom_segment(data = df_estudos, aes(x = 0.1, xend = 1.1, y = y_pos, yend = y_pos), 
+               color = "gray80", linewidth = 0.4) +
+  
+  # Pontos: Efeito Real (Círculo #005f73) e Efeito Observado (Quadrado #fb8500)
+  geom_point(data = df_estudos, aes(x = theta, y = y_pos), shape = 16, size = 7, color = "#005f73") +
+  geom_point(data = df_estudos, aes(x = obs, y = y_pos), shape = 15, size = 7, color = "#fb8500") +
+  
+  # Triângulo do Sumário (#023047) na base
+  annotate("point", x = mu_global, y = 0.25, shape = 25, fill = "#023047", size = 6) +
+  
+  # Pequena curva sobre o triângulo (representando a distribuição do sumário)
+  stat_function(fun = dnorm, args = list(mean = 0.6, sd = 0.06), 
+                xlim = c(0.45, 0.75), geom = "line", 
+                color = "grey30", linewidth = 1,
+                mapping = aes(y = after_stat(y) * 0.1)) +
+  
+  # Customização de Eixos e Escalas (Padronizado com o modelo)
+  scale_x_continuous(limits = c(0, 1.2), breaks = seq(0, 1.2, 0.1), 
+                     name = "Média da Distribuição dos Tamanhos de Efeito (μ)") +
+  scale_y_continuous(limits = c(0, 3.8), expand = c(0,0)) +
+  
+  theme_classic() +
+  theme(
+    text = element_text(family = "Roboto"),
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.line.x = element_line(color = "gray30", linewidth = 0.6),
+    axis.ticks.x = element_line(color = "gray30"),
+    axis.text.x = element_text(size = 11, color = "#252422", margin = margin(t = 10)),
+    axis.title.x = element_text(size = 13, color = "#252422", margin = margin(t = 10))
+  )
+```
+
+Para estimar o efeito sumarizado no modelo de efeitos aleatórios, o desafio central reside na necessidade de contabilizar o erro $\zeta_k$, o que exige a estimativa da variância da distribuição dos efeitos reais, parâmetro conhecido como $\tau^2$. Uma vez que o valor de $\tau^2$ é determinado, a heterogeneidade entre os estudos é incorporada ao cálculo do peso de cada observação, gerando um peso ajustado de efeitos randômicos ($w^*_k$) definido pela fórmula:
+
+$$w^*_k = \frac{1}{s^2_k + \tau^2}$$
+
+Com esses pesos ajustados, o tamanho do efeito sumarizado ($\hat{\theta}$) é calculado através do método do inverso da variância, de forma análoga ao modelo de efeito fixo, mas utilizando a nova ponderação que considera tanto o erro de amostragem individual quanto a variabilidade entre os estudos:
+
+$$\hat{\theta} = \frac{\sum_{k=1}^{K} \hat{\theta}_k w^*_k}{\sum_{k=1}^{K} w^*_k}$$
+
+Essa abordagem garante que a estimativa final reflita não apenas a precisão interna de cada estudo, mas também a dispersão real existente no "universo" de populações analisadas.
+
+Este modelo é amplamente preferido em pesquisas médicas e sociais, pois assume a existência de heterogeneidade entre os estudos como uma representação mais fiel da realidade. E é por isso que nesse tutorial vamos detalhar como implementar ele em R.
+
+<br>
+
+## 2. Construindo Modelos de Efeitos Aleatórios
+
+Para isso vamos utilizar dois pacotes principais: meta e dmetar. Eles podem ser instalados com o seguinte código:
+
+```{r, eval=F}
+install.packages("meta")
+
+if (!require("remotes")) {
+  install.packages("remotes")
+}
+
+remotes::install_github("MathiasHarrer/dmetar")
+```
+
+
+### 2.1. Médias Simples - `metamean`
+
+Para este exemplo, utilizaremos o dataset `BdiScores`. Ele contém a pontuação média do Inventário de Depressão de Beck II (BDI-II), coletada em amostras de pacientes deprimidos que participaram de ensaios clínicos de psicoterapia e antidepressivos. Nosso objetivo é calcular a pontuação média global de depressão entre todos esses estudos.
+
+A função `metamean` utiliza o método genérico do inverso da variância para agrupar os dados. Antes de rodar o modelo, precisamos decidir sobre a transformação:
+
+- `sm = "MRAW"` (Médias Brutas): Utilizada na maioria dos casos, inclusive no nosso exemplo.
+
+- `sm = "MLN"` (Transformação Logarítmica): Recomendada para quantidades que não podem ser negativas (como altura) ou quando as médias estão muito próximas de zero.
+
+- `method.tau`: método de estimativa do $\tau^2$. Existem vários métodos e não cabe agora nesse tutorial falar deles. Mas utilizando o padrão ("REML") será um bom caminho.
+
+Os argumentos essenciais são o tamanho da amostra (n), a média (mean) e o desvio padrão (sd). Além disso, vamos fazer um ajuste no intervalo de confiança através do método Knapp-Hartung pelo argumento `method.random.ci = "HK"`.
+
+```{r}
+library(dmetar)
+library(meta)
+library(tidyverse)
+
+# Carregar os dados
+data(BdiScores)
+
+# Executar a metanálise de médias
+m.mean <- metamean(n = n, 
+                   mean = mean, 
+                   sd = sd, 
+                   studlab = author, 
+                   data = BdiScores, 
+                   sm = "MRAW",        # Médias não transformadas
+                   common = FALSE,     
+                   random = TRUE, 
+                   method.tau = "REML", 
+                   method.random.ci = "HK", 
+                   title = "BDI-II Scores")
+
+# Ver o resumo dos resultados
+summary(m.mean)
+```
+
+Ao analisar o sumário da função, chegamos às seguintes conclusões clínicas:
+
+- **Média Combinada**: A média populacional estimada para o escore BDI-II é de 31,12 (IC 95%: 29,67; 32,58). Em termos clínicos, isso indica uma população com sintomas depressivos graves no início dos estudos.
+
+- **Heterogeneidade**: A variância entre estudos ($\tau^2$) foi de 1,09, sendo significativamente maior que zero ($p = 0,0156$). Isso significa que a gravidade da depressão varia de forma relevante entre as populações de cada estudo, confirmando que o uso do modelo de efeitos randômicos foi a escolha correta.
+
+### 2.2. Diferença de Médias Padronizadas - `metacont`
+
+Com médias e desvios padrão de dois grupos, utilizamos a função metacont. Ela é versátil e serve tanto para Diferenças de Médias (MD) quanto para Diferenças de Médias Padronizadas (SMD). Essa função tem dezenas de argumentos possíveis de serem personalizados, mas aqui nesse tutorial vamos falar apenas de alguns deles mais essenciais:
+
+- `n.e`, `mean.e`, `sd.e`: Número de observações, média e desvio padrão do grupo experimental.
+
+- `n.c`, `mean.c`, `sd.c`: Dados equivalentes para o grupo controle.
+
+- `sm`: Define se SMD ou MD.  
+
+- `method.smd`: Define qual métrica de SMD usar. O padrão recomendado é "Hedges", que calcula o Hedges’ g, corrigindo o viés de amostras pequenas.
+
+- `common`: TRUE ou FALSE para indicar se deve ser feito o modelo de efeitos fixos. 
+
+- `random`: TRUE ou FALSE para indicar se deve ser feito o modelo de efeitos aleatórios.  
+
+- `method.tau`: método de estimativa do $\tau^2$. 
+
+Utilizaremos o dataset `SuicidePrevention` Como os estudos não são idênticos, a escolha do modelo de efeitos aleatórios é a mais adequada.
+
+```{r}
+# Carregar os pacotes necessários
+library(meta)
+library(dmetar)
+
+# Carregar o banco de dados
+data(SuicidePrevention)
+
+# Executar a metanálise com metacont
+m.cont <- metacont(n.e = n.e, 
+                   mean.e = mean.e, 
+                   sd.e = sd.e, 
+                   n.c = n.c, 
+                   mean.c = mean.c, 
+                   sd.c = sd.c, 
+                   studlab = author, 
+                   data = SuicidePrevention, 
+                   sm = "SMD", 
+                   method.smd = "Hedges", 
+                   common = FALSE,      # Desativa efeito fixo
+                   random = TRUE,      # Ativa efeitos randômicos
+                   method.tau = "REML", 
+                   title = "Suicide Prevention")
+
+# Visualizar os resultados
+summary(m.cont)
+```
+
+Ao olhar para o output do R, focamos nos seguintes pontos principais:
+
+- **Efeito Combinado**: O resultado revela um $g = -0,23$. O sinal negativo indica que a ideação suicida foi menor no grupo de tratamento do que no controle, o que é um resultado favorável. Para facilitar a leitura, pesquisadores costumam inverter o sinal do efeito para que valores positivos sempre representem resultados "positivos" ou benéficos.
+
+- **Significância**: Com um intervalo de confiança de 95% entre -0,09 e -0,37 e um valor de $p = 0,0003$, o efeito é estatisticamente significativo.
+
+- **Heterogeneidade ($\tau^{2}$)**: A variância entre estudos foi estimada em $\tau^{2} = 0,004$. Como o intervalo de confiança de $\tau^{2}$ inclui o zero, a variabilidade dos efeitos reais não é significativamente maior que zero neste caso específico.
+
+### 2.3. Dados Binários (`metabin`)
+
+Para este exemplo, utilizaremos o dataset **DepressionMortality**, baseado em uma metanálise de Cuijpers e Smit (2002). O estudo investigou se o diagnóstico de depressão aumenta o risco de mortalidade por todas as causas. O banco de dados contém o número de eventos (mortes) e o total de participantes em ambos os grupos. Embora o método do inverso da variância seja o padrão, ele pode ser subótimo quando os dados são esparsos (poucos eventos ou amostras pequenas). Por isso, existem alternativas para determinar os pesos em dados binários:
+
+- **Mantel-Haenszel (MH)**: É o padrão da função metabin. Utiliza o número de eventos e não-eventos para determinar o peso, sendo muito robusto para amostras pequenas. Recomenda-se usar a versão "exata" (`MH.exact = TRUE`) para evitar correções de continuidade desnecessárias.
+
+- **Método de Peto**: Recomendado quando o evento de interesse é muito raro (menos de 1%) e os grupos têm tamanhos similares.
+
+- **Amostragem de Bakbergenuly (SSW)**: Um método mais recente que baseia o peso apenas no tamanho da amostra de cada grupo.
+
+Além do número de eventos e tamanho amostral do grupo controle e tratado precisamos dos seguintes argumentos:
+
+- `sm` (summary measure):  define qual métrica de efeito será calculada. Se `sm = "RR"` calcula a Razão de Risco (Risk Ratio), comparando a probabilidade do evento entre os grupos. Se `sm = "OR"` calcula a Razão de Chances (Odds Ratio), comparando as chances de ocorrência do evento.
+
+- `method`: Este argumento define como os pesos de cada estudo serão calculados. `"MH"` (Mantel-Haenszel) é o padrão e recomendado para modelos de efeito fixo, pois funciona bem mesmo com poucos dados. `"Inverse"` utiliza o método genérico do inverso da variância. `"Peto"` é especializado para quando os eventos são muito raros. `"SSW"` é um método baseado apenas no tamanho da amostra (disponível apenas para Odds Ratio).
+
+- `MH.exact = TRUE` Garante que o método de Mantel-Haenszel seja aplicado de forma "exata", sem a necessidade de correções de continuidade (como o acréscimo de 0.5 para fazer grupos com 0 observações não dificultarem os cálculos). Esta é geralmente a abordagem mais aconselhável para evitar distorções estatísticas.
+
+Nesta análise, calcularemos o Risco Relativo (RR) utilizando o modelo de efeitos randômicos. Aplicaremos o estimador de Paule-Mandel para $\tau^2$ e o ajuste de Knapp-Hartung para maior precisão estatística.
+
+```{r}
+library(dmetar)
+library(meta)
+library(tidyverse)
+
+# Carregar os dados
+data(DepressionMortality)
+
+# Executar a metanálise para desfechos binários
+m.bin <- metabin(event.e = event.e,        # Mortes no grupo com depressão
+                 n.e = n.e,                # Total no grupo com depressão
+                 event.c = event.c,        # Mortes no grupo controle
+                 n.c = n.c,                # Total no grupo controle
+                 studlab = author, 
+                 data = DepressionMortality, 
+                 sm = "RR",                # Risco Relativo
+                 method = "MH",            # Método Mantel-Haenszel
+                 MH.exact = TRUE,          # Sem correção de continuidade
+                 common = FALSE,           # Substitui 'fixed'
+                 random = TRUE, 
+                 method.tau = "PM",        # Estimador Paule-Mandel - recomendado para dados binários
+                 method.random.ci = "HK",  # Ajuste Knapp-Hartung
+                 title = "Depressão e Mortalidade")
+
+# Ver o resumo dos resultados
+summary(m.bin)
+```
+
+- **Risco Relativo**: O efeito combinado foi de 2.02 (IC 95%: 1.58; 2.59). Isso significa que sofrer de depressão praticamente dobra o risco de mortalidade.O resultado é altamente significativo ($p < 0.001$).
+
+- **Heterogeneidade**: O valor de $\tau^2 \approx 0.19$ e o fato de seu intervalo de confiança não incluir o zero indicam que há uma heterogeneidade substancial entre os estudos. Isso reforça a necessidade de investigar por que o risco varia tanto entre diferentes populações (ex: idade, país ou gravidade da depressão).
+
+### 2.3. Dados de Correlação - `metacor`
+
+Para este tutorial, utilizaremos o dataset `HealthWellbeing`, baseado em uma grande metanálise que examinou a associação entre saúde e bem-estar. O banco de dados contém o coeficiente de correlação ($r$) e o tamanho da amostra ($n$) de cada estudo. 
+
+Um ponto técnico fundamental é que correlações não devem ser agrupadas em sua forma original, pois sua distribuição é assimétrica (Tutorial anterior 😊). Elas precisam ser transformadas para o valor $z$ de Fisher antes do pooling. A boa notícia é que a função metacor realiza essa transformação e a conversão de volta para $r$ automaticamente. Você só precisa fornecer os valores originais.
+
+Os argumentos principais são:
+
+- `cor`: O coeficiente de correlação original (não transformado).
+
+- `n`: O número de observações no estudo.
+
+Como esperamos uma heterogeneidade considerável entre os estudos de bem-estar, utilizaremos o modelo de efeitos randômicos com o estimador REML e o ajuste de Knapp-Hartung.
+
+```{r}
+library(dmetar)
+library(meta)
+library(tidyverse)
+
+# Carregar os dados
+data(HealthWellbeing)
+
+# Executar a metanálise de correlações
+m.cor <- metacor(cor = cor, 
+                 n = n, 
+                 studlab = author, 
+                 data = HealthWellbeing, 
+                 common = FALSE,    # Substitui 'fixed'
+                 random = TRUE, 
+                 method.tau = "REML", 
+                 method.random.ci = "HK", 
+                 title = "Saúde e Bem-Estar")
+
+# Ver o resumo dos resultados
+summary(m.cor)
+```
+
+Ao analisar o sumário, focamos nos seguintes indicadores:
+
+- **Correlação Combinada**: A associação global entre saúde e bem-estar é de $r = 0,36$ (IC 95%: 0,31; 0,41). De acordo com a convenção de Cohen, este valor representa uma correlação de tamanho moderado.O efeito é altamente significativo ($p < 0,001$).
+
+- **Heterogeneidade**: A variância $\tau^2 = 0,024$ é significativamente maior que zero, com um $I^2$ muito elevado (99,8%), indicando que a força dessa relação varia drasticamente entre diferentes populações e contextos.
+
+### 2.4. Proporção - `metaprop`
+
+Para este tutorial, utilizaremos o dataset `OpioidMisuse`, que examinou a prevalência de 12 meses do uso indevido de opioides prescritos entre adolescentes e jovens adultos nos EUA. O banco de dados contém o número de eventos (uso indevido) e o total de observações (n) de cada estudo.
+
+Diferente de outras funções que usam o método do inverso da variância, a metaprop utiliza o GLMM por padrão quando as proporções são transformadas em logit (`sm = "PLOGIT"`). Essencialmente, a função ajusta um modelo de regressão logística que inclui efeitos aleatórios para lidar com a variação entre os estudos. Esta abordagem é frequentemente recomendada para metanálises de proporções por ser estatisticamente mais robusta. Porém, ela tem algumas especificidades:
+
+- **Sem Pesos Individuais**: O output não exibirá os pesos (weights) de cada estudo.
+
+- **Estimativa de $\tau^2$**: O estimador é fixado em "ML" (Maximum-Likelihood), e não há intervalo de confiança para o valor de $\tau^2$
+
+Para configurar sua análise, os principais argumentos são:
+
+- `event`: O número de casos ou eventos observados.
+
+- `n`: O tamanho total da amostra do estudo.
+
+- `method`: Define o método de pooling. Pode ser "GLMM" (padrão) ou "Inverse" (inverso da variância).
+
+- `sm`: A medida de sumário. Recomenda-se manter o padrão "PLOGIT" (transformação logit).
+
+```{r}
+library(dmetar)
+library(meta)
+library(tidyverse)
+
+# Carregar os dados
+data(OpioidMisuse)
+
+# Executar a metanálise de proporções
+m.prop <- metaprop(event = event, 
+                   n = n, 
+                   studlab = author, 
+                   data = OpioidMisuse, 
+                   method = "GLMM",    # Uso do modelo de efeitos mistos
+                   sm = "PLOGIT",      # Transformação logito
+                   common = FALSE,     # Antigo 'fixed'
+                   random = TRUE, 
+                   method.random.ci = "HK", 
+                   title = "Uso Indevido de Opioides")
+
+# Ver o resumo dos resultados
+summary(m.prop)
+```
+
+
+A análise do output nos fornece os dados reais sobre a questão investigada:
+
+- **Prevalência Combinada**: A prevalência estimada do uso indevido de opioides nos últimos 12 meses é de 9,4% (IC 95%: 8,36%; 10,66%).
+
+- **Heterogeneidade**: O valor de $\tau^2 = 0,056$ e um $I^2$ de 98,3% indicam que a prevalência varia drasticamente entre os estudos analisados, o que é comum em dados epidemiológicos de larga escala.
+
+<div class="rec-section">
+
+<div class="rec-title">
+<i class="fas fa-heart" style="color: #ff8fa3;"></i> 
+Gostou? Veja também:
+</div>
+
+<div class="rec-grid">
+<a href="tutorial-testet.html" class="rec-card">
+<i class="fas fa-chart-bar rec-icon"></i>
+<span class="rec-text">Teste T de Student</span>
+<span class="rec-sub">Comparação de médias</span>
+</a>
+
+<a href="tutorial-quiquadrado.html" class="rec-card">
+<i class="fas fa-table rec-icon"></i>
+<span class="rec-text">Qui-Quadrado</span>
+<span class="rec-sub">Dados categóricos</span>
+</a>
+
+<a href="metanalise.html" class="rec-card">
+<i class="fas fa-layer-group rec-icon"></i>
+<span class="rec-text">Metanálise</span>
+<span class="rec-sub">Introdução</span>
+</a>
+</div>
+
+<div class="rec-footer">
+<a href="estatistica.html" class="rec-btn-back">
+<i class="fas fa-arrow-left"></i> Voltar aos Tutoriais
+</a>
+</div>
+
+</div>
+
+<div class="author-footer">
+
+<span class="author-name">Escrito por Vítor Saldanha</span>
+
+<div class="author-bio">
+Estudante de medicina com foco em pesquisa acadêmica, estatística e medicina baseada em evidências.
+</div>
+
+<div class="post-meta-date">
+<i class="far fa-calendar-alt"></i> 
+Atualizado em: 28 de Dezembro de 2025
+</div>
+
+</div>
