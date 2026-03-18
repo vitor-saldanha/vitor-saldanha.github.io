@@ -2502,15 +2502,16 @@ h1, h2, h3, h4 {
 <li><p>O efeito varia de “trivial” em algumas populações para “grande” em outras?</p></li>
 <li><p>A intervenção é benéfica em alguns cenários, mas potencialmente prejudicial em outros?</p></li>
 </ul>
-<p>Por exemplo, um medicamento é que melhora o risco de doença cardiovascular em 50% em vários estudos é bem diferente de outro que melhora o risco <strong>em média</strong> de 50%, variando de -10% (piorando o risco) até 80% nos estudos selecionados.</p>
-<p>Lembra que falamos sobre existirem dois tipos de variância? Em um modelo de efeitos aleatórios existe a variância do erro amostral (dos efeitos observados) e a variância dos efeitos verdadeiros. Em geral, a variância dos efeitos observados tende a ser sempre maior do que a variância dos efeitos verdadeiros. Porém, a dificuldade de avaliar a heterogeneidade reside justamente em identificar quanto da variação total vem do erro amostral e quanto vem das diferenças reais nos tamanhos de efeito. É para isso que surgiram as métricas discutas a seguir: para determinar quanto de variância é de cada tipo.</p>
+<p>Por exemplo, um medicamento que melhora o risco de doença cardiovascular em 50% em vários estudos é bem diferente de outro que melhora o risco <strong>em média</strong> de 50%, variando de -10% (piorando o risco) até 80% nos estudos selecionados.</p>
+<p>Lembra que falamos sobre existirem dois tipos de variância no tutorial anterior? Em um modelo de efeitos aleatórios existe a variância do erro amostral (dos efeitos observados) e a variância dos efeitos verdadeiros. Em geral, a variância dos efeitos observados tende a ser sempre maior do que a variância dos efeitos verdadeiros. Porém, a dificuldade de avaliar a heterogeneidade reside justamente em identificar quanto da variação total vem do erro amostral e quanto vem das diferenças reais nos tamanhos de efeito. É para isso que surgiram as métricas discutas a seguir: para determinar quanto de variância é de cada tipo.</p>
+<p><br></p>
 <h2 id="métricas-utilizadas">2. Métricas Utilizadas</h2>
-<h3 id="q-de-cochran">2.1. Q de Cochran</h3>
-<p>Tradicionalmente, os metanalistas têm usado a estatística Q de Cochran para tentar distinguir o que é erro amostral do que é verdadeira heterogeneidade entre os estudos. Ele é definido como uma soma ponderada dos quadrados. Ele calcula o quanto o efeito observado de cada estudo (<span class="math inline">\(\hat{\theta}_k\)</span>) se desvia do efeito resumido (<span class="math inline">\(\hat{\theta}\)</span>) elevado ao quadrado (para evitar valores negativos), ponderando essa diferença pelo inverso da variância do estudo (<span class="math inline">\(w_k\)</span>). A fórmula matemática é:</p>
+<h3 id="q-de-cochran">2.1. <span class="math inline">\(Q\)</span> de Cochran</h3>
+<p>Tradicionalmente, os metanalistas têm usado a estatística <span class="math inline">\(Q\)</span> de Cochran para tentar distinguir o que é erro amostral do que é verdadeira heterogeneidade entre os estudos. Ele é definido como uma soma ponderada dos quadrados. Ou seja, ele calcula o quanto do efeito observado de cada estudo (<span class="math inline">\(\hat{\theta}_k\)</span>) se desvia do efeito combinado (<span class="math inline">\(\hat{\theta}\)</span>) (elevado ao quadrado para evitar valores negativos), ponderando essa diferença pelo inverso da variância do estudo (<span class="math inline">\(w_k\)</span>). A fórmula matemática é:</p>
 <p><span class="math display">\[Q = \sum_{k=1}^{K} w_k (\hat{\theta}_k - \hat{\theta})^2\]</span>
 Perceba que como utilizamos <span class="math inline">\(w_k\)</span>, estudos com maior precisão (menor erro padrão) têm um peso maior no cálculo de <span class="math inline">\(Q\)</span>.</p>
-<p>Porém, esse valor Q une os dois tipos de variância (do erro amostral e da variância dos erros verdadeiros), temos que separar o que erro amostral do erro verdadeiro. Na estatística sob a hipótese nula de que não há heterogeneidade (toda variação é apenas erro de amostragem), assume-se que <span class="math inline">\(Q\)</span> segue aproximadamente uma distribuição Qui-quadrado (<span class="math inline">\(\chi^2\)</span>) com <span class="math inline">\(K-1\)</span> graus de liberdade. Se você não está familiarizado com a distribuição de qui-quadrado ela parece uma curva normal só que mais desviada para a esquerda. Ela muda de acordo com os graus de liberdade (essencialmente, aqui, quantos estudos foram incluidos) e quanto maior o grau de liberdade mais ela se aproxima de uma curva normal. Resumindo, o foco é que podemos calcular o valor de <span class="math inline">\(Q\)</span> que esperamos encontrar apenas por erro de amostragem.</p>
-<p>Para entender como o <span class="math inline">\(Q\)</span> se comporta, podemos simular dois cenários: um sem heterogeneidade e outro com variação real entre os estudos. Aqui vamos simular 10.000 metanálises de 40 estudos cada. Vamos calcular o valor de Q para cada uma dessas metanálises fingindo que não existe heterogeneidade e assumindo a heterogeneidade (objetos Q_fixo e Q_random). A função <code>rnorm(K)</code> gera um conjunto de 40 valores aleatórios seguindo uma distribuição normal com média 0 e desvio padrão 1. Perceba que <code>sum(rnorm(K)^2)</code> esse comando soma cada um desses 40 valores elevados ao quadrado, o que equivale à fórmula do Q assumindo que o peso para cada estudo é 1. Assim, somando dois valores <code>rnorm(K)</code> estamos simulando adicionar um segundo erro (agora correspondente ao erro dos tamanhos verdadeiros).</p>
+<p>Porém, esse valor <span class="math inline">\(Q\)</span> une os dois tipos de variância. Agora temos que separar o que erro amostral do erro verdadeiro. Na estatística, sob a hipótese nula de que não há heterogeneidade (toda variação é apenas erro de amostragem), assume-se que <span class="math inline">\(Q\)</span> segue aproximadamente uma distribuição Qui-quadrado (<span class="math inline">\(\chi^2\)</span>) com <span class="math inline">\(K-1\)</span> graus de liberdade, sendo <span class="math inline">\(k\)</span> a quantidade de estudos incluídos. Se você não está familiarizado com a distribuição de qui-quadrado ela parece uma curva normal só que mais desviada para a esquerda. Ela muda de acordo com os graus de liberdade (quantos estudos foram incluidos) e quanto maior o grau de liberdade mais ela se aproxima de uma curva normal. Resumindo, o foco é que podemos calcular o valor de <span class="math inline">\(Q\)</span> que esperamos encontrar apenas por erro de amostragem.</p>
+<p>Para entender como o <span class="math inline">\(Q\)</span> se comporta, podemos simular dois cenários: um sem heterogeneidade e outro com heterogeneidade entre os estudos. Aqui vamos simular 10.000 metanálises de 40 estudos cada. Vamos calcular o valor de <span class="math inline">\(Q\)</span> para cada uma dessas metanálises fingindo que não existe heterogeneidade e assumindo a heterogeneidade (objetos Q_fixo e Q_random). Para fazer isso vamos utilizar a função <code>rnorm(K)</code> que gera um conjunto de 40 valores aleatórios seguindo uma distribuição normal com média 0 e desvio padrão 1. Eles vão ser correspondentes à diferença <span class="math inline">\(\hat{\theta}_k - \hat{\theta}\)</span>. Perceba que <code>sum(rnorm(K)^2)</code> faz a soma cada um desses 40 valores elevados ao quadrado, o que equivale à fórmula do Q assumindo que o peso para cada estudo é 1. Para simular a heterogeneidade (ou seja, sair de um modelo de efeitos fixos apenas com erro de amostragem e entrar em um modelo aleatório em há também a variabilidade dos efeitos verdadeiros), vamos somar dois valores de <code>rnorm(K)</code>.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> <span class="dv">40</span></span>
@@ -2526,7 +2527,7 @@ Perceba que como utilizamos <span class="math inline">\(w_k\)</span>, estudos co
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Cenario =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;Sem Heterogeneidade&quot;</span>, <span class="st">&quot;Com Heterogeneidade&quot;</span>), <span class="at">each =</span> <span class="dv">10000</span>)</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<p>Ao plotar os dois cenários em gráfico percebemos que os valores de Q assumindo um modelo fixo (apenas o erro amostral) seguem uma curva de qui-quadrado com 39 graus de liberdade (pois são 40 estudos). Porém, ao adicionar a heterogeneidade às metanálises o valore de Q delas tornou-se maior (a média aproximadamente dobrou) e mais espalhado.</p>
+<p>Ao plotar os dois cenários em gráfico percebemos que os valores de Q assumindo um modelo fixo (apenas o erro amostral) seguem uma curva de qui-quadrado com 39 graus de liberdade (pois são 40 estudos). Porém, ao adicionar a heterogeneidade às metanálises o valore de <span class="math inline">\(Q\)</span> delas tornou-se maior (a média aproximadamente dobrou) e mais espalhado.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_simulacao, <span class="fu">aes</span>(<span class="at">x =</span> Valor_Q, <span class="at">fill =</span> Cenario)) <span class="sc">+</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Histograma de densidade</span></span>
@@ -2555,24 +2556,534 @@ Perceba que como utilizamos <span class="math inline">\(w_k\)</span>, estudos co
 <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-4-1.png" alt="" width="624" /></p>
 </div>
-<p>A conclusão óbvia é que adicionar a heterogeneidade aumentou o valor de Q. E isso agora pode ser medido, pois se o valor de <span class="math inline">\(Q\)</span> calculado na sua metanálise for muito maior que o valor esperado com <span class="math inline">\(K-1\)</span>, você tem evidência de que os estudos não são farinha do mesmo saco (muito diferentes entre si). Essa diferença entre real vs. esperado chama-se <strong>teste Q</strong>, o qual diz se o valor observado de Q é significativamente diferente da distribuição esperada sob a hipótese nula (sem heterogeneidade). Esse teste tem sua relevância, mas também tem grandes limitações:</p>
+<p>A conclusão óbvia é que adicionar a heterogeneidade aumentou o valor de <span class="math inline">\(Q\)</span>. E isso agora pode ser medido, pois se o valor de <span class="math inline">\(Q\)</span> calculado na sua metanálise for muito maior que o valor esperado com <span class="math inline">\(K-1\)</span>, você tem evidência de que os estudos não são farinha do mesmo saco (muito diferentes entre si). Pode-se fazer um teste estatístico entre real vs. esperado, o que chama-se <strong>teste <span class="math inline">\(Q\)</span></strong>. Ele diz se o valor observado de <span class="math inline">\(Q\)</span> é significativamente diferente da distribuição esperada sob a hipótese nula (sem heterogeneidade). Esse teste tem sua relevância, mas também tem grandes limitações:</p>
 <ul>
-<li><p><strong>Limitação para pequenos estudos</strong>: Como o valor de Q depende da quantidade de estudos incluídos, percebeu-se que esse teste é pouco potente em metanálises pequenas (poucos estudos). Ou seja, mesmo que essa metanálise tiver estudos muito diferentes entre si o teste pode ser não significativo (informar que não há heterogeneidade), gerando um falso negativo.</p></li>
+<li><p><strong>Limitação para pequenos estudos</strong>: Como o valor de <span class="math inline">\(Q\)</span> depende da quantidade de estudos incluídos, percebeu-se que esse teste é pouco potente em metanálises pequenas (poucos estudos). Ou seja, mesmo que essa metanálise tiver estudos muito diferentes entre si o teste pode ser não significativo (informar que não há heterogeneidade), gerando um falso negativo.</p></li>
 <li><p><strong>“Excessivamente sensível” em metanálises gigantescas</strong>: O valor de <span class="math inline">\(Q\)</span> é calculado somando os desvios de cada estudo em relação à média, ponderados pela sua precisão. Por isso, o valor de <span class="math inline">\(Q\)</span> aumenta quanto mais estudos você adiciona e se os estudos individuais tiverem amostras muito grandes (mesmo desvios minúsculos do efeito médio serão “amplificados” pelo peso da precisão, inflando o valor de <span class="math inline">\(Q\)</span>). Assim, em metanálises “gigantes”, o teste <span class="math inline">\(Q\)</span> torna-se tão sensível que qualquer diferença clínica trivial — que não teria impacto nenhum na conduta médica — acaba gerando um <span class="math inline">\(p &lt; 0,001\)</span>. Ou seja, o teste aponta uma heterogeneidade “estatística” que não tem relevância na vida real: um falso positivo.</p></li>
 </ul>
-<p>Mas, apesar do Q não ser a métrica ideal para medir heterogeneidade, é importante aprender sobre ele pois ele é a base para as outras métricas, como o I² (a seguir 😁).</p>
-<h3 id="i²-higgins-thompson">2.2. I² (Higgins &amp; Thompson)</h3>
-<h3 id="a-variância-τ²-e-o-desvio-padrão-τ-dos-efeitos-verdadeiros">2.3. A Variância (τ²) e o Desvio Padrão (τ) dos Efeitos Verdadeiros</h3>
+<p>Mas, apesar do <span class="math inline">\(Q\)</span> não ser a métrica ideal para medir heterogeneidade, é importante aprender sobre ele pois ele é a base para as outras métricas, como o <span class="math inline">\(I^2\)</span> (a seguir 😁).</p>
+<p><br></p>
+<h3 id="i2-higgins-thompson">2.2. <span class="math inline">\(I^2\)</span> (Higgins &amp; Thompson)</h3>
+<p>A estatística <span class="math inline">\(I^2\)</span> (Higgins &amp; Thompson, 2002) é uma das medidas mais populares para relatar a heterogeneidade em metanálises, sendo incluída por padrão no pacote <code>{meta}</code>. Enquanto o <span class="math inline">\(\tau^2\)</span> e o <span class="math inline">\(Q\)</span> medem a variação em uma escala absoluta, o <span class="math inline">\(I^2\)</span> oferece uma perspectiva <strong>relativa</strong>: ele nos diz qual proporção da variabilidade observada nos tamanhos de efeito não é causada pelo erro de amostragem.</p>
+<p>O <span class="math inline">\(I^2\)</span> pode ser visto como uma razão de “sinal-ruído”. Ele quantifica, em percentual, o quanto o valor observado de <span class="math inline">\(Q\)</span> excede o valor de <span class="math inline">\(Q\)</span> esperado caso não houvesse heterogeneidade (<span class="math inline">\(K-1\)</span>). Se esse valor for menor que zero, assumimos que seja zero. A fórmula matemática é a razão entre a dispersão excedente e a dispersão total:</p>
+<p><span class="math display">\[I^2 = \frac{Q - (K - 1)}{Q} \times 100\%\]</span></p>
+<p>Se <span class="math inline">\(I^2\)</span> for próximo de 0%, quase toda a variância observada é “espúria” (apenas erro de amostragem). Se for alto, faz sentido investigar as causas dessa variação através de análises de subgrupo ou metarregressão (próximos tutoriais!). Existe uma regra de bolso para avaliar se o <span class="math inline">\(I^2\)</span> é grande ou pequeno:</p>
+<ul>
+<li><p><strong><span class="math inline">\(I^2 &lt; 25%\)</span>:</strong> Heterogeneidade baixa.</p></li>
+<li><p><strong><span class="math inline">\(25\% \leq I^2 \leq 50\%\)</span>:</strong> Heterogeneidade média.</p></li>
+<li><p><strong><span class="math inline">\(I^2&gt;50%\)</span>:</strong> Heterogeneidade alta.</p></li>
+</ul>
+<p>Para entendermos melhor vamos pegar um <span class="math inline">\(I^2\)</span> simulado de um modelo de efeitos fixos (sem heterogeneidade).</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Calculando I^2 para uma simulação SEM heterogeneidade (Pegamos o 10º valor simulado de Q_fixo)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>q_val_fixo <span class="ot">&lt;-</span> Q_fixo[<span class="dv">10</span>]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>i2_fixo <span class="ot">&lt;-</span> (q_val_fixo <span class="sc">-</span> df) <span class="sc">/</span> q_val_fixo</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>i2_fixo</span></code></pre></div>
+<pre><code>[1] 0.237083</code></pre>
+</div>
+<p>Agora vamos ver o mesmo valor simulado mas assumindo heterogeneidade. Perceba que o valor é bem maior!</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Calculando I^2 para uma simulação COM heterogeneidade (Pegamos o 10º valor simulado de Q_random)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>q_val_random <span class="ot">&lt;-</span> Q_random[<span class="dv">10</span>]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>i2_random <span class="ot">&lt;-</span> (q_val_random <span class="sc">-</span> df) <span class="sc">/</span> q_val_random</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>i2_random</span></code></pre></div>
+<pre><code>[1] 0.5441129</code></pre>
+</div>
+<p>O <span class="math inline">\(I^2\)</span> tem algumas vantagens:</p>
+<ul>
+<li><p>Não depende da escala (tamanho do efeito) da metanálise (como o <span class="math inline">\(Q\)</span>).</p></li>
+<li><p>Não depende de quantos estudos foram incluídos (como o <span class="math inline">\(Q\)</span>).</p></li>
+</ul>
+<p>Mas precisamos lembrar que o <span class="math inline">\(I^2\)</span> é uma escala relativa. Então, O reflete a extensão da sobreposição dos intervalos de confiança. Um <span class="math inline">\(I^2\)</span> de 100% significa apenas que a maior parte da variância é real, mas não implica necessariamente que os efeitos estejam dispersos em uma faixa ampla (podem estar todos muito próximos, mas estimados com extrema precisão).</p>
+<p><br></p>
+<h3 id="a-variância-tau2-e-o-desvio-padrão-tau-dos-efeitos-verdadeiros">2.3. A Variância (<span class="math inline">\(\tau^2\)</span>) e o Desvio Padrão (<span class="math inline">\(\tau\)</span>) dos Efeitos Verdadeiros</h3>
+<p>Imagine que tivéssemos uma quantidade infinita de estudos, cada um com uma amostra infinita. A variância entre esses “efeitos verdadeiros” seria o <span class="math inline">\(\tau^2\)</span>. Como não temos o infinito, usamos os dados observados para estimar esse parâmetro através do <span class="math inline">\(T^2\)</span>.</p>
+<ul>
+<li><p><strong><span class="math inline">\(\tau^2\)</span> (Variância):</strong> É a medida de dispersão usada matematicamente para calcular os pesos dos estudos.</p></li>
+<li><p><strong><span class="math inline">\(\tau\)</span> (Desvio Padrão):</strong> É a raiz quadrada de <span class="math inline">\(\tau^2\)</span>. Sua grande vantagem é ser interpretável na mesma escala do tamanho de efeito (ex: pontos na escala de depressão ou gramas de peso).</p></li>
+</ul>
+<p>O método mais popular para estimar o <span class="math inline">\(\tau^2\)</span> é o Método dos Momentos (ou DerSimonian-Laird). Ele parte da diferença entre o excesso de variação (<span class="math inline">\(Q - df\)</span>) e divide por uma constante <span class="math inline">\(C\)</span> que coloca o valor de volta na métrica original:</p>
+<p><span class="math display">\[T^2 = \frac{Q - df}{C}\]</span></p>
+<p>Se o valor de <span class="math inline">\(Q\)</span> for menor que os graus de liberdade (<span class="math inline">\(Q &lt; df\)</span>), o cálculo resultaria em um número negativo. Como uma variância não pode ser negativa, o <span class="math inline">\(T^2\)</span> é automaticamente definido como zero.</p>
+<p>O <span class="math inline">\(\tau\)</span> permite descrever a distribuição dos efeitos reais ao redor da média, de forma idêntica ao que fazemos com o desvio padrão em um estudo primário. Se assumirmos uma distribuição normal, podemos calcular um intervalo onde 95% dos efeitos reais devem cair:</p>
+<p><span class="math display">\[\text{Média Combinada} \pm 1,96 \times \tau\]</span></p>
+<p>Por exemplo, se a sua metanálise deu um efeito <span class="math inline">\(g = 0,58\)</span> e um <span class="math inline">\(\tau = 0,29\)</span>. Para termos uma noção do impacto clínico podemos calcular esse intervalo de confiança:</p>
+<ul>
+<li><p><strong>Limite Inferior</strong>: <span class="math inline">\(0,58 - (1,96 \times 0,29) = 0,01\)</span></p></li>
+<li><p><strong>Limite Superior</strong>: <span class="math inline">\(0,58 + (1,96 \times 0,29) = 1,15\)</span></p></li>
+</ul>
+<p><br></p>
+<p>No pacote {meta}, o <span class="math inline">\(\tau^2\)</span> e o <span class="math inline">\(\tau\)</span> são calculados automaticamente. Aqui vamos usar o objeto <code>m.gen</code> do tutorial passado. Para relembrar aqui está o código:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(meta)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dmetar)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Carregar o banco de dados</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(SuicidePrevention)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Executar a metanálise com metacont</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>m.cont <span class="ot">&lt;-</span> <span class="fu">metacont</span>(<span class="at">n.e =</span> n.e, </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">mean.e =</span> mean.e, </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sd.e =</span> sd.e, </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">n.c =</span> n.c, </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">mean.c =</span> mean.c, </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sd.c =</span> sd.c, </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>                   <span class="at">studlab =</span> author, </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> SuicidePrevention, </span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sm =</span> <span class="st">&quot;SMD&quot;</span>, </span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>                   <span class="at">method.smd =</span> <span class="st">&quot;Hedges&quot;</span>, </span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>                   <span class="at">common =</span> <span class="cn">FALSE</span>,      <span class="co"># Desativa efeito fixo</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>                   <span class="at">random =</span> <span class="cn">TRUE</span>,      <span class="co"># Ativa efeitos randômicos</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>                   <span class="at">method.tau =</span> <span class="st">&quot;REML&quot;</span>, </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                   <span class="at">title =</span> <span class="st">&quot;Suicide Prevention&quot;</span>)</span></code></pre></div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>m.cont<span class="sc">$</span>tau2 <span class="co">#Tau-quadrado (Variância)</span></span></code></pre></div>
+<pre><code>[1] 0.004369486</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>m.cont<span class="sc">$</span>tau <span class="co">#Tau (Desvio Padrão)</span></span></code></pre></div>
+<pre><code>[1] 0.06610209</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>limite_inf <span class="ot">&lt;-</span> m.cont<span class="sc">$</span>TE.random <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> m.cont<span class="sc">$</span>tau</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>limite_sup <span class="ot">&lt;-</span> m.cont<span class="sc">$</span>TE.random <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> m.cont<span class="sc">$</span>tau</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Os efeitos reais variam entre:&quot;</span>, <span class="fu">round</span>(limite_inf, <span class="dv">2</span>), <span class="st">&quot;e&quot;</span>, <span class="fu">round</span>(limite_sup, <span class="dv">2</span>))</span></code></pre></div>
+<pre><code>Os efeitos reais variam entre: -0.36 e -0.1</code></pre>
+</div>
+<p>Vale lembrar que esse <span class="math inline">\(\tau^2\)</span> é de suma importância pois ele é somado à variância de cada estudo para determinar o peso no modelo de efeitos aleatório (<span class="math inline">\(W_i = 1 / (V_{Yi} + T^2)\)</span>).</p>
+<p><br></p>
 <h3 id="intervalos-de-predição-prediction-intervals---pi">2.4. Intervalos de Predição (Prediction Intervals - PI)</h3>
-<h3 id="intervalo-de-predição-vs.-intervalo-de-confiança">2.5. Intervalo de Predição vs. Intervalo de Confiança</h3>
-<h2 id="heterogeneidade-no-r-aplicação-prática">3. Heterogeneidade no R (Aplicação Prática)</h2>
-<h3 id="extraindo-métricas-com-o-pacote-meta">3.1. Extraindo Métricas com o pacote {meta}</h3>
-<h3 id="calculando-intervalos-de-predição-no-r">3.2. Calculando Intervalos de Predição no R</h3>
-<h2 id="outliers-e-casos-influentes">4. Outliers e Casos Influentes</h2>
-<h3 id="outliers-básicos">4.1. Outliers Básicos</h3>
-<h3 id="análise-de-influência-influence-analysis">4.2. Análise de Influência (Influence Analysis)</h3>
-<h3 id="visualizações-de-diagnóstico-gráficos-de-baujat-e-métricas-de-influência">4.3. Visualizações de Diagnóstico (Gráficos de Baujat e Métricas de Influência)</h3>
-<h3 id="gráficos-gosh-graphic-display-of-heterogeneity">4.4. Gráficos GOSH (Graphic Display of Heterogeneity)</h3>
+<p>Métricas como o <span class="math inline">\(\tau^2\)</span> e o <span class="math inline">\(\tau\)</span> são robustas por não serem influenciadas pelo número de estudos ou pelo tamanho das amostras, mas são difíceis de interpretar na prática. <strong>O Intervalo de Predição (PI)</strong> resolve esse problema ao traduzir a heterogeneidade em uma faixa de valores concreta. Ele responde à pergunta fundamental: “Se realizarmos um novo estudo no futuro, dentro de qual faixa podemos esperar que o seu resultado caia, baseando-se nas evidências atuais?”. Se o PI estiver totalmente no lado “positivo” (favorecendo a intervenção), temos segurança de que o tratamento será benéfico em novos contextos. Se o PI incluir o zero, há incerteza sobre a eficácia do tratamento em cenários futuros, mesmo que a média atual seja significativa.</p>
+<p>O Intervalo de Predição de 95% é calculado utilizando uma distribuição <span class="math inline">\(t\)</span> com <span class="math inline">\(K-1\)</span> graus de liberdade:</p>
+<p><span class="math display">\[\hat{\mu} \pm t_{K-1, 0.975} \sqrt{SE^2_{\hat{\mu}} + \hat{\tau}^2}\]</span></p>
+<p>Como você pode observar, a inclusão do <span class="math inline">\(\hat{\tau}^2\)</span> na fórmula é o que torna o PI mais amplo e representativo da variabilidade do mundo real. A única alteração necessária a se fazer é adicionar <code>prediction = TRUE</code> na função de criação do modelo. Por exemplo:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(meta)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dmetar)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>m.gen <span class="ot">&lt;-</span> <span class="fu">metagen</span>(<span class="at">TE =</span> TE, </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">seTE =</span> seTE, </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">studlab =</span> author, </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> data,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">common =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">random =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">prediction =</span> <span class="cn">TRUE</span> <span class="co"># ATIVA O INTERVALO DE PREDIÇÃO</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>                 )</span></code></pre></div>
+</div>
+<p>Não vamos confundir o Intervalo de Confiança com o Intervalo de Predição. Ambos são diferentes e complementares e devem ser reportados na metanálise. Vamos comparar os dois:</p>
+<p><br></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Característica</th>
+<th style="text-align: left;">Intervalo de Confiança (IC)</th>
+<th style="text-align: left;">Intervalo de Predição (PI)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Foco Principal</strong></td>
+<td style="text-align: left;">A precisão da <strong>estimativa média</strong> atual (<span class="math inline">\(\hat{\mu}\)</span>).</td>
+<td style="text-align: left;">A dispersão esperada para um <strong>novo estudo futuro</strong>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>O que considera</strong></td>
+<td style="text-align: left;">Apenas o erro padrão da média combinada (<span class="math inline">\(SE_{\hat{\mu}}\)</span>).</td>
+<td style="text-align: left;">O erro padrão da média <strong>mais</strong> a variância entre estudos (<span class="math inline">\(\tau^2\)</span>).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Largura (Amplitude)</strong></td>
+<td style="text-align: left;">Geralmente mais <strong>estreito</strong>; diminui conforme mais estudos são incluídos.</td>
+<td style="text-align: left;">Geralmente muito mais <strong>largo</strong>; reflete a variabilidade real entre contextos.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Utilidade Clínica</strong></td>
+<td style="text-align: left;">Indica se o tratamento funciona, <strong>em média</strong>, para a população.</td>
+<td style="text-align: left;">Indica se o tratamento é confiável para o <strong>próximo caso</strong> ou hospital.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h2 id="interpretando-heterogeneidade-no-r-aplicação-prática">3. Interpretando Heterogeneidade no R (Aplicação Prática)</h2>
+<p>Vamos construir uma análise completa do zero utilizando o dataset <code>SuicidePrevention</code> (que avalia a eficácia de intervenções na redução da ideação suicida). Aqui, utilizamos a função <code>metacont</code> para dados contínuos. Observe que incluímos <code>prediction = TRUE</code> e o ajuste de Hartung-Knapp (HK) para garantir que os intervalos sejam robustos.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(meta)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dmetar)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Carregar o dataset real de Saúde e Bem-Estar</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(HealthWellbeing)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Criar a metanálise de correlações com diagnóstico completo</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>m.wellbeing <span class="ot">&lt;-</span> <span class="fu">metacor</span>(<span class="at">cor =</span> cor, </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">n =</span> n, </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">studlab =</span> author, </span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> HealthWellbeing,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                       <span class="at">common =</span> <span class="cn">FALSE</span>,        <span class="co"># Desativa efeito comum</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>                       <span class="at">random =</span> <span class="cn">TRUE</span>,        <span class="co"># Ativa efeitos randômicos</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>                       <span class="at">method.tau =</span> <span class="st">&quot;REML&quot;</span>,  <span class="co"># Melhor estimador para tau^2</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                       <span class="at">method.random.ci =</span> <span class="st">&quot;HK&quot;</span>, <span class="co"># Ajuste robusto de Knapp-Hartung</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>                       <span class="at">prediction =</span> <span class="cn">TRUE</span>,    <span class="co"># ESSENCIAL: Ativa Intervalo de Predição</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>                       <span class="at">title =</span> <span class="st">&quot;Saúde e Bem-Estar&quot;</span>)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver o &quot;caos&quot; estatístico</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.wellbeing)</span></code></pre></div>
+<pre><code>Review:     Saúde e Bem-Estar
+
+                       COR           95%-CI %W(random)
+An, 2008            0.6200 [0.4964; 0.7189]        2.8
+Angner, 2013        0.3720 [0.2823; 0.4552]        3.4
+Barger, 2009        0.2900 [0.2870; 0.2930]        3.8
+Doherty, 2013       0.3330 [0.2908; 0.3739]        3.7
+Dubrovina, 2012     0.7300 [0.7255; 0.7344]        3.8
+Fisher, 2010        0.4050 [0.2373; 0.5493]        2.8
+Gana, 2013          0.2920 [0.2310; 0.3507]        3.6
+Garrido, 2013       0.3880 [0.3300; 0.4430]        3.6
+Goldbeck, 2001      0.3600 [0.1366; 0.5486]        2.4
+Jacobsson, 2010     0.3080 [0.0732; 0.5104]        2.3
+Kim, 2012           0.3500 [0.2352; 0.4551]        3.3
+Koots-Ausmees, 2015 0.3400 [0.3367; 0.3432]        3.8
+Kulczycka, 2010     0.4200 [0.2247; 0.5829]        2.5
+Lacruz, 2012        0.1900 [0.1532; 0.2263]        3.7
+Liang, 2014         0.4900 [0.4791; 0.5007]        3.8
+Matthews, 2002      0.4700 [0.4059; 0.5295]        3.6
+Mukuria, 2013       0.2940 [0.2794; 0.3085]        3.8
+Mukuria, 2015       0.3900 [0.3697; 0.4100]        3.8
+Ngamaba, 2016       0.4980 [0.4707; 0.5243]        3.8
+Ngamaba, 2017       0.2900 [0.2838; 0.2961]        3.8
+Patten, 2010        0.1600 [0.0354; 0.2797]        3.3
+Sabatini, 2014      0.2200 [0.1537; 0.2843]        3.6
+Takeyachi, 2003     0.2020 [0.1352; 0.2669]        3.6
+Tuchtenhagen, 2015  0.2900 [0.2358; 0.3424]        3.7
+Wang, 2002          0.3200 [0.1639; 0.4605]        2.9
+Wang, 2015          0.3200 [0.2968; 0.3428]        3.8
+Yildirim, 2013      0.3900 [0.3031; 0.4705]        3.4
+Zajacova, 2014      0.2440 [0.2135; 0.2740]        3.8
+Zagorski, 2013      0.3600 [0.3494; 0.3705]        3.8
+
+Number of studies: k = 29
+Number of observations: o = 853794
+
+                        COR           95%-CI     t  p-value
+Random effects model 0.3632 [0.3092; 0.4148] 12.81 &lt; 0.0001
+Prediction interval         [0.0563; 0.6074]               
+
+Quantifying heterogeneity (with 95%-CIs):
+ tau^2 = 0.0241 [0.0141; 0.0436]; tau = 0.1554 [0.1186; 0.2088]
+ I^2 = 99.8%; H = 24.14
+
+Test of heterogeneity:
+        Q d.f. p-value
+ 16320.87   28       0
+
+Details of meta-analysis methods:
+- Inverse variance method
+- Restricted maximum-likelihood estimator for tau^2
+- Q-Profile method for confidence interval of tau^2 and tau
+- Calculation of I^2 based on Q
+- Hartung-Knapp adjustment for random effects model (df = 28)
+- Prediction interval based on t-distribution (df = 28)
+- Fisher&#39;s z transformation of correlations</code></pre>
+</div>
+<p>Agora vamos observar algumas métricas do nosso dado. Vamos focar aqui na seção chamada “Quantifying heterogeneity (with 95%-CIs)” e “Test of heterogeneity”. Agora vamos analisar esse resultado:</p>
+<ol type="1">
+<li><p><strong>O Efeito Combinado vs. Precisão:</strong> A correlação é <span class="math inline">\(r = 0.36\)</span>, o que indica uma associação positiva moderada. Além disso, o Intervalo de Confiança é <span class="math inline">\(0.31\)</span> a <span class="math inline">\(0.41\)</span>, o que é extremamente estreito. Isso ocorre porque temos um tamanho amostral muito grande (quase 1 milhão de observações). Isso significa que temos muita certeza sobre onde está a média dos estudos realizados até agora.</p></li>
+<li><p><strong>A “Explosão” da Inconsistência (<span class="math inline">\(I^2\)</span> e <span class="math inline">\(Q\)</span>):</strong> Perceba que o <span class="math inline">\(I^2 = 99.8\%\)</span>, o valor máximo que costuma-se ver. Isso nos diz que 99,8% da variabilidade que vemos no gráfico é “real” (heterogeneidade entre estudos) e apenas 0,2% é erro de amostragem. Além disso o <span class="math inline">\(Q = 16.320\)</span>, um valor astronômico para apenas 28 graus de liberdade (<span class="math inline">\(df\)</span>). O <span class="math inline">\(p = 0\)</span> (ou <span class="math inline">\(p &lt; 0.0001\)</span>) confirma que a hipótese de que os estudos são iguais foi esmagada pelos dados.</p></li>
+<li><p><strong>A Realidade Clínica: Intervalo de Predição (PI)</strong>: Aqui está o ponto mais importante do seu tutorial. Note a diferença brutal entre o IC (<span class="math inline">\([0.31; 0.41]\)</span>) e o PI (<span class="math inline">\([0.05; 0.60]\)</span>). Isso indica que a média combinada é muito precisa, mas se fóssemos repetir esse estudo esse valor seria mais amplo.</p></li>
+</ol>
+<p><strong>O que isso significa na prática?</strong> Significa que, embora a correlação média seja 0,36, em um novo estudo ou população, a relação entre saúde e bem-estar pode ser quase inexistente (<span class="math inline">\(0.05\)</span>) ou fortíssima (<span class="math inline">\(0.60\)</span>). A heterogeneidade é tão alta que a média, embora precisa, não serve para prever o que acontecerá no próximo hospital ou país.</p>
+<p><br></p>
+<blockquote>
+<p><strong>Por que o <span class="math inline">\(I^2\)</span> deu tão alto?</strong> O tamanho da amostra dos estudos individuais é muito grande (um estudo tem até 350.000 pessoas), o erro de amostragem tende a zero. Como o <span class="math inline">\(I^2\)</span> mede a proporção de variação que não é erro de amostragem, qualquer mínima diferença real entre os estudos fará o <span class="math inline">\(I^2\)</span> saltar para próximo de 100%. Isso não significa necessariamente que os estudos são bizarramente diferentes, mas sim que nossa capacidade de detectar até as menores diferenças é quase infinita. Nestes casos, ignore a porcentagem do <span class="math inline">\(I^2\)</span> e foque no Intervalo de Predição (PI), que traduz essa variação para a realidade prática. Além disso, quando o <span class="math inline">\(I^2\)</span> é tão alto assim, o próximo passo obrigatório é a Análise de outliers e de casos influentes! Para você guardar como regra: costuma-se recomendar a investigação de outliers e de casos influentes caso o <span class="math inline">\(I^2 &gt; 50%\)</span>.</p>
+</blockquote>
+<p><br></p>
+<h2 id="investigando-outliers-e-casos-influentes">4. Investigando Outliers e Casos Influentes</h2>
+<h3 id="remoção-simples-de-outliers">4.1. Remoção Simples de Outliers</h3>
+<p>Às vezes, a heterogeneidade elevada em uma metanálise não é causada por uma variação equilibrada entre todos os estudos, mas sim por um ou dois estudos com resultados tão extremos que simplesmente não “se encaixam” no restante do grupo. Esses são os chamados <strong>outliers</strong> (valores atípicos). Nesta seção, vamos aprender a identificar e tratar esses casos para garantir que nossa estimativa final seja robusta e não esteja sendo distorcida por dados excepcionais.</p>
+<p>Existem várias formas estatísticas de definir um outlier, mas uma das mais lógicas e diretas é baseada na sobreposição de intervalos de confiança. Um estudo é considerado um outlier se o seu intervalo de confiança (95%) não se sobrepõe ao intervalo de confiança do efeito combinado de toda a metanálise. Isso significa que:</p>
+<ul>
+<li><p>O limite superior do estudo é menor que o limite inferior do efeito global (efeito extremamente pequeno).</p></li>
+<li><p>O limite inferior do estudo é maior que o limite superior do efeito global (efeito extremamente grande).</p></li>
+</ul>
+<p>Essa abordagem é inteligente porque protege estudos pequenos: se um estudo tem um erro de amostragem alto, seu intervalo de confiança será largo, aumentando a chance de ele se sobrepor à média, mesmo que o valor pontual seja distante. Se um estudo for preciso (amostra grande) e ainda assim estiver longe da média, ele é um forte candidato a outlier.</p>
+<p>Aqui vamos utilizar o dado <code>ThirdWave</code> para fazer a análise de heterogeneidade. Este dataset avalia o impacto de psicoterapias de “terceira onda” no estresse de universitários, utilizando o <span class="math inline">\(g\)</span> de Hedges (diferença de médias padronizada com correção para pequenas amostras) como métrica de efeito. A heterogeneidade é central nesta análise porque as intervenções (como ACT e Mindfulness) e os contextos universitários variam entre os estudos. Essas diferenças metodológicas e populacionais geram variações reais nos resultados (heterogeneidade de efeitos reais), o que impede que todos os estudos compartilhem um único efeito comum.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># needed for &#39;glimpse&#39;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dmetar)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(meta)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(ThirdWave)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(ThirdWave)</span></code></pre></div>
+<pre><code>Rows: 18
+Columns: 8
+$ Author               &lt;chr&gt; &quot;Call et al.&quot;, &quot;Cavanagh et al.&quot;, &quot;Dani…
+$ TE                   &lt;dbl&gt; 0.7091362, 0.3548641, 1.7911700, 0.1824…
+$ seTE                 &lt;dbl&gt; 0.2608202, 0.1963624, 0.3455692, 0.1177…
+$ RiskOfBias           &lt;chr&gt; &quot;high&quot;, &quot;low&quot;, &quot;high&quot;, &quot;low&quot;, &quot;low&quot;, &quot;l…
+$ TypeControlGroup     &lt;chr&gt; &quot;WLC&quot;, &quot;WLC&quot;, &quot;WLC&quot;, &quot;no intervention&quot;,…
+$ InterventionDuration &lt;chr&gt; &quot;short&quot;, &quot;short&quot;, &quot;short&quot;, &quot;short&quot;, &quot;sh…
+$ InterventionType     &lt;chr&gt; &quot;mindfulness&quot;, &quot;mindfulness&quot;, &quot;ACT&quot;, &quot;m…
+$ ModeOfDelivery       &lt;chr&gt; &quot;group&quot;, &quot;online&quot;, &quot;group&quot;, &quot;group&quot;, &quot;o…</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>m.gen <span class="ot">&lt;-</span> <span class="fu">metagen</span>(<span class="at">TE =</span> TE,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">seTE =</span> seTE,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">studlab =</span> Author,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> ThirdWave,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sm =</span> <span class="st">&quot;SMD&quot;</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">common =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">random =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method.tau =</span> <span class="st">&quot;REML&quot;</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method.random.ci =</span> <span class="st">&quot;HK&quot;</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">prediction =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>                 <span class="at">title =</span> <span class="st">&quot;Third Wave Psychotherapies&quot;</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.gen)</span></code></pre></div>
+<pre><code>Review:     Third Wave Psychotherapies
+
+                          SMD            95%-CI %W(random)
+Call et al.            0.7091 [ 0.1979; 1.2203]        5.0
+Cavanagh et al.        0.3549 [-0.0300; 0.7397]        6.3
+DanitzOrsillo          1.7912 [ 1.1139; 2.4685]        3.8
+de Vibe et al.         0.1825 [-0.0484; 0.4133]        7.9
+Frazier et al.         0.4219 [ 0.1380; 0.7057]        7.3
+Frogeli et al.         0.6300 [ 0.2458; 1.0142]        6.3
+Gallego et al.         0.7249 [ 0.2846; 1.1652]        5.7
+Hazlett-Stevens &amp; Oren 0.5287 [ 0.1162; 0.9412]        6.0
+Hintz et al.           0.2840 [-0.0453; 0.6133]        6.9
+Kang et al.            1.2751 [ 0.6142; 1.9360]        3.9
+Kuhlmann et al.        0.1036 [-0.2781; 0.4853]        6.3
+Lever Taylor et al.    0.3884 [-0.0639; 0.8407]        5.6
+Phang et al.           0.5407 [ 0.0619; 1.0196]        5.3
+Rasanen et al.         0.4262 [-0.0794; 0.9317]        5.1
+Ratanasiripong         0.5154 [-0.1731; 1.2039]        3.7
+Shapiro et al.         1.4797 [ 0.8618; 2.0977]        4.2
+Song &amp; Lindquist       0.6126 [ 0.1683; 1.0569]        5.7
+Warnecke et al.        0.6000 [ 0.1120; 1.0880]        5.2
+
+Number of studies: k = 18
+
+                             SMD            95%-CI    t  p-value
+Random effects model (HK) 0.5771 [ 0.3782; 0.7760] 6.12 &lt; 0.0001
+Prediction interval              [-0.0542; 1.2084]              
+
+Quantifying heterogeneity (with 95%-CIs):
+ tau^2 = 0.0820 [0.0295; 0.3533]; tau = 0.2863 [0.1717; 0.5944]
+ I^2 = 62.6% [37.9%; 77.5%]; H = 1.64 [1.27; 2.11]
+
+Test of heterogeneity:
+     Q d.f. p-value
+ 45.50   17  0.0002
+
+Details of meta-analysis methods:
+- Inverse variance method
+- Restricted maximum-likelihood estimator for tau^2
+- Q-Profile method for confidence interval of tau^2 and tau
+- Calculation of I^2 based on Q
+- Hartung-Knapp adjustment for random effects model (df = 17)
+- Prediction interval based on t-distribution (df = 17)</code></pre>
+</div>
+<p>Perceba que esse estudo possue uma heterogeneidade considerável com um <span class="math inline">\(I^2 = 62%\)</span>. Para automatizar o processo descrito acima de descoberta de outliers, utilizaremos a função <code>find.outliers</code> do pacote <code>{dmetar}</code>. Ela identifica os culpados, remove-os e recalcula toda a metanálise automaticamente para você comparar os resultados.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>m.outliers <span class="ot">&lt;-</span> <span class="fu">find.outliers</span>(m.gen)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>m.outliers</span></code></pre></div>
+<pre><code>Identified outliers (random-effects model) 
+------------------------------------------ 
+&quot;DanitzOrsillo&quot;, &quot;Shapiro et al.&quot; 
+ 
+Results with outliers removed 
+----------------------------- 
+Review:     Third Wave Psychotherapies
+
+Number of studies: k = 16
+
+                             SMD           95%-CI    t  p-value
+Random effects model (HK) 0.4528 [0.3257; 0.5800] 7.59 &lt; 0.0001
+Prediction interval              [0.1705; 0.7352]              
+
+Quantifying heterogeneity (with 95%-CIs):
+ tau^2 = 0.0139 [0.0000; 0.1032]; tau = 0.1180 [0.0000; 0.3213]
+ I^2 = 24.8% [0.0%; 58.7%]; H = 1.15 [1.00; 1.56]
+
+Test of heterogeneity:
+     Q d.f. p-value
+ 19.95   15  0.1739
+
+Details of meta-analysis methods:
+- Inverse variance method
+- Restricted maximum-likelihood estimator for tau^2
+- Q-Profile method for confidence interval of tau^2 and tau
+- Calculation of I^2 based on Q
+- Hartung-Knapp adjustment for random effects model (df = 15)
+- Prediction interval based on t-distribution (df = 15)</code></pre>
+</div>
+<p>Primeiro perceba que a função identificou dois outliers (“DanitzOrsillo” e “Shapiro et al.”). Ao remover esses dois estudos você observará mudanças drásticas nos indicadores de heterogeneidade:</p>
+<ol type="1">
+<li><p><strong>Redução do <span class="math inline">\(I^2\)</span></strong>: É comum ver o <span class="math inline">\(I^2\)</span> despencar (nesse caso de 63% para 25%) após a remoção de apenas dois estudos.</p></li>
+<li><p><strong><span class="math inline">\(\tau^2\)</span> e Significância</strong>: O intervalo de confiança do <span class="math inline">\(\tau^2\)</span> passou a incluir o zero, e o teste <span class="math inline">\(Q\)</span> de Cochran deixou de ser significativo (<span class="math inline">\(p &gt; 0,05\)</span>).</p></li>
+<li><p><strong>Intervalo de Predição (PI)</strong>: Como a variação diminuiu, o Intervalo de Predição se torna muito mais estreito e preciso, dando mais segurança sobre a eficácia da intervenção em estudos futuros.</p></li>
+</ol>
+<blockquote>
+<p>Embora seja tentador remover outliers para deixar seu gráfico “bonito” e o <span class="math inline">\(I^2\)</span> baixo, você jamais deve excluir estudos sem uma justificativa técnica ou teórica sólida apenas para obter resultados mais favoráveis. A remoção de outliers serve para a) identificar possíveis erros de digitação ou coleta de dados nos estudos primários; b) verificar a robustez do seu efeito (se o resultado sumir após tirar um outlier, ele não é robusto); c)gerar uma análise de sensibilidade para reportar como os dados se comportam em um cenário de maior consistência.</p>
+</blockquote>
+<p><br></p>
+<h3 id="análise-de-casos-influentes">4.2. Análise de Casos Influentes</h3>
+<p>Identificar um outlier (um estudo com resultado extremo) é importante, mas nem todo outlier “estraga” a sua metanálise. Por outro lado, existem estudos que podem nem parecer tão extremos, mas que possuem um peso tão grande que “sequestram” o resultado sozinhos. Esses são os Casos Influentes. Muitas vezes esses conceitos se sobrepõem, mas eles não são a mesma coisa:</p>
+<ul>
+<li><p><strong>Outliers</strong>: São definidos pela magnitude do efeito. É aquele estudo que está “lá no canto” do Forest Plot. Tirar um outlier pode diminuir a heterogeneidade, mas nem sempre muda a média final significativamente.</p></li>
+<li><p><strong>Casos Influentes</strong>: São definidos pelo impacto. São estudos que, se removidos, mudam drasticamente o efeito combinado ou a significância estatística da metanálise. Um estudo muito grande e preciso pode ser influente mesmo sem ser um outlier.</p></li>
+</ul>
+<p>Para identificar esses estudos, o R realiza um processo exaustivo: ele recalcula a metanálise K vezes (onde K é o número de estudos), removendo um estudo diferente em cada vez. Se ao remover o “Estudo X” o seu <span class="math inline">\(I^2\)</span> cair de 80% para 20%, ou se o seu resultado deixar de ser significativo, você acabou de encontrar um caso influente. Diferente da remoção simples de outliers, a análise de influência é mais sofisticada. Utilizaremos a função InfluenceAnalysis do pacote <code>{dmetar}</code> aplicada ao seu objeto <code>m.gen</code>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>m.cont.inf <span class="ot">&lt;-</span> <span class="fu">InfluenceAnalysis</span>(m.gen, <span class="at">random =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># A função gera 4 gráficos principais. Vamos abrir o painel geral:</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m.cont.inf)</span></code></pre></div>
+<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-14-1.png" alt="" width="1152" /></p>
+</div>
+<p>Para concluir o diagnóstico de robustez da sua metanálise, precisamos olhar para os gráficos gerados pela função <code>InfluenceAnalysis</code>. Eles permitem identificar visualmente quem são os “vilões” da heterogeneidade e o quanto o seu resultado final depende de estudos individuais.</p>
+<h4 id="a-gráfico-de-baujat">a) Gráfico de Baujat</h4>
+<p>O Baujat Plot é um mapa bidimensional que cruza duas informações cruciais sobre cada estudo:</p>
+<ul>
+<li><p><strong>Eixo Horizontal (<span class="math inline">\(X\)</span>)</strong>: A contribuição do estudo para a heterogeneidade global (medida pelo <span class="math inline">\(Q\)</span> de Cochran).</p></li>
+<li><p><strong>Eixo Vertical (<span class="math inline">\(Y\)</span>)</strong>: A influência do estudo no efeito combinado (o quanto o resultado muda se ele for retirado).</p></li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m.cont.inf, <span class="st">&quot;baujat&quot;</span>)</span></code></pre></div>
+<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-15-1.png" alt="" width="624" /></p>
+</div>
+<p>Assim, estudos localizados no canto superior direito do gráfico são os mais problemáticos. Eles são responsáveis por inflar o seu <span class="math inline">\(I^2\)</span> e, ao mesmo tempo, deslocar a média da metanálise para um lado ou para o outro. No caso do dataset de “Terceira Onda”, estudos como “DanitzOrsillo” costumam aparecer à direita por adicionarem muita heterogeneidade, mesmo que seu impacto na média não seja tão massivo devido ao tamanho da amostra. Perceba também que o estudo “de Vibe” possui a maior influência no resultado combinado do tamanho do efeito.</p>
+<p><br></p>
+<h4 id="b-análise-leave-one-out">b) Análise Leave-One-Out</h4>
+<p>Nessa técnica O R recalcula a metanálise <span class="math inline">\(K\)</span> vezes, omitindo um estudo em cada rodada. Geramos dois tipos de Forest Plots para essa análise:</p>
+<ol type="1">
+<li><strong>Ordenado por Tamanho de Efeito (“es”)</strong>: Mostra como a média combinada (<span class="math inline">\(\hat{\mu}\)</span>) oscila. A área sombreada no fundo do gráfico representa o intervalo de confiança original (com todos os estudos). Se, ao retirar um estudo, o novo ponto sair de dentro dessa área, esse estudo tem uma influência desproporcional no resultado final.</li>
+</ol>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m.cont.inf, <span class="st">&quot;es&quot;</span>)</span></code></pre></div>
+<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-16-1.png" alt="" width="624" /></p>
+</div>
+<ol start="2" type="1">
+<li><strong>Ordenado por Heterogeneidade (“i2”)</strong>: É a forma mais rápida de ver qual estudo está “segurando” a heterogeneidade. Se o seu <span class="math inline">\(I^2\)</span> original é de 60%, mas cai para 20% quando o “Estudo X” é removido, você encontrou a fonte principal da inconsistência dos seus dados.</li>
+</ol>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m.cont.inf, <span class="st">&quot;i2&quot;</span>)</span></code></pre></div>
+<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-17-1.png" alt="" width="624" /></p>
+</div>
+<p>Esse plot mostra que os menores <span class="math inline">\(I^2\)</span> obtidos são retirando o estudo de “DanitzOrsillo” e “Shapiro et al.”, o que corrobora nossos resultados anteriores.</p>
+<p><br></p>
+<h4 id="c-gráfico-de-influência">c) Gráfico de Influência</h4>
+<p>Para fechar o diagnóstico de influência, o comando <code>plot(m.cont.inf, "influence")</code> gera uma grade de gráficos técnicos. Essas métricas funcionam juntas como “detetores de mentira” que revelam se um estudo está distorcendo a realidade da sua metanálise. Cada um desses índices avalia um aspecto diferente de como um estudo individual afeta o modelo global. No gráfico, os estudos destacados em vermelho são aqueles que ultrapassaram os limites estatísticos de influência.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m.cont.inf, <span class="st">&quot;influence&quot;</span>)</span></code></pre></div>
+<p><img src="tutorial-em-constru%C3%A7%C3%A3o_files/figure-html5/unnamed-chunk-18-1.png" alt="" width="624" /></p>
+</div>
+<ol type="1">
+<li><p><strong>Resíduos Externamente Padronizados (<span class="math inline">\(t_k\)</span>)</strong>: Mede o quanto o resultado de um estudo se desvia da média (calculada sem ele). Se o valor for muito alto, significa que o estudo não “se encaixa” na população geral e apresenta um comportamento atípico em relação aos demais.</p></li>
+<li><p><strong>Valor DFFITS:</strong> Indica quantos desvios padrão a média global se desloca quando o estudo em questão é removido. Valores altos mostram que o estudo tem um impacto direto e pesado no valor final do efeito combinado.</p></li>
+<li><p><strong>Distância de Cook (<span class="math inline">\(D_k\)</span>)</strong>: Uma métrica clássica de estatística que combina o resíduo do estudo com o seu peso. Funciona de forma similar ao DFFITS, mas é sempre positiva. Estudos com alta Distância de Cook são altamente influentes e podem estar sequestrando a média da metanálise.</p></li>
+<li><p><strong>Razão de Covariância (CovRatio)</strong>: Avalia a precisão do modelo. Se o CovRatio for menor que 1, significa que a remoção desse estudo torna a nossa estimativa da média muito mais precisa e confiável.</p></li>
+<li><p><strong><span class="math inline">\(\tau^2\)</span> e <span class="math inline">\(Q\)</span> (Leave-One-Out)</strong>: Estes gráficos mostram o que acontece com a heterogeneidade se deletarmos o estudo. Quedas bruscas nesses valores ao remover um estudo específico confirmam que ele é o principal responsável pela inconsistência dos dados.</p></li>
+<li><p><strong>Hat Value e Peso do Estudo</strong>: Medem a “alavancagem” ou a importância que o modelo deu ao estudo. Um Hat Value alto indica que o estudo teve muita influência na determinação do resultado final, geralmente por ter uma amostra muito grande ou um erro padrão muito pequeno.</p></li>
+</ol>
+<p>Perceba que o estudos “DanitzOrsillo” apareceu como vermelho em todos os gráficos. E “Shapiro et al.”, apesar de ainda estar em azul, está em picos e vales das métricas. Isso corrobora o outro resultado.</p>
+<p><br></p>
+<h3 id="reportando-análise-de-influência">4.3. Reportando Análise de Influência</h3>
+<p>O objetivo aqui é realizar uma Análise de Sensibilidade: mostrar ao leitor como o seu resultado se comporta com e sem esses estudos “complicados”. Para fazer isso iremos utilizar a função update, que permite rodar novamente o modelo sem criar o objeto do zero. Os estudos 3, 4 e 16 são os “DanitzOrsillo”, “de Vibe” ou “Shapiro”:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">update</span>(m.gen, <span class="at">exclude =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">16</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>Review:     Third Wave Psychotherapies
+
+                          SMD            95%-CI %W(random) exclude
+Call et al.            0.7091 [ 0.1979; 1.2203]        4.6        
+Cavanagh et al.        0.3549 [-0.0300; 0.7397]        8.1        
+DanitzOrsillo          1.7912 [ 1.1139; 2.4685]        0.0       *
+de Vibe et al.         0.1825 [-0.0484; 0.4133]        0.0       *
+Frazier et al.         0.4219 [ 0.1380; 0.7057]       14.8        
+Frogeli et al.         0.6300 [ 0.2458; 1.0142]        8.1        
+Gallego et al.         0.7249 [ 0.2846; 1.1652]        6.2        
+Hazlett-Stevens &amp; Oren 0.5287 [ 0.1162; 0.9412]        7.0        
+Hintz et al.           0.2840 [-0.0453; 0.6133]       11.0        
+Kang et al.            1.2751 [ 0.6142; 1.9360]        2.7        
+Kuhlmann et al.        0.1036 [-0.2781; 0.4853]        8.2        
+Lever Taylor et al.    0.3884 [-0.0639; 0.8407]        5.8        
+Phang et al.           0.5407 [ 0.0619; 1.0196]        5.2        
+Rasanen et al.         0.4262 [-0.0794; 0.9317]        4.7        
+Ratanasiripong         0.5154 [-0.1731; 1.2039]        2.5        
+Shapiro et al.         1.4797 [ 0.8618; 2.0977]        0.0       *
+Song &amp; Lindquist       0.6126 [ 0.1683; 1.0569]        6.1        
+Warnecke et al.        0.6000 [ 0.1120; 1.0880]        5.0        
+
+Number of studies: k = 15
+
+                             SMD           95%-CI    t  p-value
+Random effects model (HK) 0.4819 [0.3595; 0.6043] 8.44 &lt; 0.0001
+Prediction interval              [0.3623; 0.6016]              
+
+Quantifying heterogeneity (with 95%-CIs):
+ tau^2 &lt; 0.0001 [0.0000; 0.0955]; tau = 0.0012 [0.0000; 0.3091]
+ I^2 = 4.6% [0.0%; 55.7%]; H = 1.02 [1.00; 1.50]
+
+Test of heterogeneity:
+     Q d.f. p-value
+ 14.67   14  0.4011
+
+Details of meta-analysis methods:
+- Inverse variance method
+- Restricted maximum-likelihood estimator for tau^2
+- Q-Profile method for confidence interval of tau^2 and tau
+- Calculation of I^2 based on Q
+- Hartung-Knapp adjustment for random effects model (df = 14)
+- Prediction interval based on t-distribution (df = 14)</code></pre>
+</div>
+<p>Perceba que O <span class="math inline">\(I^2\)</span> caiu de 63% para apenas 5%, indicando que quase toda a “confusão” era causada por apenas três estudos.Além disso, antes o Intervalo de Predição incluía o zero (-0.06), sugerindo incerteza. Sem os casos influentes, o PI agora vai de 0.36 a 0.61, dando muito mais certeza de que o tratamento será benéfico em contextos futuros.</p>
+<p>Quando determinamos que estudos específicos (como “DanitzOrsillo”, “de Vibe” ou “Shapiro”) são influentes, a boa prática científica exige que reportemos os resultados originais lado a lado com os resultados obtidos após a exclusão desses casos. Isso permite que o leitor avalie a robustez da sua metanálise. Se o efeito combinado mudar drasticamente ou se a heterogeneidade desaparecer por completo após retirar um ou dois estudos, essa informação é vital para a interpretação clínica.</p>
+<p><strong>O que incluir no seu relatório?</strong></p>
+<ul>
+<li><p><strong>Efeito Combinado:</strong> O valor de <span class="math inline">\(g\)</span> (ou <span class="math inline">\(r\)</span>) e seu respectivo valor de <span class="math inline">\(p\)</span>.</p></li>
+<li><p><strong>Precisão:</strong> O Intervalo de Confiança (95% IC).</p></li>
+<li><p><strong>Heterogeneidade:</strong> O valor de <span class="math inline">\(I^2\)</span> com seu intervalo de confiança.</p></li>
+<li><p><strong>Expectativa Futura:</strong> O Intervalo de Predição (95% PI).</p></li>
+<li><p><strong>Transparência:</strong> Listar explicitamente quais estudos foram removidos e o porquê.</p></li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Análise</th>
+<th style="text-align: center;"><span class="math inline">\(g\)</span></th>
+<th style="text-align: center;">95% CI</th>
+<th style="text-align: center;">p-value</th>
+<th style="text-align: center;">95% PI</th>
+<th style="text-align: center;"><span class="math inline">\(I^2\)</span></th>
+<th style="text-align: center;">95% CI (<span class="math inline">\(I^2\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Análise Principal</td>
+<td style="text-align: center;">0.58</td>
+<td style="text-align: center;">0.38–0.78</td>
+<td style="text-align: center;">&lt; 0.001</td>
+<td style="text-align: center;">-0.06–1.22</td>
+<td style="text-align: center;">63%</td>
+<td style="text-align: center;">39–78</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Sem Casos Influentes¹</td>
+<td style="text-align: center;">0.48</td>
+<td style="text-align: center;">0.36–0.60</td>
+<td style="text-align: center;">&lt; 0.001</td>
+<td style="text-align: center;">0.36–0.61</td>
+<td style="text-align: center;">5%</td>
+<td style="text-align: center;">0–56</td>
+</tr>
+</tbody>
+</table>
+<p><em>¹ Após retirar”DanitzOrsillo”, “de Vibe” e “Shapiro”</em></p>
+<p>Essa tabela também é versátil: você pode adicionar linhas para outras análises de sensibilidade, como incluir apenas estudos com baixo risco de viés ou apenas estudos com amostras grandes.</p>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

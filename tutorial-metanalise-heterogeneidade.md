@@ -1,12 +1,19 @@
 ---
-title: "Tutorial em Construção"
+title: "Tamanho de Efeitos"
+pagetitle: "Effect Sizes"
 description: |
-  Tutorial em Construção em R.
+  Uma introdução prática tamanho de Efeitos para metanálise em R.
 output:
   distill::distill_article:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    css: toc-styles.css
+    self_contained: false
     highlight: pygments
     highlight_downlit: false
 ---
+
 
 ```{css, echo = F}
 /* Estilo para a caixa de código */
