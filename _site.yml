@@ -19,3 +19,5 @@ navbar:
 output:
   distill::distill_article:
     css: styles.css
+    includes:
+      in_header: google-verification.html
