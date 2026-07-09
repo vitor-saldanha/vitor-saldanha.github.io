@@ -1,10 +1,10 @@
 ---
 title: "Tutoriais de Metanálise"
 pagetitle: "Tutoriais de Metanálise"
-date: "`r Sys.Date()`"
 site: distill::distill_website
 ---
 
+```{=html}
 <style>
 d-title {
   display: none !important;
@@ -13,21 +13,32 @@ d-title {
 body {
   padding-top: 50px; /* Espaço para a barra de navegação não cobrir o texto */
 }
-</style>
 
-## Conteúdo
+/* Ajuste para 3 cards por linha */
+.tutorial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 30px;
+}
+
+@media(max-width: 768px) {
+  .tutorial-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+```
 
 <div class="tutorial-grid l-body-outset">
 
 <div class="card-blog">
 <img src="fotos/metanalise/effectsize.jpg" class="card-img-top" alt="Imagem Effect Size">
-
 <div class="card-body">
 <span class="card-tag">
 <i class="fas fa-fire"></i> Básico
 </span>
 <h5 class="card-title">Tamanho de Efeitos</h5>
-
 <a href="tutorial-metanalise-effectsize.html" class="card-btn">
 Acessar Aula <i class="fas fa-arrow-right"></i>
 </a>
@@ -36,13 +47,11 @@ Acessar Aula <i class="fas fa-arrow-right"></i>
 
 <div class="card-blog">
 <img src="fotos/metanalise/models.jpg" class="card-img-top" alt="Modelos">
-
 <div class="card-body">
 <span class="card-tag">
 <i class="fas fa-chart-bar"></i> Intermediário
 </span>
 <h5 class="card-title">Combinando Tamanhos de Efeito</h5>
-
 <a href="tutorial-metanalise-modelos-de-efeito.html" class="card-btn">
 Acessar Aula <i class="fas fa-arrow-right"></i>
 </a>
@@ -51,14 +60,25 @@ Acessar Aula <i class="fas fa-arrow-right"></i>
 
 <div class="card-blog">
 <img src="fotos/metanalise/heterogeneity.jpg" class="card-img-top" alt="Imagem Hetero">
-
 <div class="card-body">
 <span class="card-tag">
 <i class="fas fa-chart-bar"></i> Intermediário
 </span>
 <h5 class="card-title">Heterogeneidade</h5>
-
 <a href="tutorial-metanalise-heterogeneidade.html" class="card-btn">
+Acessar Aula <i class="fas fa-arrow-right"></i>
+</a>
+</div>
+</div>
+
+<div class="card-blog">
+<img src="fotos/metanalise/subgrupos.jpg" class="card-img-top" alt="Imagem Subgrupo">
+<div class="card-body">
+<span class="card-tag">
+<i class="fas fa-chart-bar"></i> Intermediário
+</span>
+<h5 class="card-title">Análise de Subgrupo</h5>
+<a href="tutorial-metanalise-subgrupos.html" class="card-btn">
 Acessar Aula <i class="fas fa-arrow-right"></i>
 </a>
 </div>

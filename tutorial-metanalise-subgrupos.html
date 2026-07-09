@@ -18,101 +18,33 @@
  <!--radix_placeholder_import_source-->
  <!--/radix_placeholder_import_source-->
 
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css" data-origin="pandoc">
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  { color: #00769e; background-color: #f1f3f5; }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span { color: #00769e; } /* Normal */
-code span.al { color: #ad0000; } /* Alert */
-code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #657422; } /* Attribute */
-code span.bn { color: #ad0000; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #00769e; } /* ControlFlow */
-code span.ch { color: #20794d; } /* Char */
-code span.cn { color: #8f5902; } /* Constant */
-code span.co { color: #5e5e5e; } /* Comment */
-code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
-code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
-code span.dt { color: #ad0000; } /* DataType */
-code span.dv { color: #ad0000; } /* DecVal */
-code span.er { color: #ad0000; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #ad0000; } /* Float */
-code span.fu { color: #4758ab; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #00769e; } /* Keyword */
-code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #00769e; } /* Other */
-code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #5e5e5e; } /* SpecialChar */
-code span.ss { color: #20794d; } /* SpecialString */
-code span.st { color: #20794d; } /* String */
-code span.va { color: #111111; } /* Variable */
-code span.vs { color: #20794d; } /* VerbatimString */
-code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
-</style>
 
 
   <!--radix_placeholder_meta_tags-->
-  <title>Vitor Saldanha: Regressão Linear</title>
+  <title>Vitor Saldanha: Análise de Subgrupos</title>
 
-  <meta property="description" itemprop="description" content="Uma introdução prática aos modelos lineares no R."/>
+  <meta property="description" itemprop="description" content="Uma introdução prática à análise de subgrupos para metanálise em R."/>
 
   <link rel="icon" type="image/png" href="my-favicon.png"/>
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Vitor Saldanha: Regressão Linear"/>
+  <meta property="og:title" content="Vitor Saldanha: Análise de Subgrupos"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="Uma introdução prática aos modelos lineares no R."/>
+  <meta property="og:description" content="Uma introdução prática à análise de subgrupos para metanálise em R."/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Vitor Saldanha"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Vitor Saldanha: Regressão Linear"/>
-  <meta property="twitter:description" content="Uma introdução prática aos modelos lineares no R."/>
+  <meta property="twitter:title" content="Vitor Saldanha: Análise de Subgrupos"/>
+  <meta property="twitter:description" content="Uma introdução prática à análise de subgrupos para metanálise em R."/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","pagetitle","description","output"]}},"value":[{"type":"character","attributes":{},"value":["Regressão Linear"]},{"type":"character","attributes":{},"value":["Regressão Linear"]},{"type":"character","attributes":{},"value":["Uma introdução prática aos modelos lineares no R.\n"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float","css","self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[6]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["toc-styles.css"]},{"type":"logical","attributes":{},"value":[false]}]}]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","pagetitle","description","output"]}},"value":[{"type":"character","attributes":{},"value":["Análise de Subgrupos"]},{"type":"character","attributes":{},"value":["Análise de Subgrupos"]},{"type":"character","attributes":{},"value":["Uma introdução prática à análise de subgrupos para metanálise em R.\n"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float","css","self_contained","highlight","highlight_downlit"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[3]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["toc-styles.css"]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["pygments"]},{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -1843,6 +1775,10 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   <!--/radix_placeholder_distill-->
   <script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
+  <script src="site_libs/clipboard-2.0.6/clipboard.min.js"></script>
+  <link href="site_libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.css" rel="stylesheet" />
+  <script src="site_libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.js"></script>
+  <script>window.xaringanExtraClipboard(null, {"button":"Copiar","success":"Copiado!","error":"Pressione Ctrl+C para copiar"})</script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2435,7 +2371,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Regressão Linear","description":"Uma introdução prática aos modelos lineares no R.","authors":[]}
+{"title":"Análise de Subgrupos","description":"Uma introdução prática à análise de subgrupos para metanálise em R.","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2462,11 +2398,11 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Regressão Linear</h1>
+<h1>Análise de Subgrupos</h1>
 
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Uma introdução prática aos modelos lineares no R.</p></p>
+<p><p>Uma introdução prática à análise de subgrupos para metanálise em R.</p></p>
 </div>
 
 
@@ -2475,11 +2411,20 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <nav class="l-text toc figcaption" id="TOC">
 <h3>Contents</h3>
 <ul>
-<li><a href="#encontrando-a-reta" id="toc-encontrando-a-reta">1. Encontrando a Reta</a>
+<li><a href="#o-que-é-análise-de-subgrupos" id="toc-o-que-é-análise-de-subgrupos">1. O que é análise de subgrupos?</a></li>
+<li><a href="#qual-a-lógica-de-uma-análise-de-subgrupo" id="toc-qual-a-lógica-de-uma-análise-de-subgrupo">2. Qual a lógica de uma análise de subgrupo?</a>
 <ul>
-<li><a href="#o-que-são-resíduos" id="toc-o-que-são-resíduos">1.1. O que são Resíduos?</a></li>
-<li><a href="#o-método-dos-mínimos-quadrados" id="toc-o-método-dos-mínimos-quadrados">1.2. O Método dos Mínimos Quadrados</a></li>
+<li><a href="#o-modelo-de-efeitos-fixos-plural" id="toc-o-modelo-de-efeitos-fixos-plural">2.1. O modelo de efeitos fixos (plural)</a></li>
+<li><a href="#como-separar-em-subgrupos" id="toc-como-separar-em-subgrupos">2.2. Como separar em subgrupos?</a></li>
+<li><a href="#por-que-chamamos-de-efeitos-fixos-plural" id="toc-por-que-chamamos-de-efeitos-fixos-plural">2.3. Por Que Chamamos de “Efeitos Fixos (Plural)”?</a></li>
 </ul></li>
+<li><a href="#os-perigos-a-evitar" id="toc-os-perigos-a-evitar">3. Os Perigos a Evitar</a>
+<ul>
+<li><a href="#o-problema-do-baixo-poder-estatístico" id="toc-o-problema-do-baixo-poder-estatístico">3.1. O Problema do Baixo Poder Estatístico</a></li>
+<li><a href="#falta-de-causalidade" id="toc-falta-de-causalidade">3.2. Falta de Causalidade</a></li>
+<li><a href="#o-viés-ecológico" id="toc-o-viés-ecológico">3.3. O viés ecológico</a></li>
+</ul></li>
+<li><a href="#análise-em-r" id="toc-análise-em-r">4. Análise em R</a></li>
 </ul>
 </nav>
 </div>
@@ -2489,168 +2434,168 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   display: none;
 }
 /* ==========================================================================
-1. ESTILIZAÇÃO DO HERO BANNER (FULL WIDTH BREAKOUT)
+  1. ESTILIZAÇÃO DO HERO BANNER (FULL WIDTH BREAKOUT)
 ========================================================================== */
-
-.hero-container-full {
-/* Técnica de "Breakout" para escapar do grid do Distill */
-width: 100vw; 
-position: relative;
-left: 50%;
-right: 50%;
-margin-left: -50vw;
-margin-right: -50vw;
-
-/* Reset de margens para evitar espaços brancos indesejados */
-margin-top: -2rem; /* Ajuste fino dependendo do padding do navbar */
-margin-bottom: 3rem;
-
-/* Garantir que não cause rolagem horizontal indesejada */
-box-sizing: border-box;
-overflow: hidden;
-z-index: 5;
-}
+  
+  .hero-container-full {
+    /* Técnica de "Breakout" para escapar do grid do Distill */
+      width: 100vw; 
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    
+    /* Reset de margens para evitar espaços brancos indesejados */
+      margin-top: -2rem; /* Ajuste fino dependendo do padding do navbar */
+      margin-bottom: 3rem;
+    
+    /* Garantir que não cause rolagem horizontal indesejada */
+      box-sizing: border-box;
+    overflow: hidden;
+    z-index: 5;
+  }
 
 .hero-banner {
-/* Dimensões */
-height: 40vh; /* Ocupa 50% da altura da viewport */
-min-height: 300px; /* Altura mínima garantida */
-width: 100%;
-
-/* Imagem de Fundo - Substitua pela URL da sua imagem */
-background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1953&q=80');
-background-size: cover;
-background-position: center center;
-background-repeat: no-repeat;
-
-/* Flexbox para centralização total do conteúdo */
-display: flex;
-justify-content: center;
-align-items: center;
-
-/* Contexto de empilhamento */
-position: relative;
-z-index: 1;
+  /* Dimensões */
+    height: 40vh; /* Ocupa 50% da altura da viewport */
+    min-height: 300px; /* Altura mínima garantida */
+    width: 100%;
+  
+  /* Imagem de Fundo - Substitua pela URL da sua imagem */
+    background-image: url('https://images.unsplash.com/photo-1613505312779-e91c0ff85b64?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  
+  /* Flexbox para centralização total do conteúdo */
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* Contexto de empilhamento */
+    position: relative;
+  z-index: 1;
 }
 
 /* Camada de Escurecimento (Overlay) */
-.hero-overlay {
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
-z-index: 2;
-
-/* Manter centralização para os filhos */
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-}
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+    z-index: 2;
+    
+    /* Manter centralização para os filhos */
+      display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 
 /* Conteúdo Textual */
-.hero-content {
-z-index: 3;
-text-align: center;
-max-width: 800px;
-padding: 0 20px;
-color: #ffffff;
-}
+  .hero-content {
+    z-index: 3;
+    text-align: center;
+    max-width: 800px;
+    padding: 0 20px;
+    color: #ffffff;
+  }
 
 /* Título Principal */
-.hero-title {
-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-font-size: 3.5rem;
-font-weight: 800;
-margin-bottom: 0.5rem;
-text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-line-height: 1.2;
-color: white!important; /* Importante para sobrescrever cores do tema Distill */
-}
+  .hero-title {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    line-height: 1.2;
+    color: white!important; /* Importante para sobrescrever cores do tema Distill */
+  }
 
 /* Subtítulo */
-.hero-subtitle {
-font-size: 1.25rem;
-font-weight: 300;
-margin-bottom: 2rem;
-color: rgba(255, 255, 255, 0.9);
-line-height: 1.5;
-}
+  .hero-subtitle {
+    font-size: 1.25rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+  }
 
 /* Botões */
-.hero-btn {
-display: inline-block;
-padding: 12px 28px;
-margin: 5px;
-border-radius: 50px;
-text-decoration: none;
-font-weight: 600;
-transition: all 0.3s ease;
-text-transform: uppercase;
-font-size: 0.9rem;
-letter-spacing: 0.5px;
-}
+  .hero-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    margin: 5px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
 
 .hero-btn.primary {
-background-color: #4CAF50; /* Cor verde estilo RStudio/Distill */
-color: white;
-border: 2px solid #4CAF50;
+  background-color: #4CAF50; /* Cor verde estilo RStudio/Distill */
+    color: white;
+  border: 2px solid #4CAF50;
 }
 
 .hero-btn.primary:hover {
-background-color: #45a049;
-transform: translateY(-2px);
-box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  background-color: #45a049;
+    transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .hero-btn.github {
-background-color: transparent;
-color: white;
-border: 2px solid white;
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
 }
 
 .hero-btn.github:hover {
-background-color: white;
-color: #333;
+  background-color: white;
+  color: #333;
 }
 
 /* ==========================================================================
-2. CORREÇÃO E ALINHAMENTO DO TABLE OF CONTENTS (TOC)
+  2. CORREÇÃO E ALINHAMENTO DO TABLE OF CONTENTS (TOC)
 ========================================================================== */
-
-
-
-/* ==========================================================================
-3. RESPONSIVIDADE (MOBILE)
+  
+  
+  
+  /* ==========================================================================
+  3. RESPONSIVIDADE (MOBILE)
 ========================================================================== */
-
-/* Em telas menores que 1000px (ponto de quebra comum do Distill),
+  
+  /* Em telas menores que 1000px (ponto de quebra comum do Distill),
 o layout muda drasticamente. O TOC flutuante deve ser desativado. */
-
-@media screen and (max-width: 1000px) {
-
-/* Ajuste do Banner para Mobile */
-.hero-banner {
-height: 60vh; /* Mais alto em mobile para caber o texto verticalmente */
-}
-
-.hero-title {
-font-size: 2.2rem; /* Título menor */
-}
-
-/* Reposicionar o TOC para o fluxo normal do documento */
-.d-contents > nav.toc, 
-#TOC {
-position: relative!important;
-top: 0!important;
-width: 100%;
-margin-bottom: 40px;
-border-left: none;
-border-top: 1px solid #e0e0e0;
-padding-top: 20px;
-}
+  
+  @media screen and (max-width: 1000px) {
+    
+    /* Ajuste do Banner para Mobile */
+      .hero-banner {
+        height: 60vh; /* Mais alto em mobile para caber o texto verticalmente */
+      }
+    
+    .hero-title {
+      font-size: 2.2rem; /* Título menor */
+    }
+    
+    /* Reposicionar o TOC para o fluxo normal do documento */
+      .d-contents > nav.toc, 
+    #TOC {
+    position: relative!important;
+    top: 0!important;
+    width: 100%;
+    margin-bottom: 40px;
+    border-left: none;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+  }
 }
 </style>
 </div>
@@ -2659,10 +2604,10 @@ padding-top: 20px;
 <div class="hero-overlay">
 <div class="hero-content">
 <h1 class="hero-title">
-Regressão Linear
+Análise de Subgrupos
 </h1>
 <p class="hero-subtitle">
-Uma introdução prática aos modelos lineares no R
+Tutorial sobre Análise de Subgrupos em Metanálise no R
 </p>
 </div>
 </div>
@@ -2671,85 +2616,66 @@ Uma introdução prática aos modelos lineares no R
 <div class="toc-spacer">
 
 </div>
-<h2 id="encontrando-a-reta">1. Encontrando a Reta</h2>
-<p>A regressão linear busca mapear a relação entre uma variável preditora (independente, no eixo <span class="math inline">\(X\)</span>) e uma variável de desfecho (dependente, no eixo <span class="math inline">\(Y\)</span>).</p>
-<p>Para entender este conceito na prática clínica, imagine um estudo que avalia o efeito de um novo medicamento anti-hipertensivo:</p>
-<ul>
-<li><p><strong>Eixo <span class="math inline">\(X\)</span> (Variável Preditora):</strong> Dose do medicamento administrada (em mg).</p></li>
-<li><p><strong>Eixo <span class="math inline">\(Y\)</span> (Variável Desfecho):</strong> Redução observada na Pressão Arterial Sistólica (PAS, em mmHg).</p></li>
-</ul>
-<p>O nosso objetivo é traçar uma linha reta que consiga prever, com a maior precisão possível, quantos mmHg a pressão de um paciente deve cair com base na dose que ele recebeu.</p>
-<h3 id="o-que-são-resíduos">1.1. O que são Resíduos?</h3>
-<p>Mesmo com um ótimo modelo, a reta não passará perfeitamente por cima de todos os pontos coletados no estudo, pois cada paciente responde de forma ligeiramente diferente ao tratamento. É aqui que entram os resíduos.</p>
-<p><br></p>
-<blockquote>
-<p><strong>Definição:</strong> Resíduos são as distâncias verticais entre o valor real observado no dado e o valor predito pela nossa reta de regressão. Eles representam o erro do modelo.</p>
-</blockquote>
-<p><br></p>
-<p>Matematicamente, o resíduo <span class="math inline">\(e_i\)</span> para um paciente <span class="math inline">\(i\)</span> é expresso por:</p>
-<p><span class="math display">\[e_i = y_i - \hat{y}_i\]</span></p>
-<p>Onde <span class="math inline">\(y_i\)</span> é a redução real da pressão arterial e <span class="math inline">\(\hat{y}_i\)</span> é o valor estimado pela reta.</p>
-<ul>
-<li><p><strong>Resíduos Positivos (+):</strong> O ponto real está <em>acima</em> da reta (a redução da pressão do paciente foi maior do que o modelo previu).</p></li>
-<li><p><strong>Resíduos Negativos (-):</strong> O ponto real está <em>abaixo</em> da reta (a redução da pressão do paciente foi menor do que o modelo previu).</p></li>
-</ul>
+<!-- #######################################
+############## CONTEUDO ####################
+############################################  -->
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="tutorial-estatistica-regressao-linear_files/figure-html5/unnamed-chunk-2-1.png" alt="" width="624" /></p>
+<style type="text/css">
+/* Estilo para a caixa de código */
+  d-article pre {
+    background-color: #f6f8fa !important;  /* O !important força a mudança da cor */
+      border: 1px solid #e1e4e8 !important;  /* Força a borda */
+    border-radius: 6px;        /* Cantos arredondados */
+      padding: 12px;             /* Espaço interno para o texto não colar na borda */
+      box-shadow: none;          /* Remove sombras padrões se houver */
+  }
+</style>
 </div>
-<p>Se apenas somássemos os resíduos diretamente, os valores positivos anulariam os negativos (dando a falsa impressão de que o erro total é próximo de zero). Para contornar isso, <strong>elevamos cada resíduo ao quadrado</strong>, tornando todos os valores positivos antes de somá-los.</p>
-<p><span class="math display">\[\text{deviation} = \sum (\text{observed} - \text{model})^2\]</span></p>
-<p><br></p>
-<h3 id="o-método-dos-mínimos-quadrados">1.2. O Método dos Mínimos Quadrados</h3>
-<p>Para encontrar a reta ideal, o algoritmo utiliza o <strong>Método dos Mínimos Quadrados</strong> (em inglês, <em>Ordinary Least Squares - OLS</em>). O processo segue a seguinte lógica iterativa:</p>
-<ol type="1">
-<li><p><strong>Testar Inclinações e Intersecções:</strong> O algoritmo simula diferentes inclinações (coeficiente angular, que dita o efeito por mg) e pontos de partida no eixo Y (coeficiente linear, que dita o efeito basal).</p></li>
-<li><p><strong>Calcular a Soma dos Quadrados dos Resíduos (SQR):</strong> Para cada reta testada, calcula-se a métrica:
-<span class="math display">\[SQR = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2\]</span></p></li>
-<li><p><strong>Minimização:</strong> O algoritmo plota a variação da SQR para cada rotação da linha. A reta final escolhida será rigorosamente aquela que apresentar a <strong>menor soma dos quadrados dos resíduos</strong>.</p></li>
-</ol>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="tutorial-estatistica-regressao-linear_files/figure-html5/unnamed-chunk-3-1.png" alt="" width="624" /></p>
+<style type="text/css">
+h1, h2, h3, h4 {
+  border-bottom: 1px solid #dddddd; /* Cria a linha cinza fina embaixo */
+  padding-bottom: 12px;              /* Espaço entre o texto e a linha */
+    margin-bottom: 18px;              /* Espaço depois da linha para o próximo parágrafo */
+    margin-top: 28px;                 /* Espaço antes do título */
+</style>
 </div>
-<p>Dessa forma, garantimos estatisticamente o modelo que melhor descreve o comportamento biológico do nosso dado.</p>
-<div class="rec-section">
-<div class="rec-title">
-<p><i class="fas fa-heart" style="color: #ff8fa3;"></i>
-Gostou? Veja também:</p>
-</div>
-<div class="rec-grid">
-<p><a href="tutorial-testet.html" class="rec-card">
-<i class="fas fa-chart-bar rec-icon"></i>
-<span class="rec-text">Teste T de Student</span>
-<span class="rec-sub">Comparação de médias</span>
-</a></p>
-<p><a href="tutorial-quiquadrado.html" class="rec-card">
-<i class="fas fa-table rec-icon"></i>
-<span class="rec-text">Qui-Quadrado</span>
-<span class="rec-sub">Dados categóricos</span>
-</a></p>
-<p><a href="metanalise.html" class="rec-card">
-<i class="fas fa-layer-group rec-icon"></i>
-<span class="rec-text">Metanálise</span>
-<span class="rec-sub">Introdução</span>
-</a></p>
-</div>
-<div class="rec-footer">
-<p><a href="estatistica.html" class="rec-btn-back">
-<i class="fas fa-arrow-left"></i> Voltar aos Tutoriais
-</a></p>
-</div>
-</div>
-<div class="author-footer">
-<p><span class="author-name">Escrito por Vítor Saldanha</span></p>
-<div class="author-bio">
-<p>Estudante de medicina com foco em pesquisa acadêmica, estatística e medicina baseada em evidências.</p>
-</div>
-<div class="post-meta-date">
-<p><i class="far fa-calendar-alt"></i>
-Atualizado em: 28 de Dezembro de 2025</p>
-</div>
-</div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h2 id="o-que-é-análise-de-subgrupos">1. O que é análise de subgrupos?</h2>
+<p>Imagine a seguinte situação: você está conduzindo uma metanálise para avaliar a eficácia de um novo medicamento para o coração. Após reunir e analisar os dados de 20 estudos diferentes, o resultado geral do seu modelo aponta que o medicamento não tem efeito nenhum. No entanto, olhando mais de perto, você nota que em três estudos específicos o tratamento teve um sucesso estrondoso. O que está acontecendo aqui?</p>
+<p>Se usarmos apenas ferramentas estatísticas puras (como a análise de outliers e de influência que vimos anteriormente), a tendência seria apenas identificar esses três estudos como “anomalias estatísticas” e removê-los para tornar o modelo mais robusto. As análises de outliers e de influência são procedimentos post hoc (feitos após vermos os dados). Elas nos dizem quais estudos estão fugindo do padrão, mas não conseguem nos dizer o porquê.</p>
+<p>Mas e se esses três estudos usaram uma dosagem ligeiramente diferente que mudou tudo? Remover esses dados faria você perder uma descoberta significante. É por isso que precisamos ir além dos números sem contexto, precisamos da <strong>Análise de Subgrupos</strong> 😁. Também conhecida como Análise de Moderadores, essa abordagem permite testar hipóteses específicas para entender o que está gerando a variação nos resultados. Em vez de apenas calcular um efeito médio global, nós investigamos a variação das evidências. deixamos de ver a heterogeneidade (a variação entre os estudos) como um mero “ruído estatístico” e passamos a encará-la como uma oportunidade de descoberta científica.</p>
+<p>Diferente da remoção de outliers, os testes de subgrupo devem ser definidos a priori (antes de começar a análise dos dados). Existem infinitas razões pelas quais os tamanhos de efeito podem diferir. O seu papel como pesquisado é restringir a análise apenas às variáveis que realmente importam e fazem sentido científico para o campo de estudo.</p>
+<h2 id="qual-a-lógica-de-uma-análise-de-subgrupo">2. Qual a lógica de uma análise de subgrupo?</h2>
+<h3 id="o-modelo-de-efeitos-fixos-plural">2.1. O modelo de efeitos fixos (plural)</h3>
+<p>Quando decidimos realizar uma análise de subgrupos, estamos assumindo que os estudos da nossa metanálise não vêm de uma única população global. Em vez disso, nós hipotetizamos que eles pertencem a subgrupos distintos, e que cada um desses subgrupos possui o seu próprio efeito real. O nosso objetivo estatístico passa a ser a rejeição da hipótese nula de que não há diferença entre esses grupos.</p>
+<p>Para iniciar o cálculo primeiro nós agrupamos os efeitos dentro de cada subgrupo e, em seguida, comparamos esses subgrupos por meio de um teste estatístico. Na primeira etapa, o agrupamento dentro dos subgrupos segue a mesma lógica de uma metanálise convencional. Embora seja teoricamente possível aplicar o modelo de efeitos fixos comum (assumindo que todos os estudos de um subgrupo compartilham do mesmo efeito exato), na prática essa suposição raramente se sustenta. O mais realista é aplicar o modelo de efeitos aleatórios dentro de cada subgrupo. Isso significa que realizamos várias mini-metanálises separadas, gerando um efeito combinado para cada grupo. Como cada subgrupo ganha sua própria análise, a estimativa da heterogeneidade (<span class="math inline">\(\tau^2\)</span>) também tende a variar entre eles. Contudo, por razões práticas, é muito comum “juntar” essas estimativas em um único valor de <span class="math inline">\(\tau^2\)</span> compartilhado. Fazemos isso porque, se um subgrupo tiver muito poucos estudos (cinco ou menos, por exemplo), a estimativa individual de sua heterogeneidade será imprecisa. Usar uma versão combinada da heterogeneidade entre todos os grupos traz muito mais estabilidade e robustez estatística para o modelo.</p>
+<h3 id="como-separar-em-subgrupos">2.2. Como separar em subgrupos?</h3>
+<p>Uma vez calculados os efeitos de cada subgrupo, o próximo passo é avaliar se existe uma diferença real entre eles. Uma forma de compreender esse teste é fingir que o efeito combinado de cada subgrupo é, na verdade, o resultado observado de um único grande estudo. Se tivermos três subgrupos, por exemplo, o modelo agirá como se estivesse lidando com três grandes estudos e tentará entender se a variação entre eles se deve apenas ao erro de amostragem ou a diferenças populacionais verdadeiras. Para responder a isso, utilizamos o valor de <span class="math inline">\(Q\)</span>. Calculamos o <span class="math inline">\(Q\)</span> observado e o comparamos com o valor esperado sob uma distribuição de Qui-quadrado (<span class="math inline">\(\chi^2\)</span>). Se o nosso <span class="math inline">\(Q\)</span> observado for substancialmente maior que o esperado, o valor-p do teste será significativo. A significância nos diz que a hipótese nula de que todos os subgrupos são iguais foi rejeitada, indicando que pelo menos dois grupos (ou combinações deles) diferem entre si.</p>
+<h3 id="por-que-chamamos-de-efeitos-fixos-plural">2.3. Por Que Chamamos de “Efeitos Fixos (Plural)”?</h3>
+<p>Esse modelo funciona como um sistema híbrido — também chamado no meio acadêmico de modelo de efeitos mistos. Ele combina duas dinâmicas diferentes:</p>
+<ul>
+<li><p><strong>Dentro dos subgrupos (Efeitos Aleatórios):</strong> Assumimos que os estudos de um mesmo grupo variam entre si e não vêm de uma população idêntica.</p></li>
+<li><p><strong>Entre os subgrupos (Efeitos Fixos):</strong> Assumimos que os grupos que escolhemos comparar representam categorias definitivas e fechadas, e não um sorteio aleatório.</p></li>
+</ul>
+<p>Por exemplo, se você divide sua análise entre pacientes “com comorbidade” e “sem comorbidade”, ou entre exames de “auto-relato” e “avaliação médica”, você esgotou as categorias de interesse para aquela variável. Não há outras opções flutuando por aí para generalizar. Existem múltiplos efeitos reais (um para cada grupo), mas essas divisões são fixas e bem delimitadas. É por isso que usamos o termo “efeitos fixos” no plural.</p>
+<p>No entanto, vale um aviso importante: essa regra só vale quando os grupos são realmente fixos. Se você decidir agrupar seus estudos por “país de origem” (como Brasil, Itália e Japão), o cenário muda. O mundo tem centenas de países, e os três do seu estudo são apenas uma amostra aleatória de todas as nações possíveis. Quando os próprios subgrupos funcionam como escolhas aleatórias, esse modelo deixa de funcionar. Para esses casos, precisamos recorrer a abordagens mais avançadas, como a meta-regressão ou os modelos multinível, que veremos em outro tutorial.</p>
+<h2 id="os-perigos-a-evitar">3. Os Perigos a Evitar</h2>
+<p>À primeira vista, pode parecer que a análise de subgrupos é uma ferramenta perfeita e infalível. Afinal, como as metanálises reúnem dados de milhares de participantes, o senso comum nos diz que teremos um poder estatístico gigante para detectar qualquer diferença.</p>
+<p>Infelizmente, a realidade não é tão simples. Na prática, identificar diferenças reais entre subgrupos é muito mais difícil do que encontrar o efeito geral de um tratamento.</p>
+<h3 id="o-problema-do-baixo-poder-estatístico">3.1. O Problema do Baixo Poder Estatístico</h3>
+<p>O primeiro grande obstáculo está na precisão dos dados. Como aplicamos o modelo de efeitos aleatórios dentro de cada subgrupo, se houver muita heterogeneidade (variação) entre os estudos daquele bloco, as margens de erro aumentam significativamente. Isso faz com que os intervalos de confiança dos subgrupos se sobreponham, mascarando diferenças que poderiam existir na realidade.</p>
+<p>Além disso, a magnitude das diferenças que buscamos em subgrupos costuma ser muito pequena. É relativamente fácil detectar se um remédio funciona melhor do que um placebo, mas provar estatisticamente que ele funciona sutilmente melhor quando medido por um questionário em vez de uma entrevista clínica exige uma sensibilidade estatística que o modelo muitas vezes não tem.</p>
+<p>Se o seu teste de subgrupos não encontrou diferença significativa, isso não significa que os grupos sejam iguais; significa apenas que sua análise pode não ter força suficiente para provar a diferença. Essa distinção é crítica, especialmente quando empresas ou partes interessadas tentam usar a análise de subgrupos para alegar falsamente que dois tratamentos são equivalentes. Como regra prática, para que essa análise faça sentido, sua metanálise deve conter, no mínimo, 10 estudos.</p>
+<h3 id="falta-de-causalidade">3.2. Falta de Causalidade</h3>
+<p>Mesmo que a sua meta-análise seja composta exclusivamente por Ensaios Clínicos Randomizados (desenhados para comprovar causalidade), a análise de subgrupos em si permanece sendo um procedimento puramente observacional.</p>
+<p>Se você descobrir que o “Tratamento A” performou melhor que o “Tratamento B”, você não pode afirmar categoricamente que o tipo de tratamento causou essa diferença. É perfeitamente possível que os estudos que avaliaram o Tratamento A tenham utilizado um tipo de grupo controle diferente daqueles que avaliaram o Tratamento B. Quando as características metodológicas dos estudos se misturam e confundem os resultados, a diferença observada pode ser apenas uma ilusão.</p>
+<h3 id="o-viés-ecológico">3.3. O viés ecológico</h3>
+<p>Uma das armadilhas mais perigosas ocorre na hora de definir os critérios dos subgrupos, especificamente quando tentamos usar médias ou dados agregados dos estudos para tirar conclusões sobre indivíduos.</p>
+<p>Imagine que você queira comparar o efeito de um tratamento em idosos (65 anos ou mais) versus adultos mais jovens. Para isso, você separa os estudos em dois subgrupos baseando-se na idade média relatada por cada pesquisa.</p>
+<p>Se o subgrupo com idade média acima de 65 anos apresentar efeitos maiores, o impulso natural é concluir que o tratamento é mais eficaz em idosos. Essa lógica é profundamente falha. Um estudo com idade média de 67 anos ainda pode conter uma quantidade enorme de pacientes jovens. Da mesma forma, um estudo com média de 60 anos pode incluir muitos idosos.</p>
+<p>Isso pode gerar um paradoxo estatístico chamado <strong>Viés Ecológico</strong>: no nível macro (dos estudos), parece que uma idade média maior aumenta o efeito; mas no nível micro (do paciente individual), o tratamento pode ser menos eficaz conforme a idade avança. O viés ecológico acontece sempre que tentamos usar relações de nível agregado para prever o comportamento de indivíduos isolados.</p>
+<p>A recomendação para blindar sua análise contra esse viés é categórica: evite ao máximo usar dados agregados (como médias) para fatiar seus subgrupos. Essa divisão só é segura se você tiver certeza absoluta de que todos os indivíduos daquele estudo pertencem estritamente àquela categoria — por exemplo, se um estudo recrutou exclusivamente menores de 18 anos e outro recrutou apenas maiores de 18.</p>
+<h2 id="análise-em-r">4. Análise em R</h2>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

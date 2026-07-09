@@ -1,0 +1,315 @@
+---
+title: "Análise de Subgrupos"
+pagetitle: "Análise de Subgrupos"
+description: |
+  Uma introdução prática à análise de subgrupos para metanálise em R.
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    css: toc-styles.css
+    self_contained: false
+    highlight: pygments
+    highlight_downlit: false
+---
+  
+```{css, echo=FALSE}
+.d-title{
+  display: none;
+}
+/* ==========================================================================
+  1. ESTILIZAÇÃO DO HERO BANNER (FULL WIDTH BREAKOUT)
+========================================================================== */
+  
+  .hero-container-full {
+    /* Técnica de "Breakout" para escapar do grid do Distill */
+      width: 100vw; 
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    
+    /* Reset de margens para evitar espaços brancos indesejados */
+      margin-top: -2rem; /* Ajuste fino dependendo do padding do navbar */
+      margin-bottom: 3rem;
+    
+    /* Garantir que não cause rolagem horizontal indesejada */
+      box-sizing: border-box;
+    overflow: hidden;
+    z-index: 5;
+  }
+
+.hero-banner {
+  /* Dimensões */
+    height: 40vh; /* Ocupa 50% da altura da viewport */
+    min-height: 300px; /* Altura mínima garantida */
+    width: 100%;
+  
+  /* Imagem de Fundo - Substitua pela URL da sua imagem */
+    background-image: url('https://images.unsplash.com/photo-1613505312779-e91c0ff85b64?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  
+  /* Flexbox para centralização total do conteúdo */
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* Contexto de empilhamento */
+    position: relative;
+  z-index: 1;
+}
+
+/* Camada de Escurecimento (Overlay) */
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+    z-index: 2;
+    
+    /* Manter centralização para os filhos */
+      display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+/* Conteúdo Textual */
+  .hero-content {
+    z-index: 3;
+    text-align: center;
+    max-width: 800px;
+    padding: 0 20px;
+    color: #ffffff;
+  }
+
+/* Título Principal */
+  .hero-title {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    line-height: 1.2;
+    color: white!important; /* Importante para sobrescrever cores do tema Distill */
+  }
+
+/* Subtítulo */
+  .hero-subtitle {
+    font-size: 1.25rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+  }
+
+/* Botões */
+  .hero-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    margin: 5px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+
+.hero-btn.primary {
+  background-color: #4CAF50; /* Cor verde estilo RStudio/Distill */
+    color: white;
+  border: 2px solid #4CAF50;
+}
+
+.hero-btn.primary:hover {
+  background-color: #45a049;
+    transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.hero-btn.github {
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.hero-btn.github:hover {
+  background-color: white;
+  color: #333;
+}
+
+/* ==========================================================================
+  2. CORREÇÃO E ALINHAMENTO DO TABLE OF CONTENTS (TOC)
+========================================================================== */
+  
+  
+  
+  /* ==========================================================================
+  3. RESPONSIVIDADE (MOBILE)
+========================================================================== */
+  
+  /* Em telas menores que 1000px (ponto de quebra comum do Distill),
+o layout muda drasticamente. O TOC flutuante deve ser desativado. */
+  
+  @media screen and (max-width: 1000px) {
+    
+    /* Ajuste do Banner para Mobile */
+      .hero-banner {
+        height: 60vh; /* Mais alto em mobile para caber o texto verticalmente */
+      }
+    
+    .hero-title {
+      font-size: 2.2rem; /* Título menor */
+    }
+    
+    /* Reposicionar o TOC para o fluxo normal do documento */
+      .d-contents > nav.toc, 
+    #TOC {
+    position: relative!important;
+    top: 0!important;
+    width: 100%;
+    margin-bottom: 40px;
+    border-left: none;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+  }
+}
+```
+
+<div class="hero-container-full">
+<div class="hero-banner">
+<div class="hero-overlay">
+<div class="hero-content">
+<h1 class="hero-title">Análise de Subgrupos</h1>
+
+<p class="hero-subtitle">
+Tutorial sobre Análise de Subgrupos em Metanálise no R
+</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="toc-spacer"></div>
+  
+<!-- #######################################
+############## CONTEUDO ####################
+############################################  -->
+```{css, echo = F}
+/* Estilo para a caixa de código */
+  d-article pre {
+    background-color: #f6f8fa !important;  /* O !important força a mudança da cor */
+      border: 1px solid #e1e4e8 !important;  /* Força a borda */
+    border-radius: 6px;        /* Cantos arredondados */
+      padding: 12px;             /* Espaço interno para o texto não colar na borda */
+      box-shadow: none;          /* Remove sombras padrões se houver */
+  }
+```
+
+```{css, echo=FALSE}
+h1, h2, h3, h4 {
+  border-bottom: 1px solid #dddddd; /* Cria a linha cinza fina embaixo */
+  padding-bottom: 12px;              /* Espaço entre o texto e a linha */
+    margin-bottom: 18px;              /* Espaço depois da linha para o próximo parágrafo */
+    margin-top: 28px;                 /* Espaço antes do título */
+```
+  
+```{r setup, include=FALSE}
+  library(tidyverse)
+  library(patchwork)
+  library(gridExtra)
+  library(cowplot)
+  library(grid)
+  library(knitr)
+  
+  # Ativar o botão de copiar
+  xaringanExtra::use_clipboard(
+    button_text = "Copiar",
+    success_text = "Copiado!",
+    error_text = "Pressione Ctrl+C para copiar"
+  )
+```
+
+
+## 1. O que é análise de subgrupos?
+
+Imagine a seguinte situação: você está conduzindo uma metanálise para avaliar a eficácia de um novo medicamento para o coração. Após reunir e analisar os dados de 20 estudos diferentes, o resultado geral do seu modelo aponta que o medicamento não tem efeito nenhum. No entanto, olhando mais de perto, você nota que em três estudos específicos o tratamento teve um sucesso estrondoso. O que está acontecendo aqui?
+
+Se usarmos apenas ferramentas estatísticas puras (como a análise de outliers e de influência que vimos anteriormente), a tendência seria apenas identificar esses três estudos como "anomalias estatísticas" e removê-los para tornar o modelo mais robusto. As análises de outliers e de influência são procedimentos post hoc (feitos após vermos os dados). Elas nos dizem quais estudos estão fugindo do padrão, mas não conseguem nos dizer o porquê.
+
+Mas e se esses três estudos usaram uma dosagem ligeiramente diferente que mudou tudo? Remover esses dados faria você perder uma descoberta significante. É por isso que precisamos ir além dos números sem contexto, precisamos da **Análise de Subgrupos** 😁. Também conhecida como Análise de Moderadores, essa abordagem permite testar hipóteses específicas para entender o que está gerando a variação nos resultados. Em vez de apenas calcular um efeito médio global, nós investigamos a variação das evidências. deixamos de ver a heterogeneidade (a variação entre os estudos) como um mero "ruído estatístico" e passamos a encará-la como uma oportunidade de descoberta científica.
+
+Diferente da remoção de outliers, os testes de subgrupo devem ser definidos a priori (antes de começar a análise dos dados). Existem infinitas razões pelas quais os tamanhos de efeito podem diferir. O seu papel como pesquisado é restringir a análise apenas às variáveis que realmente importam e fazem sentido científico para o campo de estudo.
+
+<br>
+
+## 2. Qual a lógica de uma análise de subgrupo?
+
+### 2.1. O modelo de efeitos fixos (plural)
+
+Quando decidimos realizar uma análise de subgrupos, estamos assumindo que os estudos da nossa metanálise não vêm de uma única população global. Em vez disso, nós hipotetizamos que eles pertencem a subgrupos distintos, e que cada um desses subgrupos possui o seu próprio efeito real. O nosso objetivo estatístico passa a ser a rejeição da hipótese nula de que não há diferença entre esses grupos.
+
+Para iniciar o cálculo primeiro nós agrupamos os efeitos dentro de cada subgrupo e, em seguida, comparamos esses subgrupos por meio de um teste estatístico. Na primeira etapa, o agrupamento dentro dos subgrupos segue a mesma lógica de uma metanálise convencional. Embora seja teoricamente possível aplicar o modelo de efeitos fixos comum (assumindo que todos os estudos de um subgrupo compartilham do mesmo efeito exato), na prática essa suposição raramente se sustenta. O mais realista é aplicar o modelo de efeitos aleatórios dentro de cada subgrupo. Isso significa que realizamos várias mini-metanálises separadas, gerando um efeito combinado para cada grupo. Como cada subgrupo ganha sua própria análise, a estimativa da heterogeneidade ($\tau^2$) também tende a variar entre eles. Contudo, por razões práticas, é muito comum "juntar" essas estimativas em um único valor de $\tau^2$ compartilhado. Fazemos isso porque, se um subgrupo tiver muito poucos estudos (cinco ou menos, por exemplo), a estimativa individual de sua heterogeneidade será imprecisa. Usar uma versão combinada da heterogeneidade entre todos os grupos traz muito mais estabilidade e robustez estatística para o modelo.
+
+### 2.2. Como separar em subgrupos?
+
+Uma vez calculados os efeitos de cada subgrupo, o próximo passo é avaliar se existe uma diferença real entre eles. Uma forma de compreender esse teste é fingir que o efeito combinado de cada subgrupo é, na verdade, o resultado observado de um único grande estudo. Se tivermos três subgrupos, por exemplo, o modelo agirá como se estivesse lidando com três grandes estudos e tentará entender se a variação entre eles se deve apenas ao erro de amostragem ou a diferenças populacionais verdadeiras. Para responder a isso, utilizamos o valor de $Q$. Calculamos o $Q$ observado e o comparamos com o valor esperado sob uma distribuição de Qui-quadrado ($\chi^2$). Se o nosso $Q$ observado for substancialmente maior que o esperado, o valor-p do teste será significativo. A significância nos diz que a hipótese nula de que todos os subgrupos são iguais foi rejeitada, indicando que pelo menos dois grupos (ou combinações deles) diferem entre si.
+
+### 2.3. Por Que Chamamos de "Efeitos Fixos (Plural)"?
+
+Esse modelo funciona como um sistema híbrido — também chamado no meio acadêmico de modelo de efeitos mistos. Ele combina duas dinâmicas diferentes:
+
+- **Dentro dos subgrupos (Efeitos Aleatórios):** Assumimos que os estudos de um mesmo grupo variam entre si e não vêm de uma população idêntica.
+
+- **Entre os subgrupos (Efeitos Fixos):** Assumimos que os grupos que escolhemos comparar representam categorias definitivas e fechadas, e não um sorteio aleatório.
+
+Por exemplo, se você divide sua análise entre pacientes "com comorbidade" e "sem comorbidade", ou entre exames de "auto-relato" e "avaliação médica", você esgotou as categorias de interesse para aquela variável. Não há outras opções flutuando por aí para generalizar. Existem múltiplos efeitos reais (um para cada grupo), mas essas divisões são fixas e bem delimitadas. É por isso que usamos o termo "efeitos fixos" no plural.
+
+No entanto, vale um aviso importante: essa regra só vale quando os grupos são realmente fixos. Se você decidir agrupar seus estudos por "país de origem" (como Brasil, Itália e Japão), o cenário muda. O mundo tem centenas de países, e os três do seu estudo são apenas uma amostra aleatória de todas as nações possíveis. Quando os próprios subgrupos funcionam como escolhas aleatórias, esse modelo deixa de funcionar. Para esses casos, precisamos recorrer a abordagens mais avançadas, como a meta-regressão ou os modelos multinível, que veremos em outro tutorial.
+
+<br>
+
+## 3. Os Perigos a Evitar
+
+À primeira vista, pode parecer que a análise de subgrupos é uma ferramenta perfeita e infalível. Afinal, como as metanálises reúnem dados de milhares de participantes, o senso comum nos diz que teremos um poder estatístico gigante para detectar qualquer diferença.
+
+Infelizmente, a realidade não é tão simples. Na prática, identificar diferenças reais entre subgrupos é muito mais difícil do que encontrar o efeito geral de um tratamento.
+
+### 3.1. O Problema do Baixo Poder Estatístico
+
+O primeiro grande obstáculo está na precisão dos dados. Como aplicamos o modelo de efeitos aleatórios dentro de cada subgrupo, se houver muita heterogeneidade (variação) entre os estudos daquele bloco, as margens de erro aumentam significativamente. Isso faz com que os intervalos de confiança dos subgrupos se sobreponham, mascarando diferenças que poderiam existir na realidade.
+
+Além disso, a magnitude das diferenças que buscamos em subgrupos costuma ser muito pequena. É relativamente fácil detectar se um remédio funciona melhor do que um placebo, mas provar estatisticamente que ele funciona sutilmente melhor quando medido por um questionário em vez de uma entrevista clínica exige uma sensibilidade estatística que o modelo muitas vezes não tem.
+
+Se o seu teste de subgrupos não encontrou diferença significativa, isso não significa que os grupos sejam iguais; significa apenas que sua análise pode não ter força suficiente para provar a diferença. Essa distinção é crítica, especialmente quando empresas ou partes interessadas tentam usar a análise de subgrupos para alegar falsamente que dois tratamentos são equivalentes. Como regra prática, para que essa análise faça sentido, sua metanálise deve conter, no mínimo, 10 estudos.
+
+### 3.2. Falta de Causalidade
+
+Mesmo que a sua meta-análise seja composta exclusivamente por Ensaios Clínicos Randomizados (desenhados para comprovar causalidade), a análise de subgrupos em si permanece sendo um procedimento puramente observacional.
+
+Se você descobrir que o "Tratamento A" performou melhor que o "Tratamento B", você não pode afirmar categoricamente que o tipo de tratamento causou essa diferença. É perfeitamente possível que os estudos que avaliaram o Tratamento A tenham utilizado um tipo de grupo controle diferente daqueles que avaliaram o Tratamento B. Quando as características metodológicas dos estudos se misturam e confundem os resultados, a diferença observada pode ser apenas uma ilusão.
+
+### 3.3. O viés ecológico
+
+Uma das armadilhas mais perigosas ocorre na hora de definir os critérios dos subgrupos, especificamente quando tentamos usar médias ou dados agregados dos estudos para tirar conclusões sobre indivíduos.
+
+Imagine que você queira comparar o efeito de um tratamento em idosos (65 anos ou mais) versus adultos mais jovens. Para isso, você separa os estudos em dois subgrupos baseando-se na idade média relatada por cada pesquisa.
+
+Se o subgrupo com idade média acima de 65 anos apresentar efeitos maiores, o impulso natural é concluir que o tratamento é mais eficaz em idosos. Essa lógica é profundamente falha. Um estudo com idade média de 67 anos ainda pode conter uma quantidade enorme de pacientes jovens. Da mesma forma, um estudo com média de 60 anos pode incluir muitos idosos.
+
+Isso pode gerar um paradoxo estatístico chamado **Viés Ecológico**: no nível macro (dos estudos), parece que uma idade média maior aumenta o efeito; mas no nível micro (do paciente individual), o tratamento pode ser menos eficaz conforme a idade avança. O viés ecológico acontece sempre que tentamos usar relações de nível agregado para prever o comportamento de indivíduos isolados.
+
+A recomendação para blindar sua análise contra esse viés é categórica: evite ao máximo usar dados agregados (como médias) para fatiar seus subgrupos. Essa divisão só é segura se você tiver certeza absoluta de que todos os indivíduos daquele estudo pertencem estritamente àquela categoria — por exemplo, se um estudo recrutou exclusivamente menores de 18 anos e outro recrutou apenas maiores de 18.
+
+<br>
+
+## 4. Análise em R
+  

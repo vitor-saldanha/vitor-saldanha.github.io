@@ -15,7 +15,6 @@ body {
 }
 </style>
 
-## Conteúdo
 
 <div class="tutorial-grid l-body-outset">
 

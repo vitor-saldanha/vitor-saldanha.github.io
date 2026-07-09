@@ -199,29 +199,166 @@ Uma introdução prática aos modelos lineares no R
 <div class="toc-spacer"></div>
 
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+## 1. Encontrando a Reta
+
+A regressão linear busca mapear a relação entre uma variável preditora (independente, no eixo $X$) e uma variável de desfecho (dependente, no eixo $Y$). 
+
+Para entender este conceito na prática clínica, imagine um estudo que avalia o efeito de um novo medicamento anti-hipertensivo:
+
+- **Eixo $X$ (Variável Preditora):** Dose do medicamento administrada (em mg).
+
+- **Eixo $Y$ (Variável Desfecho):** Redução observada na Pressão Arterial Sistólica (PAS, em mmHg).
+
+O nosso objetivo é traçar uma linha reta que consiga prever, com a maior precisão possível, quantos mmHg a pressão de um paciente deve cair com base na dose que ele recebeu.
+
+
+### 1.1. O que são Resíduos?
+
+Mesmo com um ótimo modelo, a reta não passará perfeitamente por cima de todos os pontos coletados no estudo, pois cada paciente responde de forma ligeiramente diferente ao tratamento. É aqui que entram os resíduos.
+
+<br>
+
+> **Definição:** Resíduos são as distâncias verticais entre o valor real observado no dado e o valor predito pela nossa reta de regressão. Eles representam o erro do modelo.
+
+<br>
+
+Matematicamente, o resíduo $e_i$ para um paciente $i$ é expresso por:
+
+$$e_i = y_i - \hat{y}_i$$
+
+Onde $y_i$ é a redução real da pressão arterial e $\hat{y}_i$ é o valor estimado pela reta.
+
+- **Resíduos Positivos (+):** O ponto real está *acima* da reta (a redução da pressão do paciente foi maior do que o modelo previu).
+
+- **Resíduos Negativos (-):** O ponto real está *abaixo* da reta (a redução da pressão do paciente foi menor do que o modelo previu).
+
+
+```{r, echo=F}
+library(ggplot2)
+library(dplyr)
+
+# ---------------------------------------------------------
+# 1. SIMULANDO OS DADOS (Dose do Medicamento vs Redução PAS)
+# ---------------------------------------------------------
+set.seed(11) # Semente para manter os dados idênticos toda vez que rodar
+
+dados_med <- tibble(
+  dose = runif(20, 5, 25), # Doses entre 5mg e 25mg
+  pas_reducao = 2 + 1.2 * dose + rnorm(20, mean = 0, sd = 4) # Relação linear com um pouco de ruído
+)
+
+# Criando o modelo linear para extrair os valores preditos
+modelo <- lm(pas_reducao ~ dose, data = dados_med)
+
+# Adicionando predições e calculando resíduos
+dados_med <- dados_med %>%
+  mutate(
+    predito = predict(modelo),
+    residuos = pas_reducao - predito,
+    sinal = ifelse(residuos > 0, "+", "-")
+  )
+
+# ---------------------------------------------------------
+# GRÁFICO 1: A Reta de Regressão e os Resíduos
+# ---------------------------------------------------------
+plot_residuos <- ggplot(dados_med, aes(x = dose, y = pas_reducao)) +
+  # Linhas tracejadas dos resíduos
+  geom_segment(aes(xend = dose, yend = predito), linetype = "dashed", color = "gray50") +
+  # A reta de regressão usando o seu verde
+  geom_smooth(method = "lm", se = FALSE, color = "#6c9c58", linewidth = 1.2) +
+  # Os pontos de dados reais
+  geom_point(size = 3, color = "#2c3e50", alpha = 0.8) +
+  # Adicionando os sinais de + e - nos resíduos
+  geom_text(aes(label = sinal, y = pas_reducao + sign(residuos)*1.2), size = 5, color = "gray30") +
+  theme_minimal() +
+  labs(
+    x = "Dose do Medicamento (mg)",
+    y = "Redução da Pressão Arterial Sistólica (mmHg)"
+  ) +
+  theme(plot.title = element_text(face = "bold", size = 14),
+        axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+        axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)))
+
+# Mostra o primeiro gráfico
+print(plot_residuos)
 ```
 
-## R Markdown
+Se apenas somássemos os resíduos diretamente, os valores positivos anulariam os negativos (dando a falsa impressão de que o erro total é próximo de zero). Para contornar isso, **elevamos cada resíduo ao quadrado**, tornando todos os valores positivos antes de somá-los.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+$$\text{deviation} = \sum (\text{observed} - \text{model})^2$$
 
-```{r cars}
-summary(cars)
+<br>
+
+
+### 1.2. O Método dos Mínimos Quadrados
+
+
+Para encontrar a reta ideal, o algoritmo utiliza o **Método dos Mínimos Quadrados** (em inglês, *Ordinary Least Squares - OLS*). O processo segue a seguinte lógica iterativa:
+
+1. **Testar Inclinações e Intersecções:** O algoritmo simula diferentes inclinações (coeficiente angular, que dita o efeito por mg) e pontos de partida no eixo Y (coeficiente linear, que dita o efeito basal).
+
+2. **Calcular a Soma dos Quadrados dos Resíduos (SQR):** Para cada reta testada, calcula-se a métrica:
+   $$SQR = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2$$
+   
+3. **Minimização:** O algoritmo plota a variação da SQR para cada rotação da linha. A reta final escolhida será rigorosamente aquela que apresentar a **menor soma dos quadrados dos resíduos**.
+
+```{r, echo=F}
+inclinacoes <- seq(0.5, 2.0, length.out = 10)
+intersec <- coef(modelo)[1] # Mantendo a intersecção fixa para simplificar
+
+# Calculando a Soma dos Quadrados dos Resíduos (SQR) para cada inclinação
+sqr_valores <- sapply(inclinacoes, function(incl) {
+  predicoes_teste <- intersec + incl * dados_med$dose
+  sum((dados_med$pas_reducao - predicoes_teste)^2)
+})
+
+dados_parabola <- tibble(
+  inclinacao = inclinacoes,
+  sqr = sqr_valores
+)
+
+# Encontrando o ponto mínimo para fazer a anotação
+ponto_min <- dados_parabola %>% filter(sqr == min(sqr))
+
+plot_parabola <- ggplot(dados_parabola, aes(x = inclinacao, y = sqr)) +
+  geom_point(size = 4, color = "gray40") +
+  geom_smooth(method = "loess", se = FALSE, color = "gray80", linetype = "dashed", alpha = 0.5) +
+  geom_point(data = ponto_min, aes(x = inclinacao, y = sqr), size = 5, color = "#6c9c58") +
+  
+  # ANOTAÇÕES CENTRALIZADAS
+  # A seta começa em x = inclinação do ponto mínimo e sobe no y
+  annotate("segment", 
+           x = ponto_min$inclinacao, 
+           y = ponto_min$sqr + 600,   # Distância vertical da seta
+           xend = ponto_min$inclinacao, 
+           yend = ponto_min$sqr + 100, # Onde a ponta da seta encosta
+           arrow = arrow(length = unit(0.3, "cm")), size = 1, color = "#222") +
+  
+  # Texto centralizado no x do ponto mínimo
+  annotate("text", 
+           x = ponto_min$inclinacao, 
+           y = ponto_min$sqr + 800, 
+           label = "Rotação com menor\n soma de quadrados", 
+           hjust = 0.5, fontface = "bold", color = "#222") +
+  
+  theme_minimal() +
+  labs(
+    x = "Diferentes Rotações (Inclinações da Reta)",
+    y = "Soma dos Quadrados dos Resíduos (SQR)"
+  ) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0))
+  )
+
+print(plot_parabola)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Dessa forma, garantimos estatisticamente o modelo que melhor descreve o comportamento biológico do nosso dado.
 
 <div class="rec-section">
 

@@ -94,9 +94,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   <link rel="icon" type="image/png" href="my-favicon.png"/>
 
-  <!--  https://schema.org/Article -->
-  <meta property="article:published" itemprop="datePublished" content="2026-03-18"/>
-  <meta property="article:created" itemprop="dateCreated" content="2026-03-18"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
   <meta property="og:title" content="Vitor Saldanha: Tutoriais de Metanálise"/>
@@ -112,7 +109,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","pagetitle","date","site"]}},"value":[{"type":"character","attributes":{},"value":["Tutoriais de Metanálise"]},{"type":"character","attributes":{},"value":["Tutoriais de Metanálise"]},{"type":"character","attributes":{},"value":["2026-03-18"]},{"type":"character","attributes":{},"value":["distill::distill_website"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","pagetitle","site"]}},"value":[{"type":"character","attributes":{},"value":["Tutoriais de Metanálise"]},{"type":"character","attributes":{},"value":["Tutoriais de Metanálise"]},{"type":"character","attributes":{},"value":["distill::distill_website"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -1842,7 +1839,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2435,7 +2432,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Tutoriais de Metanálise","authors":[],"publishedDate":"2026-03-18T00:00:00.000-03:00"}
+{"title":"Tutoriais de Metanálise","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2446,7 +2443,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <a href="index.html" class="title">Vitor Saldanha</a>
 </div>
 <div class="nav-right">
-<a href="index.html">Home</a>
+<a href="construcao.html">Contratação</a>
 <a href="estatistica.html">Estatística</a>
 <a href="metanalise.html">Metanálise</a>
 <a href="construcao.html">Blog</a>
@@ -2479,11 +2476,24 @@ d-title {
 body {
   padding-top: 50px; /* Espaço para a barra de navegação não cobrir o texto */
 }
+
+/* Ajuste para 3 cards por linha */
+.tutorial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 30px;
+}
+
+@media(max-width: 768px) {
+  .tutorial-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
-<h2 id="conteúdo">Conteúdo</h2>
 <div class="tutorial-grid l-body-outset">
 <div class="card-blog">
-<p><img src="fotos/metanalise/effectsize.jpg" class="card-img-top" alt="Imagem Effect Size"></p>
+<img src="fotos/metanalise/effectsize.jpg" class="card-img-top" alt="Imagem Effect Size">
 <div class="card-body">
 <span class="card-tag">
 <i class="fas fa-fire"></i> Básico
@@ -2497,7 +2507,7 @@ Acessar Aula <i class="fas fa-arrow-right"></i>
 </div>
 </div>
 <div class="card-blog">
-<p><img src="fotos/metanalise/models.jpg" class="card-img-top" alt="Modelos"></p>
+<img src="fotos/metanalise/models.jpg" class="card-img-top" alt="Modelos">
 <div class="card-body">
 <span class="card-tag">
 <i class="fas fa-chart-bar"></i> Intermediário
@@ -2511,7 +2521,7 @@ Acessar Aula <i class="fas fa-arrow-right"></i>
 </div>
 </div>
 <div class="card-blog">
-<p><img src="fotos/metanalise/heterogeneity.jpg" class="card-img-top" alt="Imagem Hetero"></p>
+<img src="fotos/metanalise/heterogeneity.jpg" class="card-img-top" alt="Imagem Hetero">
 <div class="card-body">
 <span class="card-tag">
 <i class="fas fa-chart-bar"></i> Intermediário
@@ -2520,6 +2530,20 @@ Acessar Aula <i class="fas fa-arrow-right"></i>
 Heterogeneidade
 </h5>
 <p><a href="tutorial-metanalise-heterogeneidade.html" class="card-btn">
+Acessar Aula <i class="fas fa-arrow-right"></i>
+</a></p>
+</div>
+</div>
+<div class="card-blog">
+<img src="fotos/metanalise/subgrupos.jpg" class="card-img-top" alt="Imagem Subgrupo">
+<div class="card-body">
+<span class="card-tag">
+<i class="fas fa-chart-bar"></i> Intermediário
+</span>
+<h5 class="card-title">
+Análise de Subgrupo
+</h5>
+<p><a href="tutorial-metanalise-subgrupos.html" class="card-btn">
 Acessar Aula <i class="fas fa-arrow-right"></i>
 </a></p>
 </div>
